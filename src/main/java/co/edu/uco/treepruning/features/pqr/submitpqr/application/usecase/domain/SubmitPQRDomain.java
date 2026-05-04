@@ -34,6 +34,7 @@ public class SubmitPQRDomain {
 		this.generateId();
 	}
 	
+
 	public UUID getId() {
 		return id;
 	}
@@ -55,6 +56,7 @@ public class SubmitPQRDomain {
 	public String getPhotographicRecordPath() {
 		return photographicRecordPath;
 	}
+	
 	private void setDate(LocalDate date) {
 		this.date = date;
 	}
@@ -73,5 +75,5 @@ public class SubmitPQRDomain {
 	private void setPhotographicRecordPath(String photographicRecordPath) {
 		this.photographicRecordPath = photographicRecordPath;
 	}
-	
+
 }
