@@ -3,6 +3,10 @@ package co.edu.uco.treepruning.features.pqr.submitpqr.application.usecase.domain
 import java.time.LocalDate;
 import java.util.UUID;
 
+import co.edu.uco.treepruning.crosscuting.helper.DateHelper;
+import co.edu.uco.treepruning.crosscuting.helper.TextHelper;
+import co.edu.uco.treepruning.crosscuting.helper.UUIDHelper;
+
 public final class SubmitPQRDomain {
 	private UUID id;
 	private LocalDate date;
@@ -25,13 +29,12 @@ public final class SubmitPQRDomain {
 	}
 
 	private void generateId() {
-		this.id = UUID.randomUUID();
+		this.id = UUIDHelper.getUUIDHelper().generateNewUUID();
 	}
 	
 	public void regenerateId() {
 		this.generateId();
 	}
-	
 
 	public UUID getId() {
 		return id;
@@ -56,22 +59,22 @@ public final class SubmitPQRDomain {
 	}
 	
 	private void setDate(LocalDate date) {
-		this.date = date;
+		this.date = DateHelper.getDateHelper().getDefault(date);
 	}
 	private void setStatus(UUID status) {
-		this.status = status;
+		this.status = UUIDHelper.getUUIDHelper().getDefault(status);
 	}
 	private void setSector(UUID sector) {
-		this.sector = sector;
+		this.sector = UUIDHelper.getUUIDHelper().getDefault(sector);
 	}
 	private void setRisk(UUID risk) {
-		this.risk = risk;
+		this.risk = UUIDHelper.getUUIDHelper().getDefault(risk);
 	}
 	private void setPerson(UUID person) {
-		this.person = person;
+		this.person = UUIDHelper.getUUIDHelper().getDefault(person);
 	}
 	private void setPhotographicRecordPath(String photographicRecordPath) {
-		this.photographicRecordPath = photographicRecordPath;
+		this.photographicRecordPath = TextHelper.getDefaultWithTrim(photographicRecordPath);
 	}
 
 }

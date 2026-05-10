@@ -2,10 +2,21 @@ package co.edu.uco.treepruning.infrastructure.persistence.repository.entity;
 
 import java.util.UUID;
 
+import co.edu.uco.treepruning.crosscuting.helper.TextHelper;
+import co.edu.uco.treepruning.crosscuting.helper.UUIDHelper;
+
 public class CountryEntity {
     private UUID id;
     private String name;
     
+    public CountryEntity() {
+    	
+    }
+    
+    public CountryEntity(UUID id) {
+		setId(id);
+		setName(TextHelper.getDefault());
+	}
     
 	public CountryEntity(UUID id, String name) {
 		super();
@@ -19,10 +30,10 @@ public class CountryEntity {
 		return name;
 	}
 	private void setId(UUID id) {
-		this.id = id;
+		this.id = UUIDHelper.getUUIDHelper().getDefault(id);
 	}
 	private void setName(String name) {
-		this.name = name;
+		this.name = TextHelper.getDefault(name);
 	}
     
     

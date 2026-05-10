@@ -2,10 +2,23 @@ package co.edu.uco.treepruning.infrastructure.persistence.repository.entity;
 
 import java.util.UUID;
 
+import co.edu.uco.treepruning.crosscuting.helper.ObjectHelper;
+import co.edu.uco.treepruning.crosscuting.helper.TextHelper;
+import co.edu.uco.treepruning.crosscuting.helper.UUIDHelper;
+
 public class SectorEntity {
     private UUID id;
     private String name;
     private MunicipalityEntity municipality;
+    
+    public SectorEntity() {
+		
+	}
+    
+    public SectorEntity(UUID id) {
+		super();
+		setId(id);
+    }
     
     
 	public SectorEntity(UUID id, String name, MunicipalityEntity municipality) {
@@ -26,13 +39,13 @@ public class SectorEntity {
 	}
 	
 	private void setId(UUID id) {
-		this.id = id;
+		this.id = UUIDHelper.getUUIDHelper().getDefault(id);
 	}
 	private void setName(String name) {
-		this.name = name;
+		this.name = TextHelper.getDefault(name);
 	}
 	private void setMunicipality(MunicipalityEntity municipality) {
-		this.municipality = municipality;
+		this.municipality = ObjectHelper.getDefault(municipality, null);
 	}
     
     
