@@ -2,12 +2,22 @@ package co.edu.uco.treepruning.infrastructure.persistence.repository.entity;
 
 import java.util.UUID;
 
+import co.edu.uco.treepruning.crosscuting.helper.TextHelper;
+import co.edu.uco.treepruning.crosscuting.helper.UUIDHelper;
+
 public class DocumentEntity {
 
     private UUID id;
     private String name;
     private String code;
     
+     public DocumentEntity() {
+	 	
+	 }
+     
+     public DocumentEntity(UUID id) {
+ 		setId(id);
+     }
     
 	public DocumentEntity(UUID id, String name, String code) {
 		super();
@@ -27,13 +37,13 @@ public class DocumentEntity {
 	}
 	
 	private void setId(UUID id) {
-		this.id = id;
+		this.id = UUIDHelper.getUUIDHelper().getDefault(id);
 	}
 	private void setName(String name) {
-		this.name = name;
+		this.name = TextHelper.getDefaultWithTrim(name);
 	}
 	private void setCode(String code) {
-		this.code = code;
+		this.code = TextHelper.getDefaultWithTrim(code);
 	}
     
     
