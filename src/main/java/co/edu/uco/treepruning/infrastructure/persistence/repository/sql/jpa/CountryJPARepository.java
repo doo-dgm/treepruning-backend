@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.entity.CountryJPAEntity;
 
-public interface CountryJPArepository extends JpaRepository<CountryJPAEntity, UUID>{
+public interface CountryJPARepository extends JpaRepository<CountryJPAEntity, UUID>{
 
 }
