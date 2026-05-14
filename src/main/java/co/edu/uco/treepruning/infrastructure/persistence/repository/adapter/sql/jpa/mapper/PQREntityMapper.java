@@ -1,11 +1,11 @@
 package co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa.mapper;
 
+import java.util.List;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.PQREntity;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.entity.PQRJPAEntity;
 
-@Mapper(uses = {
+@Mapper(componentModel = "spring", uses = {
     StatusEntityMapper.class,
     RiskEntityMapper.class,
     SectorEntityMapper.class,
@@ -13,9 +13,7 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.enti
 })
 public interface PQREntityMapper {
 
-    PQREntityMapper INSTANCE =
-            Mappers.getMapper(PQREntityMapper.class);
-
     PQRJPAEntity toJPA(PQREntity entity);
     PQREntity toEntity(PQRJPAEntity jpaEntity);
+    List<PQREntity> toEntityList(List<PQRJPAEntity> jpaEntities);
 }

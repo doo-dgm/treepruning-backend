@@ -1,5 +1,4 @@
-package co.edu.uco.treepruning.infrastructure.persistence
-        .repository.adapter.sql.jpa;
+package co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,28 +11,26 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.Manag
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.ManagerJPARepository;
 
 @Repository
-public class ManagerJPARepositoryAdapter
-        implements ManagerRepository {
+public class ManagerJPARepositoryAdapter implements ManagerRepository {
 
     private final ManagerJPARepository repository;
+    private final ManagerEntityMapper mapper;
 
-    public ManagerJPARepositoryAdapter(
-            ManagerJPARepository repository) {
+    public ManagerJPARepositoryAdapter(ManagerJPARepository repository,
+            ManagerEntityMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     @Override
     public List<ManagerEntity> findAll() {
-        return repository.findAll()
-            .stream()
-            .map(ManagerEntityMapper.INSTANCE::toEntity)
-            .toList();
+        return mapper.toEntityList(repository.findAll());
     }
 
     @Override
     public ManagerEntity findById(UUID id) {
         return repository.findById(id)
-            .map(ManagerEntityMapper.INSTANCE::toEntity)
-            .orElse(null);
+                .map(mapper::toEntity)
+                .orElse(null);
     }
 }

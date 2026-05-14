@@ -11,29 +11,27 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.Docum
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.DocumentJPARepository;
 
 @Repository
-public class DocumentJPARepositoryAdapter
-        implements DocumentRepository {
+public class DocumentJPARepositoryAdapter implements DocumentRepository {
 
     private final DocumentJPARepository repository;
+    private final DocumentEntityMapper mapper;
 
-    public DocumentJPARepositoryAdapter(
-            DocumentJPARepository repository) {
+    public DocumentJPARepositoryAdapter(DocumentJPARepository repository,
+            DocumentEntityMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     @Override
     public List<DocumentEntity> findAll() {
-        return repository.findAll()
-            .stream()
-            .map(DocumentEntityMapper.INSTANCE::toEntity)
-            .toList();
+        return mapper.toEntityList(repository.findAll());
     }
 
     @Override
     public DocumentEntity findById(UUID id) {
         return repository.findById(id)
-            .map(DocumentEntityMapper.INSTANCE::toEntity)
-            .orElse(null);
+                .map(mapper::toEntity)
+                .orElse(null);
     }
 
     @Override

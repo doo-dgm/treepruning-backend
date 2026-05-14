@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
+
 import co.edu.uco.treepruning.infrastructure.persistence.repository.SectorRepository;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa.mapper.SectorEntityMapper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.SectorEntity;
@@ -13,16 +14,17 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.Sect
 public class SectorJPARepositoryAdapter implements SectorRepository {
 
     private final SectorJPARepository repository;
+    private final SectorEntityMapper mapper;
 
-    public SectorJPARepositoryAdapter(
-            SectorJPARepository repository) {
+    public SectorJPARepositoryAdapter(SectorJPARepository repository,
+            SectorEntityMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     @Override
     public void create(SectorEntity entity) {
-        repository.save(
-            SectorEntityMapper.INSTANCE.toJPA(entity));
+        repository.save(mapper.toJPA(entity));
     }
 
     @Override
@@ -37,16 +39,13 @@ public class SectorJPARepositoryAdapter implements SectorRepository {
 
     @Override
     public List<SectorEntity> findAll() {
-        return repository.findAll()
-            .stream()
-            .map(SectorEntityMapper.INSTANCE::toEntity)
-            .toList();
+        return mapper.toEntityList(repository.findAll());
     }
 
     @Override
     public SectorEntity findById(UUID id) {
         return repository.findById(id)
-            .map(SectorEntityMapper.INSTANCE::toEntity)
-            .orElse(null);
+                .map(mapper::toEntity)
+                .orElse(null);
     }
 }

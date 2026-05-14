@@ -14,24 +14,23 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.Coun
 public class CountryJPARepositoryAdapter implements CountryRepository {
 
     private final CountryJPARepository repository;
+    private final CountryEntityMapper mapper;
 
-    public CountryJPARepositoryAdapter(
-            CountryJPARepository repository) {
+    public CountryJPARepositoryAdapter(CountryJPARepository repository,
+            CountryEntityMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     @Override
     public List<CountryEntity> findAll() {
-        return repository.findAll()
-            .stream()
-            .map(CountryEntityMapper.INSTANCE::toEntity)
-            .toList();
+        return mapper.toEntityList(repository.findAll());
     }
 
     @Override
     public CountryEntity findById(UUID id) {
         return repository.findById(id)
-            .map(CountryEntityMapper.INSTANCE::toEntity)
-            .orElse(null);
+                .map(mapper::toEntity)
+                .orElse(null);
     }
 }

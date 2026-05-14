@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <springProperty name="APP_NAME" source="spring.application.name" defaultValue="tree-pruning"/>
+    <springProperty name="LOKI_URL"  source="loki.url"               defaultValue="http://localhost:3100"/>
+
+    <!-- Consola: legible en local -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Loki: JSON estructurado con labels para Grafana -->
+    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+        <http>
+            <url>${LOKI_URL}/loki/api/v1/push</url>
+        </http>
+        <format>
+            <label>
+                <pattern>app=${APP_NAME},host=${HOSTNAME},level=%level</pattern>
+            </label>
+            <message>
+                <pattern>
+                    {"timestamp":"%d{ISO8601}","level":"%level","thread":"%thread","logger":"%logger","message":"%message"%replace("%ex{full}"){'(\R)','\\n'}%nopex}
+                </pattern>
+            </message>
+            <sortByTime>true</sortByTime>
+        </format>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="LOKI"/>
+    </root>
+
+    <!-- Reducir ruido de frameworks -->
+    <logger name="org.hibernate"         level="WARN"/>
+    <logger name="org.springframework"   level="WARN"/>
+    <logger name="com.zaxxer.hikari"     level="WARN"/>
+
+    <!-- Logs propios del servicio en DEBUG en dev -->
+    <springProfile name="dev">
+        <logger name="co.edu.uco.treepruning" level="DEBUG"/>
+    </springProfile>
+
+</configuration>

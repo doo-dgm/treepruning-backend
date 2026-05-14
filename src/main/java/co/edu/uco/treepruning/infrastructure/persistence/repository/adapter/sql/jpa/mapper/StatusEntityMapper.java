@@ -1,16 +1,14 @@
 package co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa.mapper;
 
+import java.util.List;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.StatusEntity;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.entity.StatusJPAEntity;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface StatusEntityMapper {
-
-    StatusEntityMapper INSTANCE =
-            Mappers.getMapper(StatusEntityMapper.class);
 
     StatusJPAEntity toJPA(StatusEntity entity);
     StatusEntity toEntity(StatusJPAEntity jpaEntity);
+    List<StatusEntity> toEntityList(List<StatusJPAEntity> jpaEntities);
 }

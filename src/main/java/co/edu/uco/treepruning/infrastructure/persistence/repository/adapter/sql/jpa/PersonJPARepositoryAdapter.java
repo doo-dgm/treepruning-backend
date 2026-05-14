@@ -14,16 +14,17 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.Pers
 public class PersonJPARepositoryAdapter implements PersonRepository {
 
     private final PersonJPARepository repository;
+    private final PersonEntityMapper mapper;
 
-    public PersonJPARepositoryAdapter(
-            PersonJPARepository repository) {
+    public PersonJPARepositoryAdapter(PersonJPARepository repository,
+            PersonEntityMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     @Override
     public void create(PersonEntity entity) {
-        repository.save(
-            PersonEntityMapper.INSTANCE.toJPA(entity));
+        repository.save(mapper.toJPA(entity));
     }
 
     @Override
@@ -38,16 +39,13 @@ public class PersonJPARepositoryAdapter implements PersonRepository {
 
     @Override
     public List<PersonEntity> findAll() {
-        return repository.findAll()
-            .stream()
-            .map(PersonEntityMapper.INSTANCE::toEntity)
-            .toList();
+        return mapper.toEntityList(repository.findAll());
     }
 
     @Override
     public PersonEntity findById(UUID id) {
         return repository.findById(id)
-            .map(PersonEntityMapper.INSTANCE::toEntity)
-            .orElse(null);
+                .map(mapper::toEntity)
+                .orElse(null);
     }
 }

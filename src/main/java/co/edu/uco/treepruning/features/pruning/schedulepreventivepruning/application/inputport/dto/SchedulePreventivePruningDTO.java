@@ -16,7 +16,6 @@ public final class SchedulePreventivePruningDTO {
     private UUID tree;
     private UUID quadrille;
     private UUID type;
-    private UUID pqr;
     private String photographicRecordPath;
     private String observations;
 
@@ -27,7 +26,6 @@ public final class SchedulePreventivePruningDTO {
             UUID tree,
             UUID quadrille,
             UUID type,
-            UUID pqr,
             String photographicRecordPath,
             String observations) {
         setStatus(status);
@@ -36,72 +34,40 @@ public final class SchedulePreventivePruningDTO {
         setTree(tree);
         setQuadrille(quadrille);
         setType(type);
-        setPqr(pqr);
         setPhotographicRecordPath(photographicRecordPath);
         setObservations(observations);
     }
 
-    public UUID getStatus() {
-    	return status; 
-    	}
-    public LocalDate getPlannedDate() {
-    	return plannedDate; 
-    	}
-    public LocalDate getExecutedDate() { 
-    	return executedDate;
-    	}
-    public UUID getTree() { 
-    	return tree; 
-    	}
-    public UUID getQuadrille() {
-    	return quadrille;
-    	}
-    public UUID getType() {
-    	return type; 
-    	}
-    public UUID getPqr() { 
-    	return pqr; 
-    	}
-    public String getPhotographicRecordPath() {
-        return photographicRecordPath;
-    }
-    public String getObservations() { 
-    	return observations;
-    	}
+    public UUID getStatus() { return status; }
+    public LocalDate getPlannedDate() { return plannedDate; }
+    public LocalDate getExecutedDate() { return executedDate; }
+    public UUID getTree() { return tree; }
+    public UUID getQuadrille() { return quadrille; }
+    public UUID getType() { return type; }
+    public String getPhotographicRecordPath() { return photographicRecordPath; }
+    public String getObservations() { return observations; }
 
     private void setStatus(UUID status) {
         this.status = UUIDHelper.getUUIDHelper().getDefault(status);
     }
-
     private void setPlannedDate(LocalDate plannedDate) {
         this.plannedDate = DateHelper.getDateHelper().getDefault(plannedDate);
     }
-
     private void setExecutedDate(LocalDate executedDate) {
         this.executedDate = DateHelper.getDateHelper().getDefault(executedDate);
     }
-
     private void setTree(UUID tree) {
         this.tree = UUIDHelper.getUUIDHelper().getDefault(tree);
     }
-
     private void setQuadrille(UUID quadrille) {
         this.quadrille = UUIDHelper.getUUIDHelper().getDefault(quadrille);
     }
-
     private void setType(UUID type) {
         this.type = UUIDHelper.getUUIDHelper().getDefault(type);
     }
-
-    private void setPqr(UUID pqr) {
-        this.pqr = UUIDHelper.getUUIDHelper().getDefault(pqr);
-    }
-
-    private void setPhotographicRecordPath(
-            String photographicRecordPath) {
+    private void setPhotographicRecordPath(String photographicRecordPath) {
         this.photographicRecordPath = TextHelper.getDefaultWithTrim(photographicRecordPath);
     }
-
     private void setObservations(String observations) {
         this.observations = TextHelper.getDefaultWithTrim(observations);
     }

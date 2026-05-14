@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
+
 import co.edu.uco.treepruning.infrastructure.persistence.repository.PQRRepository;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa.mapper.PQREntityMapper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.PQREntity;
@@ -13,14 +14,17 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.PQRJ
 public class PQRJPARepositoryAdapter implements PQRRepository {
 
     private final PQRJPARepository repository;
+    private final PQREntityMapper mapper;
 
-    public PQRJPARepositoryAdapter(PQRJPARepository repository) {
+    public PQRJPARepositoryAdapter(PQRJPARepository repository,
+            PQREntityMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     @Override
     public void create(PQREntity entity) {
-        repository.save(PQREntityMapper.INSTANCE.toJPA(entity));
+        repository.save(mapper.toJPA(entity));
     }
 
     @Override
@@ -36,16 +40,13 @@ public class PQRJPARepositoryAdapter implements PQRRepository {
     @Override
     public PQREntity findById(UUID id) {
         return repository.findById(id)
-            .map(PQREntityMapper.INSTANCE::toEntity)
-            .orElse(null);
+                .map(mapper::toEntity)
+                .orElse(null);
     }
 
     @Override
     public List<PQREntity> findAll() {
-        return repository.findAll()
-            .stream()
-            .map(PQREntityMapper.INSTANCE::toEntity)
-            .toList();
+        return mapper.toEntityList(repository.findAll());
     }
 
     @Override

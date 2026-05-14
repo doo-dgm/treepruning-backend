@@ -4,26 +4,27 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
+
 import co.edu.uco.treepruning.infrastructure.persistence.repository.PruningRepository;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa.mapper.PruningEntityMapper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.PruningEntity;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.PruningJPARepository;
 
 @Repository
-public class PruningJPARepositoryAdapter
-        implements PruningRepository {
+public class PruningJPARepositoryAdapter implements PruningRepository {
 
     private final PruningJPARepository repository;
+    private final PruningEntityMapper mapper;
 
-    public PruningJPARepositoryAdapter(
-            PruningJPARepository repository) {
+    public PruningJPARepositoryAdapter(PruningJPARepository repository,
+            PruningEntityMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     @Override
     public void create(PruningEntity entity) {
-        repository.save(
-            PruningEntityMapper.INSTANCE.toJPA(entity));
+        repository.save(mapper.toJPA(entity));
     }
 
     @Override
@@ -39,16 +40,13 @@ public class PruningJPARepositoryAdapter
     @Override
     public PruningEntity findById(UUID id) {
         return repository.findById(id)
-            .map(PruningEntityMapper.INSTANCE::toEntity)
-            .orElse(null);
+                .map(mapper::toEntity)
+                .orElse(null);
     }
 
     @Override
     public List<PruningEntity> findAll() {
-        return repository.findAll()
-            .stream()
-            .map(PruningEntityMapper.INSTANCE::toEntity)
-            .toList();
+        return mapper.toEntityList(repository.findAll());
     }
 
     @Override
