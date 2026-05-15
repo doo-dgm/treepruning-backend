@@ -1,18 +1,17 @@
-package co.edu.uco.treepruning.features.pruning
-        .schedulepreventivepruning.application.usecase.rules;
+package co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.rules;
 
+import java.io.Serial;
 import java.util.UUID;
+import co.edu.uco.treepruning.crosscutting.exception.TreePruningException;
 
-public final class StatusNotFoundForPruningException 
-        extends RuntimeException {
+public final class StatusNotFoundForPruningException extends TreePruningException {
 
+    @Serial
     private static final long serialVersionUID = 1L;
-    private final String userMessage;
 
     private StatusNotFoundForPruningException(String userMessage,
             String technicalMessage) {
-        super(technicalMessage);
-        this.userMessage = userMessage;
+        super(userMessage, technicalMessage, 404);
     }
 
     public static StatusNotFoundForPruningException create(
@@ -21,9 +20,5 @@ public final class StatusNotFoundForPruningException
             "No se encontró el estado seleccionado para la poda.",
             "SchedulePreventivePruning: status not found with id=" + statusId
         );
-    }
-
-    public String getUserMessage() {
-        return userMessage;
     }
 }

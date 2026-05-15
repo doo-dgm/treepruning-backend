@@ -1,30 +1,23 @@
-package co.edu.uco.treepruning.features.pruning
-        .schedulepreventivepruning.application.usecase.rules;
+package co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.rules;
 
+import java.io.Serial;
 import java.util.UUID;
+import co.edu.uco.treepruning.crosscutting.exception.TreePruningException;
 
-public final class TreeNotFoundForPruningException 
-        extends RuntimeException {
+public final class TreeNotFoundForPruningException extends TreePruningException {
 
+    @Serial
     private static final long serialVersionUID = 1L;
-    private final String userMessage;
 
     private TreeNotFoundForPruningException(String userMessage,
             String technicalMessage) {
-        super(technicalMessage);
-        this.userMessage = userMessage;
+        super(userMessage, technicalMessage, 404);
     }
 
     public static TreeNotFoundForPruningException create(UUID treeId) {
         return new TreeNotFoundForPruningException(
-            "No se encontró el árbol seleccionado para " +
-            "programar la poda.",
-            "SchedulePreventivePruning: tree not found " +
-            "with id=" + treeId
+            "No se encontró el árbol seleccionado para programar la poda.",
+            "SchedulePreventivePruning: tree not found with id=" + treeId
         );
-    }
-
-    public String getUserMessage() {
-        return userMessage;
     }
 }
