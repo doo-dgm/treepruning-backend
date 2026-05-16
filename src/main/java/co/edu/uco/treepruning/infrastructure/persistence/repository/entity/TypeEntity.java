@@ -29,10 +29,10 @@ public class TypeEntity {
     	return name; 
     	}
 
-    private void setId(UUID id) {
+    public void setId(UUID id) {
         this.id = UUIDHelper.getUUIDHelper().getDefault(id);
     }
-    private void setName(String name) {
+    public void setName(String name) {
         this.name = TextHelper.getDefaultWithTrim(name);
     }
 }

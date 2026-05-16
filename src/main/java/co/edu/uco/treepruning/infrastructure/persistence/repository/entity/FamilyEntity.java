@@ -35,14 +35,14 @@ public class FamilyEntity {
     	return commonName; 
     	}
 
-    private void setId(UUID id) {
+    public void setId(UUID id) {
         this.id = UUIDHelper.getUUIDHelper().getDefault(id);
     }
-    private void setScientificName(String scientificName) {
+    public void setScientificName(String scientificName) {
         this.scientificName = TextHelper
                 .getDefaultWithTrim(scientificName);
     }
-    private void setCommonName(String commonName) {
+    public void setCommonName(String commonName) {
         this.commonName = TextHelper.getDefaultWithTrim(commonName);
     }
 }

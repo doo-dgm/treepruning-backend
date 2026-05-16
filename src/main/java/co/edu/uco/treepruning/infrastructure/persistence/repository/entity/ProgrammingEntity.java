@@ -43,18 +43,18 @@ public class ProgrammingEntity {
     	return amount;
     	}
 
-    private void setId(UUID id) {
+    public void setId(UUID id) {
         this.id = UUIDHelper.getUUIDHelper().getDefault(id);
     }
-    private void setInitialDate(LocalDate initialDate) {
+    public void setInitialDate(LocalDate initialDate) {
         this.initialDate = DateHelper.getDateHelper()
                 .getDefault(initialDate);
     }
-    private void setFrequencyMonths(int frequencyMonths) {
+    public void setFrequencyMonths(int frequencyMonths) {
         this.frequencyMonths = NumericHelper
                 .getDefaultInt(frequencyMonths);
     }
-    private void setAmount(int amount) {
+    public void setAmount(int amount) {
         this.amount = NumericHelper.getDefaultInt(amount);
     }
 }

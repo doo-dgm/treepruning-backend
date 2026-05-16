@@ -1,5 +1,6 @@
 package co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.entity;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,11 +17,11 @@ public class TreeJPAEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "longitude")
-    private String longitude;
+    @Column(name = "longitude", precision = 10, scale = 6)
+    private BigDecimal longitude;
 
-    @Column(name = "latitude")
-    private String latitude;
+    @Column(name = "latitude", precision = 10, scale = 6)
+    private BigDecimal latitude;
 
     @ManyToOne
     @JoinColumn(name = "family_id")
@@ -35,10 +36,9 @@ public class TreeJPAEntity {
     private ProgrammingJPAEntity programming;
 
     protected TreeJPAEntity() {
-    	
     }
 
-    public TreeJPAEntity(UUID id, String longitude, String latitude,
+    public TreeJPAEntity(UUID id, BigDecimal longitude, BigDecimal latitude,
             FamilyJPAEntity family, SectorJPAEntity sector,
             ProgrammingJPAEntity programming) {
         setId(id);
@@ -49,41 +49,41 @@ public class TreeJPAEntity {
         setProgramming(programming);
     }
 
-    public UUID getId() { 
-    	return id;
-    	}
-    public String getLongitude() {
-    	return longitude;
-    	}
-    public String getLatitude() { 
-    	return latitude;
-    	}
-    public FamilyJPAEntity getFamily() { 
-    	return family; 
-    	}
-    public SectorJPAEntity getSector() { 
-    	return sector;
-    	}
-    public ProgrammingJPAEntity getProgramming() { 
-    	return programming; 
+    public UUID getId() {
+        return id;
+    }
+    public BigDecimal getLongitude() {
+        return longitude;
+    }
+    public BigDecimal getLatitude() {
+        return latitude;
+    }
+    public FamilyJPAEntity getFamily() {
+        return family;
+    }
+    public SectorJPAEntity getSector() {
+        return sector;
+    }
+    public ProgrammingJPAEntity getProgramming() {
+        return programming;
     }
 
     private void setId(UUID id) {
-    	this.id = id; 
-    	}
-    private void setLongitude(String longitude) {
+        this.id = id;
+    }
+    private void setLongitude(BigDecimal longitude) {
         this.longitude = longitude;
-        }
-    private void setLatitude(String latitude) {
+    }
+    private void setLatitude(BigDecimal latitude) {
         this.latitude = latitude;
-        }
+    }
     private void setFamily(FamilyJPAEntity family) {
         this.family = family;
-        }
+    }
     private void setSector(SectorJPAEntity sector) {
         this.sector = sector;
-        }
+    }
     private void setProgramming(ProgrammingJPAEntity programming) {
         this.programming = programming;
-        }
+    }
 }

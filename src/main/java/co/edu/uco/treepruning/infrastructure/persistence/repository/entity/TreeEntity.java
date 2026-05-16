@@ -55,24 +55,24 @@ public class TreeEntity {
     	return programming; 
     	}
 
-    private void setId(UUID id) {
+    public void setId(UUID id) {
         this.id = UUIDHelper.getUUIDHelper().getDefault(id);
     }
-    private void setLongitude(String longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = TextHelper.getDefaultWithTrim(longitude);
     }
-    private void setLatitude(String latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = TextHelper.getDefaultWithTrim(latitude);
     }
-    private void setFamily(FamilyEntity family) {
+    public void setFamily(FamilyEntity family) {
         this.family = ObjectHelper.getDefault(
                 family, new FamilyEntity());
     }
-    private void setSector(SectorEntity sector) {
+    public void setSector(SectorEntity sector) {
         this.sector = ObjectHelper.getDefault(
                 sector, new SectorEntity());
     }
-    private void setProgramming(ProgrammingEntity programming) {
+    public void setProgramming(ProgrammingEntity programming) {
         this.programming = ObjectHelper.getDefault(
                 programming, new ProgrammingEntity());
     }

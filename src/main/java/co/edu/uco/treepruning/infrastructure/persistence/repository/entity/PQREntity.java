@@ -66,25 +66,25 @@ public class PQREntity {
 		return photographicRecordPath;
 	}
 	
-	private void setId(UUID id) {
+	public void setId(UUID id) {
 		this.id = UUIDHelper.getUUIDHelper().getDefault(id);
 	}
-	private void setDate(LocalDate date) {
+	public void setDate(LocalDate date) {
 		this.date = DateHelper.getDateHelper().getDefault(date);
 	}
-	private void setStatus(StatusEntity status) {
+	public void setStatus(StatusEntity status) {
 		this.status = ObjectHelper.getDefault(status, null);
 	}
-	private void setRisk(RiskEntity risk) {
+	public void setRisk(RiskEntity risk) {
 		this.risk = ObjectHelper.getDefault(risk, null);
 	}
-	private void setSector(SectorEntity sector) {
+	public void setSector(SectorEntity sector) {
 		this.sector = ObjectHelper.getDefault(sector, null);
 	}
-	private void setPerson(PersonEntity person) {
+	public void setPerson(PersonEntity person) {
 		this.person = ObjectHelper.getDefault(person, null);
 	}
-	private void setPhotographicRecordPath(String photographicRecordPath) {
+	public void setPhotographicRecordPath(String photographicRecordPath) {
 		this.photographicRecordPath = TextHelper.getDefault(photographicRecordPath);
 	}
     

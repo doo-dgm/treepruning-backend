@@ -111,46 +111,46 @@ public class PersonEntity {
 		return age;
 	}
 	
-	private void setId(UUID id) {
+	public void setId(UUID id) {
 		this.id = UUIDHelper.getUUIDHelper().getDefault(id);
 	}
-	private void setFirstName(String firstName) {
+	public void setFirstName(String firstName) {
 		this.firstName = TextHelper.getDefaultWithTrim(firstName);
 	}
-	private void setSecondName(String secondName) {
+	public void setSecondName(String secondName) {
 		this.secondName = TextHelper.getDefaultWithTrim(secondName);
 	}
-	private void setFirstLastName(String firstLastName) {
+	public void setFirstLastName(String firstLastName) {
 		this.firstLastName = TextHelper.getDefaultWithTrim(firstLastName);
 	}
-	private void setSecondLastName(String secondLastName) {
+	public void setSecondLastName(String secondLastName) {
 		this.secondLastName = TextHelper.getDefaultWithTrim(secondLastName);
 	}
-	private void setDocument(DocumentEntity document) {
+	public void setDocument(DocumentEntity document) {
 		this.document = ObjectHelper.getDefault(document, null);
 	}
-	private void setDocumentNumber(String documentNumber) {
+	public void setDocumentNumber(String documentNumber) {
 		this.documentNumber = TextHelper.getDefaultWithTrim(documentNumber);
 	}
-	private void setBirthDate(LocalDate birthDate) {
+	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = DateHelper.getDateHelper().getDefault(birthDate);
 	}
-	private void setAddress(String address) {
+	public void setAddress(String address) {
 		this.address = TextHelper.getDefaultWithTrim(address);
 	}
-	private void setEmail(String email) {
+	public void setEmail(String email) {
 		this.email = TextHelper.getDefaultWithTrim(email);
 	}
-	private void setEmailConfirmed(boolean emailConfirmed) {
+	public void setEmailConfirmed(boolean emailConfirmed) {
 		this.emailConfirmed = BooleanHelper.getDefault(emailConfirmed);
 	}
-	private void setPhone(String phone) {
+	public void setPhone(String phone) {
 		this.phone = TextHelper.getDefaultWithTrim(phone);
 	}
-	private void setPhoneConfirmed(boolean phoneConfirmed) {
+	public void setPhoneConfirmed(boolean phoneConfirmed) {
 		this.phoneConfirmed = BooleanHelper.getDefault(phoneConfirmed);
 	}
-	private void setAge(int age) {
+	public void setAge(int age) {
 		this.age = NumericHelper.getDefaultInt(age);
 	}
 	

@@ -38,13 +38,13 @@ public class MunicipalityEntity {
 		return state;
 	}
 	
-	private void setId(UUID id) {
+	public void setId(UUID id) {
 		this.id = UUIDHelper.getUUIDHelper().getDefault(id);
 	}
-	private void setName(String name) {
+	public void setName(String name) {
 		this.name = TextHelper.getDefault(name);
 	}
-	private void setState(StateEntity state) {
+	public void setState(StateEntity state) {
 		this.state = ObjectHelper.getDefault(state, new StateEntity());
 	}
     

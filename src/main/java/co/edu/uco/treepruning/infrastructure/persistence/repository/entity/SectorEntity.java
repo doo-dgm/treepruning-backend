@@ -38,13 +38,13 @@ public class SectorEntity {
 		return municipality;
 	}
 	
-	private void setId(UUID id) {
+	public void setId(UUID id) {
 		this.id = UUIDHelper.getUUIDHelper().getDefault(id);
 	}
-	private void setName(String name) {
+	public void setName(String name) {
 		this.name = TextHelper.getDefault(name);
 	}
-	private void setMunicipality(MunicipalityEntity municipality) {
+	public void setMunicipality(MunicipalityEntity municipality) {
 		this.municipality = ObjectHelper.getDefault(municipality, null);
 	}
     

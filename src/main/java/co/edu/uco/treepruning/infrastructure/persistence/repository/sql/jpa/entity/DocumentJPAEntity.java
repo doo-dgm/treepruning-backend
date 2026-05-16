@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "document_type")
+@Table(name = "document")
 public class DocumentJPAEntity {
 
     @Id

@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "pruning_type")
+@Table(name = "type")
 public class TypeJPAEntity {
 
     @Id

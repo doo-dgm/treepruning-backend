@@ -20,13 +20,13 @@ public class PersonJPAEntity {
     @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "second_name")
+    @Column(name = "middle_name")
     private String secondName;
 
-    @Column(name = "first_last_name")
+    @Column(name = "surname")
     private String firstLastName;
 
-    @Column(name = "second_last_name")
+    @Column(name = "second_surname")
     private String secondLastName;
 
     @ManyToOne

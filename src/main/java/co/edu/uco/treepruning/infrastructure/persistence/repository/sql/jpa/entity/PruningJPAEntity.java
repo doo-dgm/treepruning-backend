@@ -43,7 +43,7 @@ public class PruningJPAEntity {
     @JoinColumn(name = "pqr_id")
     private PQRJPAEntity pqr;
 
-    @Column(name = "photographic_record_path")
+    @Column(name = "photographic_report_path")
     private String photographicRecordPath;
 
     @Column(name = "observations")

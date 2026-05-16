@@ -83,42 +83,42 @@ public class PruningEntity {
     	return observations; 
     	}
 
-    private void setId(UUID id) {
+    public void setId(UUID id) {
         this.id = UUIDHelper.getUUIDHelper().getDefault(id);
     }
-    private void setStatus(StatusEntity status) {
+    public void setStatus(StatusEntity status) {
         this.status = ObjectHelper.getDefault(
                 status, new StatusEntity());
     }
-    private void setPlannedDate(LocalDate plannedDate) {
+    public void setPlannedDate(LocalDate plannedDate) {
         this.plannedDate = DateHelper.getDateHelper()
                 .getDefault(plannedDate);
     }
-    private void setExecutedDate(LocalDate executedDate) {
+    public void setExecutedDate(LocalDate executedDate) {
         this.executedDate = DateHelper.getDateHelper()
                 .getDefault(executedDate);
     }
-    private void setTree(TreeEntity tree) {
+    public void setTree(TreeEntity tree) {
         this.tree = ObjectHelper.getDefault(
                 tree, new TreeEntity());
     }
-    private void setQuadrille(QuadrilleEntity quadrille) {
+    public void setQuadrille(QuadrilleEntity quadrille) {
         this.quadrille = ObjectHelper.getDefault(
                 quadrille, new QuadrilleEntity());
     }
-    private void setType(TypeEntity type) {
+    public void setType(TypeEntity type) {
         this.type = ObjectHelper.getDefault(
                 type, new TypeEntity());
     }
-    private void setPqr(PQREntity pqr) {
+    public void setPqr(PQREntity pqr) {
         this.pqr = ObjectHelper.getDefault(pqr, new PQREntity());
     }
-    private void setPhotographicRecordPath(
+    public void setPhotographicRecordPath(
             String photographicRecordPath) {
         this.photographicRecordPath = TextHelper
                 .getDefaultWithTrim(photographicRecordPath);
     }
-    private void setObservations(String observations) {
+    public void setObservations(String observations) {
         this.observations = TextHelper
                 .getDefaultWithTrim(observations);
     }

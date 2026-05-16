@@ -29,10 +29,10 @@ public class ManagerEntity {
     	return person; 
     	}
 
-    private void setId(UUID id) {
+    public void setId(UUID id) {
         this.id = UUIDHelper.getUUIDHelper().getDefault(id);
     }
-    private void setPerson(PersonEntity person) {
+    public void setPerson(PersonEntity person) {
         this.person = ObjectHelper.getDefault(
                 person, new PersonEntity());
     }

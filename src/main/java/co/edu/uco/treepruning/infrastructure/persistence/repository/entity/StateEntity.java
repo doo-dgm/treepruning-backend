@@ -39,13 +39,13 @@ public class StateEntity {
 		return country;
 	}
 	
-	private void setId(UUID id) {
+	public void setId(UUID id) {
 		this.id = UUIDHelper.getUUIDHelper().getDefault(id);
 	}
-	private void setName(String name) {
+	public void setName(String name) {
 		this.name = TextHelper.getDefault(name);
 	}
-	private void setCountry(CountryEntity country) {
+	public void setCountry(CountryEntity country) {
 		this.country = ObjectHelper.getDefault(country, null);
 	}
     

@@ -5,6 +5,7 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.enti
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.entity.ProgrammingJPAEntity;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.entity.SectorJPAEntity;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.entity.TreeJPAEntity;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-05-14T12:41:16-0500",
+    date = "2026-05-16T00:07:08-0500",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 26.0.1 (Oracle Corporation)"
 )
 @Component
@@ -34,15 +35,19 @@ public class TreeEntityMapperImpl implements TreeEntityMapper {
         }
 
         UUID id = null;
-        String longitude = null;
-        String latitude = null;
+        BigDecimal longitude = null;
+        BigDecimal latitude = null;
         FamilyJPAEntity family = null;
         SectorJPAEntity sector = null;
         ProgrammingJPAEntity programming = null;
 
         id = entity.getId();
-        longitude = entity.getLongitude();
-        latitude = entity.getLatitude();
+        if ( entity.getLongitude() != null ) {
+            longitude = new BigDecimal( entity.getLongitude() );
+        }
+        if ( entity.getLatitude() != null ) {
+            latitude = new BigDecimal( entity.getLatitude() );
+        }
         family = familyEntityMapper.toJPA( entity.getFamily() );
         sector = sectorEntityMapper.toJPA( entity.getSector() );
         programming = programmingEntityMapper.toJPA( entity.getProgramming() );
