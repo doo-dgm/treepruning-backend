@@ -73,11 +73,9 @@ Tree Pruning adopta el arquetipo de **aplicación web empresarial de N-capas con
 | **Capa de Datos (SQL + Blob)** | Persistencia relacional con extensión geoespacial para el inventario y almacenamiento de objetos para evidencias fotográficas. |
 | **Capa de Gestión (Management Layer)** | Servicios transversales de soporte: identidad, secretos, notificaciones, parámetros, monitoreo y trazabilidad. |
 
-> **📷 Diagrama requerido — Arquetipo de Solución**  
-> **Archivo:** `./images/tp-archetype.png`  
-> **Descripción esperada:** Diagrama agnóstico que represente las cinco capas como bandas horizontales (Presentación, Integración, Aplicación, Datos, Gestión) con los componentes genéricos dentro de cada una (SPA, API Gateway, Servicios REST, Base de Datos, Blob Storage, Identity Provider, Key Vault, Notification Gateway, Monitoring Platform). Sin nombres de productos comerciales.
-
-![Arquetipo de Solución](./images/tp-archetype.png)
+<p align="center" style="background-color:#ffffff; padding:16px; display:inline-block; border-radius:4px;">
+  <img src="./images/tp-archetype.png" alt="Arquetipo de Solución" style="background-color:#ffffff;" />
+</p>
 
 ---
 
@@ -114,11 +112,9 @@ Infisical (secretos)  ·  Google Maps (mapas)
 FCM (notificaciones)  ·  GitHub Actions (CI/CD)
 ```
 
-> **📷 Diagrama requerido — Arquitectura de Referencia**  
-> **Archivo:** `./images/tp-solution-architecture.png`  
-> **Descripción esperada:** Mismo diagrama del arquetipo pero con los nombres de productos reales: Cloudflare en el WAF/CDN, Traefik como reverse proxy, Vue.js + Bootstrap en el frontend, Kong como API Gateway, Spring Boot 3.3+ con Java 26 en el backend, PostgreSQL 16 + PostGIS en la base de datos, MinIO en Blob Storage, Keycloak como Identity Provider, Infisical como Key Vault, FCM como Notification Gateway, Spring Cloud Config como Parameter Catalog, Prometheus + Grafana como Monitoring Platform.
-
-![Arquitectura de Referencia](./images/tp-solution-architecture.png)
+<p align="center" style="background-color:#ffffff; padding:16px; display:inline-block; border-radius:4px;">
+  <img src="./images/tp-solution-architecture.png" alt="Arquitectura de Referencia" style="background-color:#ffffff;" />
+</p>
 
 ---
 
@@ -215,11 +211,9 @@ El Backend de Tree Pruning se construye como un único módulo `tree-pruning 0.0
 | **hibernate-spatial** | jar | (gestionado por parent) | Extensión de Hibernate para tipos geoespaciales (Point, Polygon) compatibles con PostGIS. |
 | **firebase-admin** | jar | 9.4.2 | SDK de Firebase para enviar notificaciones push (FCM) al Frontend. |
 
-> **Diagrama requerido — Diagrama de Componentes Backend**  
-> **Archivo:** `./images/tp-component-backend.png`  
-> **Descripción esperada:** Diagrama UML de componentes donde el componente central `tree-pruning 0.0.1` depende de todos los jars y starters listados. El parent `Spring Boot 4.0.6` provee transitivamente Spring Framework 7 y la mayoría de los starters. Java 26 aparece como ambiente de ejecución (`<<jre>>`).
-
-![Diagrama de Componentes Backend](./images/tp-component-backend.png)
+<p align="center" style="background-color:#ffffff; padding:16px; display:inline-block; border-radius:4px;">
+  <img src="./images/tp-component-backend.png" alt="Diagrama de Componentes Backend" style="background-color:#ffffff;" />
+</p>
 
 <a id="sec-1-5-2"></a>
 #### 1.5.2 Diagrama de Componentes — Frontend
@@ -241,11 +235,9 @@ El Frontend es una SPA (Single Page Application) Vue.js 3 empaquetada con Vite. 
 | **vue-recaptcha-v3** | npm library | 2.0.1 | Integración de Google reCAPTCHA v3 para protección contra bots en formularios públicos (PQR). |
 | **keycloak** | npm library | 26.2.4 | SDK de Keycloak: login, refresh de token JWT, logout y validación de roles del lado cliente. |
 
-> **Diagrama requerido — Diagrama de Componentes Frontend**  
-> **Archivo:** `./images/tp-component-frontend.png`  
-> **Descripción esperada:** Diagrama UML de componentes donde `tree-pruning-frontend` depende de las librerías npm listadas. Vite es la herramienta de build y consume Node.js como entorno de ejecución del build. Bootstrap y vue-datepicker dependen de vue como peer dependency. Pinia y vue-router también dependen de vue. Axios y keycloak son librerías independientes que se conectan a servicios externos (API Gateway y Keycloak respectivamente).
-
-![Diagrama de Componentes Frontend](./images/tp-component-frontend.png)
+<p align="center" style="background-color:#ffffff; padding:16px; display:inline-block; border-radius:4px;">
+  <img src="./images/tp-component-frontend.png" alt="Diagrama de Componentes Frontend" style="background-color:#ffffff;" />
+</p>
 
 ---
 
@@ -303,11 +295,9 @@ co.edu.uco.treepruning
 | `infrastructure.security` | Configuración de Spring Security y validación de JWT. |
 | `infrastructure.persistence.repository` | Puertos de salida (interfaces) y adapters JPA con mappers MapStruct. |
 
-> **Diagrama requerido — Diagrama de Paquetes Backend**  
-> **Archivo:** `./images/tp-package-backend.png`  
-> **Descripción esperada:** Diagrama UML de paquetes que represente la estructura `co.edu.uco.treepruning` con sus paquetes principales (`initializer`, `crosscutting`, `application`, `features`, `infrastructure`) usando placeholders genéricos `<domain-object>` y `<transaction>` para mostrar el patrón aplicable a cualquier feature. Las flechas de dependencia deben respetar la regla de Clean Architecture: `infrastructure` depende de `features`, `features` depende de `application`, todos pueden depender de `crosscutting`.
-
-![Diagrama de Paquetes Backend](./images/tp-package-backend.png)
+<p align="center" style="background-color:#ffffff; padding:16px; display:inline-block; border-radius:4px;">
+  <img src="./images/tp-package-backend.png" alt="Diagrama de Paquetes Backend" style="background-color:#ffffff;" />
+</p>
 
 <a id="sec-1-6-2"></a>
 #### 1.6.2 Diagrama de Paquetes — Frontend
@@ -363,11 +353,9 @@ src
 | `infra.auth` | Integración con Keycloak: login redirect, refresh automático de JWT, logout, validación de roles del lado cliente. |
 | `infra.storage` | Wrapper de sessionStorage / localStorage para persistir información temporal (preferencias del usuario, último filtro aplicado). |
 
-> **Diagrama requerido — Diagrama de Paquetes Frontend**  
-> **Archivo:** `./images/tp-package-frontend.png`  
-> **Descripción esperada:** Diagrama UML de paquetes con el contenedor raíz `SRC` y las cinco capas (`ui`, `presentation`, `domain`, `data`, `infra`) más el paquete de `assets`. Las flechas de dependencia deben mostrar el flujo de Clean Architecture: `ui` → `presentation` → `domain` ← `data` → `infra`. La capa de `domain` es el núcleo y no debe depender de ninguna otra.
-
-![Diagrama de Paquetes Frontend](./images/tp-package-frontend.png)
+<p align="center" style="background-color:#ffffff; padding:16px; display:inline-block; border-radius:4px;">
+  <img src="./images/tp-package-frontend.png" alt="Diagrama de Paquetes Frontend" style="background-color:#ffffff;" />
+</p>
 
 ---
 
