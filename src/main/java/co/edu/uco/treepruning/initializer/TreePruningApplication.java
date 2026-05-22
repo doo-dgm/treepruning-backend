@@ -10,8 +10,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan(basePackages = "co.edu.uco.treepruning")
 public class TreePruningApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(TreePruningApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(TreePruningApplication.class, args);
+    }
 
 }

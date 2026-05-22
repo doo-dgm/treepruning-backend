@@ -7,52 +7,40 @@ import co.edu.uco.treepruning.crosscutting.helper.NumericHelper;
 import co.edu.uco.treepruning.crosscutting.helper.UUIDHelper;
 
 public class ProgrammingEntity {
-
     private UUID id;
     private LocalDate initialDate;
     private int frequencyMonths;
     private int amount;
 
-    public ProgrammingEntity() {}
-
-    public ProgrammingEntity(UUID id) {
-        setId(id);
-        setInitialDate(DateHelper.getDateHelper().getDefault());
+    public ProgrammingEntity() {
+        super();
+        setId(UUIDHelper.getDefault());
+        setInitialDate(DateHelper.getDefault());
         setFrequencyMonths(NumericHelper.getDefaultInt());
         setAmount(NumericHelper.getDefaultInt());
     }
 
-    public ProgrammingEntity(UUID id, LocalDate initialDate,
-            int frequencyMonths, int amount) {
-        setId(id);
-        setInitialDate(initialDate);
-        setFrequencyMonths(frequencyMonths);
-        setAmount(amount);
-    }
-
     public UUID getId() {
-    	return id;
-    	}
-    public LocalDate getInitialDate() { 
-    	return initialDate; 
-    	}
+        return id;
+    }
+    public LocalDate getInitialDate() {
+        return initialDate;
+    }
     public int getFrequencyMonths() {
-    	return frequencyMonths;
-    	}
+        return frequencyMonths;
+    }
     public int getAmount() {
-    	return amount;
-    	}
+        return amount;
+    }
 
     public void setId(UUID id) {
-        this.id = UUIDHelper.getUUIDHelper().getDefault(id);
+        this.id = UUIDHelper.getDefault(id);
     }
     public void setInitialDate(LocalDate initialDate) {
-        this.initialDate = DateHelper.getDateHelper()
-                .getDefault(initialDate);
+        this.initialDate = DateHelper.getDefault(initialDate);
     }
     public void setFrequencyMonths(int frequencyMonths) {
-        this.frequencyMonths = NumericHelper
-                .getDefaultInt(frequencyMonths);
+        this.frequencyMonths = NumericHelper.getDefaultInt(frequencyMonths);
     }
     public void setAmount(int amount) {
         this.amount = NumericHelper.getDefaultInt(amount);

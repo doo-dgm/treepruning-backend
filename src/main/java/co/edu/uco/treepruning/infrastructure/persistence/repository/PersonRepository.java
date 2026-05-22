@@ -6,9 +6,10 @@ import java.util.UUID;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.PersonEntity;
 
 public interface PersonRepository {
-	void create(PersonEntity entity);
-	void update(UUID id, PersonEntity entity);
-	void delete(UUID id);
-	List<PersonEntity> findAll();
-	PersonEntity findById(UUID id);
+    void create(PersonEntity entity);
+    void update(UUID id, PersonEntity entity);
+    void delete(UUID id);
+    List<PersonEntity> findAll();
+    PersonEntity findById(UUID id);
+    List<PersonEntity> findByFilter(UUID id, String firstName, String firstLastName);
 }

@@ -50,29 +50,29 @@ public final class SubmitPQRDTO {
         return photographicRecordPath;
     }
 
-	private void setDate(LocalDate date) {
-		this.date = DateHelper.getDateHelper().getDefault(date);
-	}
+    private void setDate(LocalDate date) {
+        this.date = DateHelper.getDefault(date);
+    }
 
-	private void setStatus(UUID status) {
-		this.status = UUIDHelper.getUUIDHelper().getDefault(status);
-	}
+    private void setStatus(UUID status) {
+        this.status = UUIDHelper.getDefault(status);
+    }
 
-	private void setRisk(UUID risk) {
-		this.risk = UUIDHelper.getUUIDHelper().getDefault(risk);
-	}
+    private void setRisk(UUID risk) {
+        this.risk = UUIDHelper.getDefault(risk);
+    }
 
-	private void setSector(UUID sector) {
-		this.sector = UUIDHelper.getUUIDHelper().getDefault(sector);
-	}
+    private void setSector(UUID sector) {
+        this.sector = UUIDHelper.getDefault(sector);
+    }
 
-	private void setPerson(UUID person) {
-		this.person = UUIDHelper.getUUIDHelper().getDefault(person);
-	}
+    private void setPerson(UUID person) {
+        this.person = UUIDHelper.getDefault(person);
+    }
 
-	private void setPhotographicRecordPath(String photographicRecordPath) {
-		this.photographicRecordPath = TextHelper.getDefault(photographicRecordPath);
-	}
+    private void setPhotographicRecordPath(final String photographicRecordPath) {
+        this.photographicRecordPath = TextHelper.getDefaultWithTrim(photographicRecordPath);
+    }
     
     
     

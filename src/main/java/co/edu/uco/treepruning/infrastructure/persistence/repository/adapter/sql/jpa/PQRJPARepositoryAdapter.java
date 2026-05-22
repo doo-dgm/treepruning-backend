@@ -41,7 +41,7 @@ public class PQRJPARepositoryAdapter implements PQRRepository {
     public PQREntity findById(UUID id) {
         return repository.findById(id)
                 .map(mapper::toEntity)
-                .orElse(null);
+                .orElse(new PQREntity());
     }
 
     @Override

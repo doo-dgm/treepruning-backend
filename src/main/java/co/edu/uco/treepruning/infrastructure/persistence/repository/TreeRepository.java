@@ -5,8 +5,6 @@ import java.util.UUID;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.TreeEntity;
 
 public interface TreeRepository {
-	
-    List<TreeEntity> findAll();
     
-    TreeEntity findById(UUID id);
+    List<TreeEntity> findByFilter(UUID id, UUID familyId, UUID sectorId);
 }

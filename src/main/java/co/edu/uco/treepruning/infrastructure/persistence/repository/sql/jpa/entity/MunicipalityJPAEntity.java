@@ -3,6 +3,7 @@ package co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.ent
 import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -19,11 +20,11 @@ public class MunicipalityJPAEntity {
     @Column(name = "name")
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "state_id")
     private StateJPAEntity state;
 
-    protected MunicipalityJPAEntity() {}
+    public MunicipalityJPAEntity() {}
 
     public MunicipalityJPAEntity(UUID id, String name,
             StateJPAEntity state) {
@@ -33,22 +34,22 @@ public class MunicipalityJPAEntity {
     }
 
     public UUID getId() { 
-    	return id;
-    	}
+        return id;
+        }
     public String getName() {
-    	return name;
-    	}
+        return name;
+        }
     public StateJPAEntity getState() {
-    	return state;
-    	}
+        return state;
+        }
 
-    private void setId(UUID id) { 
-    	this.id = id;
-    	}
-    private void setName(String name) {
-    	this.name = name;
-    	}
-    private void setState(StateJPAEntity state) {
+    public void setId(UUID id) { 
+        this.id = id;
+        }
+    public void setName(String name) {
+        this.name = name;
+        }
+    public void setState(StateJPAEntity state) {
         this.state = state;
     }
 }

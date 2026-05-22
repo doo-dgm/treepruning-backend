@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
+import co.edu.uco.treepruning.crosscutting.helper.UUIDHelper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.ProgrammingRepository;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa.mapper.ProgrammingEntityMapper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.ProgrammingEntity;
@@ -31,6 +32,12 @@ public class ProgrammingJPARepositoryAdapter implements ProgrammingRepository {
     public ProgrammingEntity findById(UUID id) {
         return repository.findById(id)
                 .map(mapper::toEntity)
-                .orElse(null);
+                .orElse(new ProgrammingEntity());
+    }
+
+    @Override
+    public List<ProgrammingEntity> findByFilter(UUID id) {
+        UUID effectiveId = UUIDHelper.isDefaultUUID(id) ? null : id;
+        return mapper.toEntityList(repository.findByFilter(effectiveId));
     }
 }

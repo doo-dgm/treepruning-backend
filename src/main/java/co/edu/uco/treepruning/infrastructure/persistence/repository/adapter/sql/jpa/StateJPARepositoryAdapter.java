@@ -31,6 +31,6 @@ public class StateJPARepositoryAdapter implements StateRepository {
     public StateEntity findById(UUID id) {
         return repository.findById(id)
                 .map(mapper::toEntity)
-                .orElse(null);
+                .orElse(new StateEntity());
     }
 }

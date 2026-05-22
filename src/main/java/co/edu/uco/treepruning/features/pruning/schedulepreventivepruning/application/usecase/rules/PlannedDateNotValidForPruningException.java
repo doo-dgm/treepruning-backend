@@ -29,4 +29,12 @@ public final class PlannedDateNotValidForPruningException extends TreePruningExc
             "SchedulePreventivePruning: plannedDate is null"
         );
     }
+
+    public static PlannedDateNotValidForPruningException
+            createDateBeyondHorizon() {
+        return new PlannedDateNotValidForPruningException(
+            "La fecha programada de la poda excede el horizonte permitido de programación.",
+            "SchedulePreventivePruning: plannedDate is beyond the configured horizon"
+        );
+    }
 }

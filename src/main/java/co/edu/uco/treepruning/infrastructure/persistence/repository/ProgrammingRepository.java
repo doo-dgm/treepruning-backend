@@ -5,8 +5,10 @@ import java.util.UUID;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.ProgrammingEntity;
 
 public interface ProgrammingRepository {
-	
+    
     List<ProgrammingEntity> findAll();
     
     ProgrammingEntity findById(UUID id);
+
+    List<ProgrammingEntity> findByFilter(UUID id);
 }

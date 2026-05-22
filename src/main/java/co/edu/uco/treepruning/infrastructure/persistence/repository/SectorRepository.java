@@ -5,7 +5,7 @@ import java.util.UUID;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.SectorEntity;
 
 public interface SectorRepository {
-	
+    
     void create(SectorEntity entity);
     
     void update(UUID id, SectorEntity entity);
@@ -15,4 +15,6 @@ public interface SectorRepository {
     List<SectorEntity> findAll();  
     
     SectorEntity findById(UUID id);
+
+    List<SectorEntity> findByFilter(UUID id, String name);
 }

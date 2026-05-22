@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -29,7 +30,7 @@ public class PersonJPAEntity {
     @Column(name = "second_surname")
     private String secondLastName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "document_id")
     private DocumentJPAEntity document;
 
@@ -57,7 +58,7 @@ public class PersonJPAEntity {
     @Column(name = "age")
     private int age;
 
-    protected PersonJPAEntity() {}
+    public PersonJPAEntity() {}
 
     public PersonJPAEntity(UUID id, String firstName,
             String secondName, String firstLastName,
@@ -82,88 +83,88 @@ public class PersonJPAEntity {
     }
 
     public UUID getId() {
-    	return id;
-    	}
+        return id;
+        }
     public String getFirstName() { 
-    	return firstName;
-    	}
+        return firstName;
+        }
     public String getSecondName() {
-    	return secondName;
-    	}
+        return secondName;
+        }
     public String getFirstLastName() {
-    	return firstLastName; 
-    	}
+        return firstLastName; 
+        }
     public String getSecondLastName() {
-    	return secondLastName;
-    	}
+        return secondLastName;
+        }
     public DocumentJPAEntity getDocument() {
-    	return document; 
-    	}
+        return document; 
+        }
     public String getDocumentNumber() {
-    	return documentNumber; 
+        return documentNumber; 
     }
     public LocalDate getBirthDate() { 
-    	return birthDate;
-    	}
+        return birthDate;
+        }
     public String getAddress() {
-    	return address;
-    	}
+        return address;
+        }
     public String getEmail() {
-    	return email;
-    	}
+        return email;
+        }
     public boolean isEmailConfirmed() {
-    	return emailConfirmed;
-    	}
+        return emailConfirmed;
+        }
     public String getPhone() { 
-    	return phone;
-    	}
+        return phone;
+        }
     public boolean isPhoneConfirmed() {
-    	return phoneConfirmed; 
-    	}
+        return phoneConfirmed; 
+        }
     public int getAge() { 
-    	return age;
-    	}
+        return age;
+        }
 
-    private void setId(UUID id) {
-    	this.id = id;
-    	}
-    private void setFirstName(String firstName) {
+    public void setId(UUID id) {
+        this.id = id;
+        }
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
         }
-    private void setSecondName(String secondName) {
+    public void setSecondName(String secondName) {
         this.secondName = secondName;
         }
-    private void setFirstLastName(String firstLastName) {
+    public void setFirstLastName(String firstLastName) {
         this.firstLastName = firstLastName;
         }
-    private void setSecondLastName(String secondLastName) {
+    public void setSecondLastName(String secondLastName) {
         this.secondLastName = secondLastName;
         }
-    private void setDocument(DocumentJPAEntity document) {
+    public void setDocument(DocumentJPAEntity document) {
         this.document = document;
         }
-    private void setDocumentNumber(String documentNumber) {
+    public void setDocumentNumber(String documentNumber) {
         this.documentNumber = documentNumber; 
         }
-    private void setBirthDate(LocalDate birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate; 
         }
-    private void setAddress(String address) {
+    public void setAddress(String address) {
         this.address = address; 
         }
-    private void setEmail(String email) { 
-    	this.email = email;
-    	}
-    private void setEmailConfirmed(boolean emailConfirmed) {
+    public void setEmail(String email) { 
+        this.email = email;
+        }
+    public void setEmailConfirmed(boolean emailConfirmed) {
         this.emailConfirmed = emailConfirmed;
         }
-    private void setPhone(String phone) { 
-    	this.phone = phone; 
-    	}
-    private void setPhoneConfirmed(boolean phoneConfirmed) {
+    public void setPhone(String phone) { 
+        this.phone = phone; 
+        }
+    public void setPhoneConfirmed(boolean phoneConfirmed) {
         this.phoneConfirmed = phoneConfirmed;
         }
-    private void setAge(int age) { 
-    	this.age = age; 
-    	}
+    public void setAge(int age) { 
+        this.age = age; 
+        }
 }

@@ -5,42 +5,32 @@ import co.edu.uco.treepruning.crosscutting.helper.TextHelper;
 import co.edu.uco.treepruning.crosscutting.helper.UUIDHelper;
 
 public class FamilyEntity {
-
     private UUID id;
     private String scientificName;
     private String commonName;
 
-    public FamilyEntity() {}
-
-    public FamilyEntity(UUID id) {
-        setId(id);
+    public FamilyEntity() {
+        super();
+        setId(UUIDHelper.getDefault());
         setScientificName(TextHelper.getDefault());
         setCommonName(TextHelper.getDefault());
     }
 
-    public FamilyEntity(UUID id, String scientificName,
-            String commonName) {
-        setId(id);
-        setScientificName(scientificName);
-        setCommonName(commonName);
+    public UUID getId() {
+        return id;
     }
-
-    public UUID getId() { 
-    	return id;
-    	}
     public String getScientificName() {
-    	return scientificName;
-    	}
+        return scientificName;
+    }
     public String getCommonName() {
-    	return commonName; 
-    	}
+        return commonName;
+    }
 
     public void setId(UUID id) {
-        this.id = UUIDHelper.getUUIDHelper().getDefault(id);
+        this.id = UUIDHelper.getDefault(id);
     }
     public void setScientificName(String scientificName) {
-        this.scientificName = TextHelper
-                .getDefaultWithTrim(scientificName);
+        this.scientificName = TextHelper.getDefaultWithTrim(scientificName);
     }
     public void setCommonName(String commonName) {
         this.commonName = TextHelper.getDefaultWithTrim(commonName);

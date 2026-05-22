@@ -31,6 +31,6 @@ public class MunicipalityJPARepositoryAdapter implements MunicipalityRepository 
     public MunicipalityEntity findById(UUID id) {
         return repository.findById(id)
                 .map(mapper::toEntity)
-                .orElse(null);
+                .orElse(new MunicipalityEntity());
     }
 }

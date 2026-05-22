@@ -24,8 +24,8 @@ public class ProgrammingJPAEntity {
     @Column(name = "amount")
     private int amount;
 
-    protected ProgrammingJPAEntity() {
-    	
+    public ProgrammingJPAEntity() {
+        
     }
 
     public ProgrammingJPAEntity(UUID id, LocalDate initialDate,
@@ -37,28 +37,28 @@ public class ProgrammingJPAEntity {
     }
 
     public UUID getId() { 
-    	return id;
-    	}
+        return id;
+        }
     public LocalDate getInitialDate() { 
-    	return initialDate;
-    	}
+        return initialDate;
+        }
     public int getFrequencyMonths() {
-    	return frequencyMonths;
-    	}
+        return frequencyMonths;
+        }
     public int getAmount() {
-    	return amount; 
-    	}
+        return amount; 
+        }
 
-    private void setId(UUID id) {
-    	this.id = id;
-    	}
-    private void setInitialDate(LocalDate initialDate) {
+    public void setId(UUID id) {
+        this.id = id;
+        }
+    public void setInitialDate(LocalDate initialDate) {
         this.initialDate = initialDate;
         }
-    private void setFrequencyMonths(int frequencyMonths) {
+    public void setFrequencyMonths(int frequencyMonths) {
         this.frequencyMonths = frequencyMonths; 
         }
-    private void setAmount(int amount) { 
-    	this.amount = amount; 
-    	}
+    public void setAmount(int amount) { 
+        this.amount = amount; 
+        }
 }

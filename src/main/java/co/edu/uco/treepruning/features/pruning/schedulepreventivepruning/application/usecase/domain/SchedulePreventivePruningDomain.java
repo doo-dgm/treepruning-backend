@@ -40,7 +40,7 @@ public final class SchedulePreventivePruningDomain {
     }
 
     private void generateId() {
-        this.id = UUID.randomUUID();
+        this.id = UUIDHelper.generateNewUUID();
     }
 
     public void regenerateId() {
@@ -48,53 +48,53 @@ public final class SchedulePreventivePruningDomain {
     }
 
     public UUID getId() { 
-    	return id; 
-    	}
+        return id; 
+        }
     public UUID getStatus() { 
-    	return status; 
-    	}
+        return status; 
+        }
     public LocalDate getPlannedDate() {
-    	return plannedDate; 
-    	}
+        return plannedDate; 
+        }
     public LocalDate getExecutedDate() { 
-    	return executedDate;
-    	}
+        return executedDate;
+        }
     public UUID getTree() {
-    	return tree; 
-    	}
+        return tree; 
+        }
     public UUID getQuadrille() { 
-    	return quadrille; 
-    	}
+        return quadrille; 
+        }
     public UUID getType() { 
-    	return type;
-    	}
+        return type;
+        }
     public String getPhotographicRecordPath() {
         return photographicRecordPath;
     }
     public String getObservations() { 
-    	return observations; 
-    	}
+        return observations; 
+        }
 
     private void setStatus(final UUID status) {
-        this.status = UUIDHelper.getUUIDHelper().getDefault(status);
+        this.status = UUIDHelper.getDefault(status);
     }
     private void setPlannedDate(final LocalDate plannedDate) {
-        this.plannedDate = DateHelper.getDateHelper().getDefault(plannedDate);
+        this.plannedDate = DateHelper.getDefault(plannedDate);
     }
     private void setExecutedDate(final LocalDate executedDate) {
-        this.executedDate = DateHelper.getDateHelper().getDefault(executedDate);
+        this.executedDate = DateHelper.getDefault(executedDate);
     }
     private void setTree(final UUID tree) {
-        this.tree = UUIDHelper.getUUIDHelper().getDefault(tree);
+        this.tree = UUIDHelper.getDefault(tree);
     }
     private void setQuadrille(final UUID quadrille) {
-        this.quadrille = UUIDHelper.getUUIDHelper().getDefault(quadrille);
+        this.quadrille = UUIDHelper.getDefault(quadrille);
     }
     private void setType(final UUID type) {
-        this.type = UUIDHelper.getUUIDHelper().getDefault(type);
+        this.type = UUIDHelper.getDefault(type);
     }
     private void setPhotographicRecordPath(
-    		final String photographicRecordPath) {
+            final String photographicRecordPath) {
         this.photographicRecordPath = TextHelper.getDefaultWithTrim(photographicRecordPath);
     }
     private void setObservations(final String observations) {

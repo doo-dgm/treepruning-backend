@@ -6,45 +6,34 @@ import co.edu.uco.treepruning.crosscutting.helper.TextHelper;
 import co.edu.uco.treepruning.crosscutting.helper.UUIDHelper;
 
 public class QuadrilleEntity {
-
     private UUID id;
     private String quadrilleName;
     private ManagerEntity manager;
 
-    public QuadrilleEntity() {}
-
-    public QuadrilleEntity(UUID id) {
-        setId(id);
+    public QuadrilleEntity() {
+        super();
+        setId(UUIDHelper.getDefault());
         setQuadrilleName(TextHelper.getDefault());
         setManager(new ManagerEntity());
     }
 
-    public QuadrilleEntity(UUID id, String quadrilleName,
-            ManagerEntity manager) {
-        setId(id);
-        setQuadrilleName(quadrilleName);
-        setManager(manager);
+    public UUID getId() {
+        return id;
     }
-
-    public UUID getId() { 
-    	return id;
-    	}
-    public String getQuadrilleName() { 
-    	return quadrilleName;
-    	}
+    public String getQuadrilleName() {
+        return quadrilleName;
+    }
     public ManagerEntity getManager() {
-    	return manager;
-    	}
+        return manager;
+    }
 
     public void setId(UUID id) {
-        this.id = UUIDHelper.getUUIDHelper().getDefault(id);
+        this.id = UUIDHelper.getDefault(id);
     }
     public void setQuadrilleName(String quadrilleName) {
-        this.quadrilleName = TextHelper
-                .getDefaultWithTrim(quadrilleName);
+        this.quadrilleName = TextHelper.getDefaultWithTrim(quadrilleName);
     }
     public void setManager(ManagerEntity manager) {
-        this.manager = ObjectHelper.getDefault(
-                manager, new ManagerEntity());
+        this.manager = ObjectHelper.getDefault(manager, new ManagerEntity());
     }
 }

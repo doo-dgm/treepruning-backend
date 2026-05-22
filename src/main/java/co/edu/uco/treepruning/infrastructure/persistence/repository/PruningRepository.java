@@ -1,8 +1,9 @@
 package co.edu.uco.treepruning.infrastructure.persistence.repository;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
+import co.edu.uco.treepruning.crosscutting.pagination.PageRequest;
+import co.edu.uco.treepruning.crosscutting.pagination.PageResult;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.PruningEntity;
 
 public interface PruningRepository {
@@ -13,11 +14,8 @@ public interface PruningRepository {
 
     void delete(UUID id);
 
-    PruningEntity findById(UUID id);
-
-    List<PruningEntity> findAll();
-
-    List<PruningEntity> findByFilter(PruningEntity filter);
+    PageResult<PruningEntity> findByFilter(UUID id, UUID statusId, UUID treeId,
+            UUID quadrilleId, UUID typeId, LocalDate plannedDate, PageRequest pageRequest);
 
     boolean existsByTreeAndPlannedDate(UUID treeId, LocalDate plannedDate);
 }

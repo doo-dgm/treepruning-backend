@@ -5,8 +5,10 @@ import java.util.UUID;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.ManagerEntity;
 
 public interface ManagerRepository {
-	
+    
     List<ManagerEntity> findAll();
     
     ManagerEntity findById(UUID id);
+
+    List<ManagerEntity> findByFilter(UUID id);
 }

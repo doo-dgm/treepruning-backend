@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
+import co.edu.uco.treepruning.crosscutting.helper.TextHelper;
+import co.edu.uco.treepruning.crosscutting.helper.UUIDHelper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.PersonRepository;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa.mapper.PersonEntityMapper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.PersonEntity;
@@ -46,6 +48,15 @@ public class PersonJPARepositoryAdapter implements PersonRepository {
     public PersonEntity findById(UUID id) {
         return repository.findById(id)
                 .map(mapper::toEntity)
-                .orElse(null);
+                .orElse(new PersonEntity());
+    }
+
+    @Override
+    public List<PersonEntity> findByFilter(UUID id, String firstName, String firstLastName) {
+        UUID effectiveId = UUIDHelper.isDefaultUUID(id) ? null : id;
+        String effectiveFirstName = TextHelper.isEmptyWithTrim(firstName) ? null : firstName.trim();
+        String effectiveFirstLastName = TextHelper.isEmptyWithTrim(firstLastName) ? null : firstLastName.trim();
+        return mapper.toEntityList(repository.findByFilter(
+                effectiveId, effectiveFirstName, effectiveFirstLastName));
     }
 }

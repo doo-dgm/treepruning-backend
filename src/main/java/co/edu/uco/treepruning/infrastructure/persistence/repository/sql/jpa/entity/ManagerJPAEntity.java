@@ -3,6 +3,7 @@ package co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.ent
 import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -16,12 +17,12 @@ public class ManagerJPAEntity {
     @Column(name = "id")
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id")
     private PersonJPAEntity person;
 
-    protected ManagerJPAEntity() {
-    	
+    public ManagerJPAEntity() {
+        
     }
 
     public ManagerJPAEntity(UUID id, PersonJPAEntity person) {
@@ -30,16 +31,16 @@ public class ManagerJPAEntity {
     }
 
     public UUID getId() {
-    	return id; 
-    	}
+        return id; 
+        }
     public PersonJPAEntity getPerson() { 
-    	return person; 
-    	}
+        return person; 
+        }
 
-    private void setId(UUID id) {
-    	this.id = id;
-    	}
-    private void setPerson(PersonJPAEntity person) {
+    public void setId(UUID id) {
+        this.id = id;
+        }
+    public void setPerson(PersonJPAEntity person) {
         this.person = person;
         }
 }

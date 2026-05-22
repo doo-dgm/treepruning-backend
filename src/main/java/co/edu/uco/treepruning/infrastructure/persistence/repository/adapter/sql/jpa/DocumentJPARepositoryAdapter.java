@@ -31,7 +31,7 @@ public class DocumentJPARepositoryAdapter implements DocumentRepository {
     public DocumentEntity findById(UUID id) {
         return repository.findById(id)
                 .map(mapper::toEntity)
-                .orElse(null);
+                .orElse(new DocumentEntity());
     }
 
     @Override

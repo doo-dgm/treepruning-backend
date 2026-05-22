@@ -1,5 +1,4 @@
-package co.edu.uco.treepruning.infrastructure.persistence
-        .repository.sql.jpa.entity;
+package co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.entity;
 
 import java.util.UUID;
 import jakarta.persistence.Column;
@@ -18,7 +17,7 @@ public class RiskJPAEntity {
     @Column(name = "name")
     private String name;
 
-    protected RiskJPAEntity() {}
+    public RiskJPAEntity() {}
 
     public RiskJPAEntity(UUID id, String name) {
         setId(id);
@@ -26,16 +25,16 @@ public class RiskJPAEntity {
     }
 
     public UUID getId() {
-    	return id;
-    	}
+        return id;
+        }
     public String getName() { 
-    	return name; 
-    	}
+        return name; 
+        }
 
-    private void setId(UUID id) { 
-    	this.id = id;
-    	}
-    private void setName(String name) { 
-    	this.name = name;
-    	}
+    public void setId(UUID id) { 
+        this.id = id;
+        }
+    public void setName(String name) { 
+        this.name = name;
+        }
 }

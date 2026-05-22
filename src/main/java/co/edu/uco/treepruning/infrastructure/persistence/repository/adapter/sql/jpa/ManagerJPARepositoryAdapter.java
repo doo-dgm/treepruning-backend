@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
+import co.edu.uco.treepruning.crosscutting.helper.UUIDHelper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.ManagerRepository;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa.mapper.ManagerEntityMapper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.ManagerEntity;
@@ -31,6 +32,12 @@ public class ManagerJPARepositoryAdapter implements ManagerRepository {
     public ManagerEntity findById(UUID id) {
         return repository.findById(id)
                 .map(mapper::toEntity)
-                .orElse(null);
+                .orElse(new ManagerEntity());
+    }
+
+    @Override
+    public List<ManagerEntity> findByFilter(UUID id) {
+        UUID effectiveId = UUIDHelper.isDefaultUUID(id) ? null : id;
+        return mapper.toEntityList(repository.findByFilter(effectiveId));
     }
 }

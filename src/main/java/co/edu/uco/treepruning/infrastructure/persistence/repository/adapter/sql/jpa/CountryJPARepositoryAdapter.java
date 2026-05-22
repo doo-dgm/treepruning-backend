@@ -31,6 +31,6 @@ public class CountryJPARepositoryAdapter implements CountryRepository {
     public CountryEntity findById(UUID id) {
         return repository.findById(id)
                 .map(mapper::toEntity)
-                .orElse(null);
+                .orElse(new CountryEntity());
     }
 }

@@ -1,37 +1,43 @@
 package co.edu.uco.treepruning.features.pqr.submitpqr.application.inputport.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import co.edu.uco.treepruning.features.pqr.submitpqr.application.inputport.SubmitPQRInputPort;
 import co.edu.uco.treepruning.features.pqr.submitpqr.application.inputport.dto.SubmitPQRDTO;
 import co.edu.uco.treepruning.features.pqr.submitpqr.application.usecase.SubmitPQRUseCase;
 import co.edu.uco.treepruning.features.pqr.submitpqr.application.usecase.domain.SubmitPQRDomain;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class SubmitPQRInteractor implements SubmitPQRInputPort {
 
-private final SubmitPQRUseCase submitPQRUseCase;
+    private static final Logger log = LoggerFactory.getLogger(SubmitPQRInteractor.class);
 
-	public SubmitPQRInteractor(SubmitPQRUseCase submitPQRUseCase) {
-		this.submitPQRUseCase = submitPQRUseCase;
-		
-		}
+    private final SubmitPQRUseCase submitPQRUseCase;
 
-	@Override
-	public Void execute(SubmitPQRDTO data) {// Paso de DTO a Domain
-	SubmitPQRDomain domain = new SubmitPQRDomain(
-			data.getDate(),
-			data.getStatus(),
-			data.getSector(),
-			data.getRisk(),
-			data.getPerson(),
-			data.getPhotographicRecordPath()
-			
-			);
+    public SubmitPQRInteractor(SubmitPQRUseCase submitPQRUseCase) {
+        this.submitPQRUseCase = submitPQRUseCase;
+    }
 
-	submitPQRUseCase.execute(domain); //Paso de Domain al UseCase
+    @Override
+    public Void execute(SubmitPQRDTO data) {
+        log.info("SubmitPQR — received request: sector={}, person={}, date={}",
+                data.getSector(), data.getPerson(), data.getDate());
 
-	return null;
-	}
+        SubmitPQRDomain domain = new SubmitPQRDomain(
+                data.getDate(),
+                data.getStatus(),
+                data.getSector(),
+                data.getRisk(),
+                data.getPerson(),
+                data.getPhotographicRecordPath());
+
+        log.debug("SubmitPQR — delegating to use case");
+        submitPQRUseCase.execute(domain);
+
+        log.info("SubmitPQR — completed for id={}", domain.getId());
+        return null;
+    }
 }

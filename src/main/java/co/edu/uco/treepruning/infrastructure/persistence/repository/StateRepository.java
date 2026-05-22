@@ -6,6 +6,6 @@ import java.util.UUID;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.StateEntity;
 
 public interface StateRepository {
-	List<StateEntity> findAll();
-	StateEntity findById(UUID id);
+    List<StateEntity> findAll();
+    StateEntity findById(UUID id);
 }

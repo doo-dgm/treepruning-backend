@@ -3,6 +3,7 @@ package co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.ent
 import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -19,11 +20,11 @@ public class QuadrilleJPAEntity {
     @Column(name = "quadrille_name")
     private String quadrilleName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id")
     private ManagerJPAEntity manager;
 
-    protected QuadrilleJPAEntity() {}
+    public QuadrilleJPAEntity() {}
 
     public QuadrilleJPAEntity(UUID id, String quadrilleName,
             ManagerJPAEntity manager) {
@@ -33,22 +34,22 @@ public class QuadrilleJPAEntity {
     }
 
     public UUID getId() { 
-    	return id;
-    	}
+        return id;
+        }
     public String getQuadrilleName() {
-    	return quadrilleName;
-    	}
+        return quadrilleName;
+        }
     public ManagerJPAEntity getManager() {
-    	return manager; 
-    	}
+        return manager; 
+        }
 
-    private void setId(UUID id) {
-    	this.id = id; 
-    	}
-    private void setQuadrilleName(String quadrilleName) {
+    public void setId(UUID id) {
+        this.id = id; 
+        }
+    public void setQuadrilleName(String quadrilleName) {
         this.quadrilleName = quadrilleName;
         }
-    private void setManager(ManagerJPAEntity manager) {
+    public void setManager(ManagerJPAEntity manager) {
         this.manager = manager; 
         }
 }

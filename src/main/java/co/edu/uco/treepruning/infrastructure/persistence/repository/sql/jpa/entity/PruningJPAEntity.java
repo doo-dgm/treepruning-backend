@@ -8,6 +8,7 @@ import co.edu.uco.treepruning.crosscutting.helper.TextHelper;
 import co.edu.uco.treepruning.crosscutting.helper.UUIDHelper;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -21,7 +22,7 @@ public class PruningJPAEntity {
     @Column(name = "id")
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id")
     private StatusJPAEntity status;
 
@@ -31,19 +32,19 @@ public class PruningJPAEntity {
     @Column(name = "executed_date")
     private LocalDate executedDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tree_id")
     private TreeJPAEntity tree;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quadrille_id")
     private QuadrilleJPAEntity quadrille;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type_id")
     private TypeJPAEntity type;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pqr_id")
     private PQRJPAEntity pqr;
 
@@ -53,85 +54,95 @@ public class PruningJPAEntity {
     @Column(name = "observations")
     private String observations;
 
-    protected PruningJPAEntity() {}
+    public PruningJPAEntity() {}
 
-    public PruningJPAEntity(UUID id, StatusJPAEntity status,
-            LocalDate plannedDate, LocalDate executedDate,
-            TreeJPAEntity tree, QuadrilleJPAEntity quadrille,
-            TypeJPAEntity type, PQRJPAEntity pqr,
-            String photographicRecordPath, String observations) {
-        setId(id);
-        setStatus(status);
-        setPlannedDate(plannedDate);
-        setExecutedDate(executedDate);
-        setTree(tree);
-        setQuadrille(quadrille);
-        setType(type);
-        setPqr(pqr);
-        setPhotographicRecordPath(photographicRecordPath);
-        setObservations(observations);
+    private PruningJPAEntity(Builder builder) {
+        setId(builder.id);
+        setStatus(builder.status);
+        setPlannedDate(builder.plannedDate);
+        setExecutedDate(builder.executedDate);
+        setTree(builder.tree);
+        setQuadrille(builder.quadrille);
+        setType(builder.type);
+        setPqr(builder.pqr);
+        setPhotographicRecordPath(builder.photographicRecordPath);
+        setObservations(builder.observations);
     }
 
-    public UUID getId() { 
-    	return id; 
-    	}
-    public StatusJPAEntity getStatus() { 
-    	return status; 
-    	}
-    public LocalDate getPlannedDate() {
-    	return plannedDate;
-    	}
-    public LocalDate getExecutedDate() {
-    	return executedDate; 
-    	}
-    public TreeJPAEntity getTree() { 
-    	return tree; 
-    	}
-    public QuadrilleJPAEntity getQuadrille() { 
-    	return quadrille;
-    	}
-    public TypeJPAEntity getType() { 
-    	return type;
-    	}
-    public PQRJPAEntity getPqr() { 
-    	return pqr; 
-    	}
-    public String getPhotographicRecordPath() {
-        return photographicRecordPath;
-        }
-    public String getObservations() {
-    	return observations; 
-    	}
+    public static Builder builder() {
+        return new Builder();
+    }
 
-    private void setId(final UUID id) {
-    	this.id = UUIDHelper.getUUIDHelper().getDefault(id); 
-    	}
-    private void setStatus(final StatusJPAEntity status) {
-        this.status = status; 
-        }
-    private void setPlannedDate(final LocalDate plannedDate) {
-        this.plannedDate = DateHelper.getDateHelper().getDefault(plannedDate);
-        }
-    private void setExecutedDate(final LocalDate executedDate) {
-        this.executedDate = DateHelper.getDateHelper().getDefault(executedDate); 
-        }
-    private void setTree(final TreeJPAEntity tree) { 
-    	this.tree = tree; 
-    	}
-    private void setQuadrille(final QuadrilleJPAEntity quadrille) {
+    public UUID getId() { return id; }
+    public StatusJPAEntity getStatus() { return status; }
+    public LocalDate getPlannedDate() { return plannedDate; }
+    public LocalDate getExecutedDate() { return executedDate; }
+    public TreeJPAEntity getTree() { return tree; }
+    public QuadrilleJPAEntity getQuadrille() { return quadrille; }
+    public TypeJPAEntity getType() { return type; }
+    public PQRJPAEntity getPqr() { return pqr; }
+    public String getPhotographicRecordPath() { return photographicRecordPath; }
+    public String getObservations() { return observations; }
+
+    public void setId(final UUID id) {
+        this.id = UUIDHelper.getDefault(id);
+    }
+    public void setStatus(final StatusJPAEntity status) {
+        this.status = status;
+    }
+    public void setPlannedDate(final LocalDate plannedDate) {
+        this.plannedDate = DateHelper.getDefault(plannedDate);
+    }
+    public void setExecutedDate(final LocalDate executedDate) {
+        this.executedDate = DateHelper.getDefault(executedDate);
+    }
+    public void setTree(final TreeJPAEntity tree) {
+        this.tree = tree;
+    }
+    public void setQuadrille(final QuadrilleJPAEntity quadrille) {
         this.quadrille = quadrille;
-        }
-    private void setType(final TypeJPAEntity type) { 
-    	this.type = type; 
-    	}
-    private void setPqr(final PQRJPAEntity pqr) { 
-    	this.pqr = pqr;
-    	}
-    private void setPhotographicRecordPath(
-    		final String photographicRecordPath) {
+    }
+    public void setType(final TypeJPAEntity type) {
+        this.type = type;
+    }
+    public void setPqr(final PQRJPAEntity pqr) {
+        this.pqr = pqr;
+    }
+    public void setPhotographicRecordPath(final String photographicRecordPath) {
         this.photographicRecordPath = TextHelper.getDefault(photographicRecordPath);
-        }
-    private void setObservations(final String observations) {
+    }
+    public void setObservations(final String observations) {
         this.observations = TextHelper.getDefault(observations);
+    }
+
+    // ── GoF Builder ───────────────────────────────────────────────────────────
+    public static final class Builder {
+        private UUID id;
+        private StatusJPAEntity status;
+        private LocalDate plannedDate;
+        private LocalDate executedDate;
+        private TreeJPAEntity tree;
+        private QuadrilleJPAEntity quadrille;
+        private TypeJPAEntity type;
+        private PQRJPAEntity pqr;
+        private String photographicRecordPath;
+        private String observations;
+
+        private Builder() {}
+
+        public Builder id(UUID id) { this.id = id; return this; }
+        public Builder status(StatusJPAEntity status) { this.status = status; return this; }
+        public Builder plannedDate(LocalDate plannedDate) { this.plannedDate = plannedDate; return this; }
+        public Builder executedDate(LocalDate executedDate) { this.executedDate = executedDate; return this; }
+        public Builder tree(TreeJPAEntity tree) { this.tree = tree; return this; }
+        public Builder quadrille(QuadrilleJPAEntity quadrille) { this.quadrille = quadrille; return this; }
+        public Builder type(TypeJPAEntity type) { this.type = type; return this; }
+        public Builder pqr(PQRJPAEntity pqr) { this.pqr = pqr; return this; }
+        public Builder photographicRecordPath(String path) { this.photographicRecordPath = path; return this; }
+        public Builder observations(String observations) { this.observations = observations; return this; }
+
+        public PruningJPAEntity build() {
+            return new PruningJPAEntity(this);
         }
+    }
 }

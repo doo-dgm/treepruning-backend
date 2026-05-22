@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -20,26 +21,26 @@ public class PQRJPAEntity {
     @Column(name = "date")
     private LocalDate date;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id")
     private StatusJPAEntity status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "risk_id")
     private RiskJPAEntity risk;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sector_id")
     private SectorJPAEntity sector;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id")
     private PersonJPAEntity person;
 
     @Column(name = "photographic_record_path")
     private String photographicRecordPath;
 
-    protected PQRJPAEntity() {}
+    public PQRJPAEntity() {}
 
     public PQRJPAEntity(UUID id, LocalDate date,
             StatusJPAEntity status, RiskJPAEntity risk,
@@ -55,43 +56,43 @@ public class PQRJPAEntity {
     }
 
     public UUID getId() { 
-    	return id;
-    	}
+        return id;
+        }
     public LocalDate getDate() { 
-    	return date;
-    	}
+        return date;
+        }
     public StatusJPAEntity getStatus() { 
-    	return status; 
-    	}
+        return status; 
+        }
     public RiskJPAEntity getRisk() { 
-    	return risk; 
-    	}
+        return risk; 
+        }
     public SectorJPAEntity getSector() {
-    	return sector; 
-    	}
+        return sector; 
+        }
     public PersonJPAEntity getPerson() {
-    	return person; 
-    	}
+        return person; 
+        }
     public String getPhotographicRecordPath() {
         return photographicRecordPath;
     }
 
-    private void setId(UUID id) { 
-    	this.id = id; 
-    	}
-    private void setDate(LocalDate date) {
-    	this.date = date; 
-    	}
-    private void setStatus(StatusJPAEntity status) {
+    public void setId(UUID id) { 
+        this.id = id; 
+        }
+    public void setDate(LocalDate date) {
+        this.date = date; 
+        }
+    public void setStatus(StatusJPAEntity status) {
         this.status = status; }
-    private void setRisk(RiskJPAEntity risk) { 
-    	this.risk = risk; 
-    	}
-    private void setSector(SectorJPAEntity sector) {
+    public void setRisk(RiskJPAEntity risk) { 
+        this.risk = risk; 
+        }
+    public void setSector(SectorJPAEntity sector) {
         this.sector = sector; }
-    private void setPerson(PersonJPAEntity person) {
+    public void setPerson(PersonJPAEntity person) {
         this.person = person; }
-    private void setPhotographicRecordPath(
+    public void setPhotographicRecordPath(
             String photographicRecordPath) {
         this.photographicRecordPath = photographicRecordPath; }
 }

@@ -5,8 +5,6 @@ import java.util.UUID;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.StatusEntity;
 
 public interface StatusRepository {
-	
-    List<StatusEntity> findAll();
     
-    StatusEntity findById(UUID id);  
+    List<StatusEntity> findByFilter(UUID id, String name);
 }

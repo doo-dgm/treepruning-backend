@@ -20,7 +20,7 @@ public class FamilyJPAEntity {
     @Column(name = "common_name")
     private String commonName;
 
-    protected FamilyJPAEntity() {}
+    public FamilyJPAEntity() {}
 
     public FamilyJPAEntity(UUID id, String scientificName,
             String commonName) {
@@ -30,22 +30,22 @@ public class FamilyJPAEntity {
     }
 
     public UUID getId() { 
-    	return id;
-    	}
+        return id;
+        }
     public String getScientificName() {
-    	return scientificName;
-    	}
+        return scientificName;
+        }
     public String getCommonName() { 
-    	return commonName;
-    	}
+        return commonName;
+        }
 
-    private void setId(UUID id) { 
-    	this.id = id;
-    	}
-    private void setScientificName(String scientificName) {
+    public void setId(UUID id) { 
+        this.id = id;
+        }
+    public void setScientificName(String scientificName) {
         this.scientificName = scientificName; 
         }
-    private void setCommonName(String commonName) {
+    public void setCommonName(String commonName) {
         this.commonName = commonName;
         }
 }

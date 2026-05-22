@@ -1,5 +1,4 @@
-package co.edu.uco.treepruning.features.pruning
-        .schedulepreventivepruning.application.inputport;
+package co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.inputport;
 
 import co.edu.uco.treepruning.application.inputport.InputPort;
 import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.inputport.dto.SchedulePreventivePruningDTO;

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -23,19 +24,19 @@ public class TreeJPAEntity {
     @Column(name = "latitude", precision = 10, scale = 6)
     private BigDecimal latitude;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "family_id")
     private FamilyJPAEntity family;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sector_id")
     private SectorJPAEntity sector;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "programming_id")
     private ProgrammingJPAEntity programming;
 
-    protected TreeJPAEntity() {
+    public TreeJPAEntity() {
     }
 
     public TreeJPAEntity(UUID id, BigDecimal longitude, BigDecimal latitude,
@@ -68,22 +69,22 @@ public class TreeJPAEntity {
         return programming;
     }
 
-    private void setId(UUID id) {
+    public void setId(UUID id) {
         this.id = id;
     }
-    private void setLongitude(BigDecimal longitude) {
+    public void setLongitude(BigDecimal longitude) {
         this.longitude = longitude;
     }
-    private void setLatitude(BigDecimal latitude) {
+    public void setLatitude(BigDecimal latitude) {
         this.latitude = latitude;
     }
-    private void setFamily(FamilyJPAEntity family) {
+    public void setFamily(FamilyJPAEntity family) {
         this.family = family;
     }
-    private void setSector(SectorJPAEntity sector) {
+    public void setSector(SectorJPAEntity sector) {
         this.sector = sector;
     }
-    private void setProgramming(ProgrammingJPAEntity programming) {
+    public void setProgramming(ProgrammingJPAEntity programming) {
         this.programming = programming;
     }
 }

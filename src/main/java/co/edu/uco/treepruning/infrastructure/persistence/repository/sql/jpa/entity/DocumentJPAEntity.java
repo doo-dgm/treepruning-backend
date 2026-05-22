@@ -20,7 +20,7 @@ public class DocumentJPAEntity {
     @Column(name = "code")
     private String code;
 
-    protected DocumentJPAEntity() {}
+    public DocumentJPAEntity() {}
 
     public DocumentJPAEntity(UUID id, String name, String code) {
         setId(id);
@@ -29,22 +29,22 @@ public class DocumentJPAEntity {
     }
 
     public UUID getId() { 
-    	return id;
-    	}
+        return id;
+        }
     public String getName() { 
-    	return name;
-    	}
+        return name;
+        }
     public String getCode() { 
-    	return code;
-    	}
+        return code;
+        }
 
-    private void setId(UUID id) {
-    	this.id = id;
-    	}
-    private void setName(String name) {
-    	this.name = name; 
-    	}
-    private void setCode(String code) { 
-    	this.code = code; 
-    	}
+    public void setId(UUID id) {
+        this.id = id;
+        }
+    public void setName(String name) {
+        this.name = name; 
+        }
+    public void setCode(String code) { 
+        this.code = code; 
+        }
 }

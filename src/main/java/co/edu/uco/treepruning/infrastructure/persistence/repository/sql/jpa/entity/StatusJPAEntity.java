@@ -17,7 +17,7 @@ public class StatusJPAEntity {
     @Column(name = "name")
     private String name;
 
-    protected StatusJPAEntity() {}
+    public StatusJPAEntity() {}
 
     public StatusJPAEntity(UUID id, String name) {
         setId(id);
@@ -25,16 +25,16 @@ public class StatusJPAEntity {
     }
 
     public UUID getId() { 
-    	return id;
-    	}
+        return id;
+        }
     public String getName() { 
-    	return name; 
-    	}
+        return name; 
+        }
 
-    private void setId(UUID id) {
-    	this.id = id;
-    	}
-    private void setName(String name) { 
-    	this.name = name;
-    	}
+    public void setId(UUID id) {
+        this.id = id;
+        }
+    public void setName(String name) { 
+        this.name = name;
+        }
 }

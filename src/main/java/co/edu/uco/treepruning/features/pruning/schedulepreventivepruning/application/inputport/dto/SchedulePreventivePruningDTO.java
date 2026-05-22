@@ -1,5 +1,4 @@
-package co.edu.uco.treepruning.features.pruning
-        .schedulepreventivepruning.application.inputport.dto;
+package co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.inputport.dto;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -9,7 +8,7 @@ import co.edu.uco.treepruning.crosscutting.helper.TextHelper;
 import co.edu.uco.treepruning.crosscutting.helper.UUIDHelper;
 
 public final class SchedulePreventivePruningDTO {
-	
+    
     private UUID status;
     private LocalDate plannedDate;
     private LocalDate executedDate;
@@ -48,22 +47,22 @@ public final class SchedulePreventivePruningDTO {
     public String getObservations() { return observations; }
 
     private void setStatus(final UUID status) {
-        this.status = UUIDHelper.getUUIDHelper().getDefault(status);
+        this.status = UUIDHelper.getDefault(status);
     }
     private void setPlannedDate(final LocalDate plannedDate) {
-        this.plannedDate = DateHelper.getDateHelper().getDefault(plannedDate);
+        this.plannedDate = DateHelper.getDefault(plannedDate);
     }
     private void setExecutedDate(final LocalDate executedDate) {
-        this.executedDate = DateHelper.getDateHelper().getDefault(executedDate);
+        this.executedDate = DateHelper.getDefault(executedDate);
     }
     private void setTree(final UUID tree) {
-        this.tree = UUIDHelper.getUUIDHelper().getDefault(tree);
+        this.tree = UUIDHelper.getDefault(tree);
     }
     private void setQuadrille(final UUID quadrille) {
-        this.quadrille = UUIDHelper.getUUIDHelper().getDefault(quadrille);
+        this.quadrille = UUIDHelper.getDefault(quadrille);
     }
     private void setType(final UUID type) {
-        this.type = UUIDHelper.getUUIDHelper().getDefault(type);
+        this.type = UUIDHelper.getDefault(type);
     }
     private void setPhotographicRecordPath(final String photographicRecordPath) {
         this.photographicRecordPath = TextHelper.getDefaultWithTrim(photographicRecordPath);
