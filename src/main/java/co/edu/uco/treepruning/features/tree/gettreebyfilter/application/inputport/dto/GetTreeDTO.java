@@ -1,8 +1,8 @@
 package co.edu.uco.treepruning.features.tree.gettreebyfilter.application.inputport.dto;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 import co.edu.uco.treepruning.crosscutting.helper.ObjectHelper;
-import co.edu.uco.treepruning.crosscutting.helper.TextHelper;
 import co.edu.uco.treepruning.crosscutting.helper.UUIDHelper;
 import co.edu.uco.treepruning.features.family.getfamilybyfilter.application.inputport.dto.GetFamilyDTO;
 import co.edu.uco.treepruning.features.programming.getprogrammingbyfilter.application.inputport.dto.GetProgrammingDTO;
@@ -10,13 +10,13 @@ import co.edu.uco.treepruning.features.sector.getsectorbyfilter.application.inpu
 
 public final class GetTreeDTO {
     private UUID id;
-    private String longitude;
-    private String latitude;
+    private BigDecimal longitude;
+    private BigDecimal latitude;
     private GetFamilyDTO family;
     private GetSectorDTO sector;
     private GetProgrammingDTO programming;
 
-    public GetTreeDTO(UUID id, String longitude, String latitude,
+    public GetTreeDTO(UUID id, BigDecimal longitude, BigDecimal latitude,
             GetFamilyDTO family, GetSectorDTO sector, GetProgrammingDTO programming) {
         setId(id);
         setLongitude(longitude);
@@ -27,7 +27,7 @@ public final class GetTreeDTO {
     }
 
     public GetTreeDTO(UUID id) {
-        this(id, TextHelper.getDefault(), TextHelper.getDefault(),
+        this(id, BigDecimal.ZERO, BigDecimal.ZERO,
                 new GetFamilyDTO(), new GetSectorDTO(), new GetProgrammingDTO());
     }
 
@@ -35,21 +35,33 @@ public final class GetTreeDTO {
         this(UUIDHelper.getDefault());
     }
 
-    public UUID getId() { return id; }
-    public String getLongitude() { return longitude; }
-    public String getLatitude() { return latitude; }
-    public GetFamilyDTO getFamily() { return family; }
-    public GetSectorDTO getSector() { return sector; }
-    public GetProgrammingDTO getProgramming() { return programming; }
+    public UUID getId() { 
+    	return id;
+    	}
+    public BigDecimal getLongitude() { 
+    	return longitude; 
+    	}
+    public BigDecimal getLatitude() { 
+    	return latitude; 
+    	}
+    public GetFamilyDTO getFamily() {
+    	return family;
+    	}
+    public GetSectorDTO getSector() { 
+    	return sector; 
+    	}
+    public GetProgrammingDTO getProgramming() { 
+    	return programming; 
+    	}
 
     private void setId(final UUID id) {
         this.id = UUIDHelper.getDefault(id);
     }
-    private void setLongitude(final String longitude) {
-        this.longitude = TextHelper.getDefaultWithTrim(longitude);
+    private void setLongitude(final BigDecimal longitude) {
+        this.longitude = longitude != null ? longitude : BigDecimal.ZERO;
     }
-    private void setLatitude(final String latitude) {
-        this.latitude = TextHelper.getDefaultWithTrim(latitude);
+    private void setLatitude(final BigDecimal latitude) {
+        this.latitude = latitude != null ? latitude : BigDecimal.ZERO;
     }
     private void setFamily(final GetFamilyDTO family) {
         this.family = ObjectHelper.getDefault(family, new GetFamilyDTO());

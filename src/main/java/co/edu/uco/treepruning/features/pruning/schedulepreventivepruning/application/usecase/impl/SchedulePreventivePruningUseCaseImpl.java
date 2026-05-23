@@ -1,8 +1,10 @@
 package co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.impl;
 
+
 import java.util.List;
 import org.springframework.stereotype.Service;
-
+import org.springframework.context.ApplicationEventPublisher;
+import co.edu.uco.treepruning.crosscutting.event.PruningScheduledEvent;
 import co.edu.uco.treepruning.features.quadrille.getquadrillebyfilter.application.inputport.dto.GetQuadrilleDTO;
 import co.edu.uco.treepruning.features.quadrille.getquadrillebyfilter.application.usecase.GetQuadrilleByFilterUseCase;
 import co.edu.uco.treepruning.features.quadrille.getquadrillebyfilter.application.usecase.domain.GetQuadrilleDomain;
@@ -35,6 +37,7 @@ public class SchedulePreventivePruningUseCaseImpl
     private final GetStatusByFilterUseCase getStatusByFilterUseCase;
     private final PruningRepository pruningRepository;
     private final SchedulePreventivePruningDomainMapper domainMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     public SchedulePreventivePruningUseCaseImpl(
             GetTreeByFilterUseCase getTreeByFilterUseCase,
@@ -42,13 +45,15 @@ public class SchedulePreventivePruningUseCaseImpl
             GetTypeByFilterUseCase getTypeByFilterUseCase,
             GetStatusByFilterUseCase getStatusByFilterUseCase,
             PruningRepository pruningRepository,
-            SchedulePreventivePruningDomainMapper domainMapper) {
+            SchedulePreventivePruningDomainMapper domainMapper,
+            ApplicationEventPublisher eventPublisher) {
         this.getTreeByFilterUseCase = getTreeByFilterUseCase;
         this.getQuadrilleByFilterUseCase = getQuadrilleByFilterUseCase;
         this.getTypeByFilterUseCase = getTypeByFilterUseCase;
         this.getStatusByFilterUseCase = getStatusByFilterUseCase;
         this.pruningRepository = pruningRepository;
         this.domainMapper = domainMapper;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -80,6 +85,10 @@ public class SchedulePreventivePruningUseCaseImpl
         }
 
         pruningRepository.create(domainMapper.toEntity(data));
+        
+        eventPublisher.publishEvent(
+        	    new PruningScheduledEvent(data.getId(), data.getTree(), data.getPlannedDate())
+        	);
 
         return null;
     }

@@ -1,14 +1,14 @@
 package co.edu.uco.treepruning.infrastructure.persistence.repository.entity;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 import co.edu.uco.treepruning.crosscutting.helper.ObjectHelper;
-import co.edu.uco.treepruning.crosscutting.helper.TextHelper;
 import co.edu.uco.treepruning.crosscutting.helper.UUIDHelper;
 
 public class TreeEntity {
     private UUID id;
-    private String longitude;
-    private String latitude;
+    private BigDecimal longitude;
+    private BigDecimal latitude;
     private FamilyEntity family;
     private SectorEntity sector;
     private ProgrammingEntity programming;
@@ -16,40 +16,40 @@ public class TreeEntity {
     public TreeEntity() {
         super();
         setId(UUIDHelper.getDefault());
-        setLongitude(TextHelper.getDefault());
-        setLatitude(TextHelper.getDefault());
+        setLongitude(BigDecimal.ZERO);
+        setLatitude(BigDecimal.ZERO);
         setFamily(new FamilyEntity());
         setSector(new SectorEntity());
         setProgramming(new ProgrammingEntity());
     }
 
-    public UUID getId() {
-        return id;
-    }
-    public String getLongitude() {
-        return longitude;
-    }
-    public String getLatitude() {
-        return latitude;
-    }
-    public FamilyEntity getFamily() {
-        return family;
-    }
+    public UUID getId() { 
+    	return id;
+    	}
+    public BigDecimal getLongitude() { 
+    	return longitude;
+    	}
+    public BigDecimal getLatitude() { 
+    	return latitude;
+    	}
+    public FamilyEntity getFamily() { 
+    	return family; 
+    	}
     public SectorEntity getSector() {
-        return sector;
-    }
-    public ProgrammingEntity getProgramming() {
-        return programming;
-    }
+    	return sector; 
+    	}
+    public ProgrammingEntity getProgramming() { 
+    	return programming; 
+    	}
 
     public void setId(UUID id) {
         this.id = UUIDHelper.getDefault(id);
     }
-    public void setLongitude(String longitude) {
-        this.longitude = TextHelper.getDefaultWithTrim(longitude);
+    public void setLongitude(BigDecimal longitude) {
+        this.longitude = longitude != null ? longitude : BigDecimal.ZERO;
     }
-    public void setLatitude(String latitude) {
-        this.latitude = TextHelper.getDefaultWithTrim(latitude);
+    public void setLatitude(BigDecimal latitude) {
+        this.latitude = latitude != null ? latitude : BigDecimal.ZERO;
     }
     public void setFamily(FamilyEntity family) {
         this.family = ObjectHelper.getDefault(family, new FamilyEntity());
