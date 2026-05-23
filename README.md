@@ -1,6 +1,6 @@
-# Tree Pruning — Diseño de Alto Nivel
+# Tree Pruning -- Diseño de Alto Nivel
 
-**Proyecto:** Tree Pruning — Sistema de Gestión de Arbolado Urbano  
+**Proyecto:** Tree Pruning -- Sistema de Gestión de Arbolado Urbano  
 **Universidad:** Universidad Católica de Oriente (UCO)  
 **Curso:** Software 2  
 **Municipio:** Rionegro, Antioquia, Colombia
@@ -17,11 +17,11 @@
   - [1.3 Documentación de los Elementos](#sec-1-3)
   - [1.4 Plataforma Tecnológica](#sec-1-4)
   - [1.5 Diagrama de Componentes](#sec-1-5)
-    - [1.5.1 Diagrama de Componentes — Backend](#sec-1-5-1)
-    - [1.5.2 Diagrama de Componentes — Frontend](#sec-1-5-2)
+    - [1.5.1 Diagrama de Componentes -- Backend](#sec-1-5-1)
+    - [1.5.2 Diagrama de Componentes -- Frontend](#sec-1-5-2)
   - [1.6 Diagrama de Paquetes](#sec-1-6)
-    - [1.6.1 Diagrama de Paquetes — Backend](#sec-1-6-1)
-    - [1.6.2 Diagrama de Paquetes — Frontend](#sec-1-6-2)
+    - [1.6.1 Diagrama de Paquetes -- Backend](#sec-1-6-1)
+    - [1.6.2 Diagrama de Paquetes -- Frontend](#sec-1-6-2)
 - [2. Drivers Arquitectónicos](#sec-2)
   - [2.1 Atributos de Calidad](#sec-2-1)
     - [2.1.1 Atributo: Rendimiento](#sec-2-1-1)
@@ -40,14 +40,14 @@
     - [2.3.5 Restricciones de Alcance](#sec-2-3-5)
     - [2.3.6 Restricciones Operativas](#sec-2-3-6)
   - [2.4 Restricciones Técnicas](#sec-2-4)
-  - [Anexo A — Matriz de Tiempos por Operación](#anexo-a)
-  - [Anexo B — Matriz de Permisos por Rol](#anexo-b)
-  - [Anexo C — Disponibilidad y SLA](#anexo-c)
+  - [Anexo A -- Matriz de Tiempos por Operación](#anexo-a)
+  - [Anexo B -- Matriz de Permisos por Rol](#anexo-b)
+  - [Anexo C -- Disponibilidad y SLA](#anexo-c)
 - [3. Mapa de Impacto](#sec-3)
   - [3.1 Plantilla de Visión](#sec-3-1)
   - [3.2 Actores](#sec-3-2)
   - [3.3 Impactos por Actor](#sec-3-3)
-  - [3.4 El Qué — Módulos y Entregables](#sec-3-4)
+  - [3.4 El Qué -- Módulos y Entregables](#sec-3-4)
 
 ---
 
@@ -88,28 +88,28 @@ La arquitectura de referencia instancia el arquetipo con los productos y tecnolo
 
 ```
 Usuario (Browser)
-    ↓ HTTPS
+    v HTTPS
 Cloudflare (WAF + CDN)
-    ↓ HTTPS
+    v HTTPS
 Traefik (reverse proxy, SSL termination)
-    ↓ HTTP interno
-┌──────────────────────────────────────────────┐
-│  Azure VM — Docker Compose                   │
-│                                              │
-│  Frontend (nginx + Vue.js) ←→ API Gateway   │
-│                                ↓             │
-│                       Backend (Spring Boot)  │
-│                          ↓               ↓   │
-│                     PostgreSQL       MinIO   │
-│                       + PostGIS      (S3)    │
-│                                              │
-│  Servicios de soporte:                       │
-│  Keycloak, Strapi, Grafana, Prometheus,      │
-│  SonarQube, Redis                            │
-└──────────────────────────────────────────────┘
-    ↓ HTTPS (servicios externos SaaS)
-Infisical (secretos)  ·  Google Maps (mapas)
-FCM (notificaciones)  ·  GitHub Actions (CI/CD)
+    v HTTP interno
++----------------------------------------------+
+|  Azure VM -- Docker Compose                   |
+|                                              |
+|  Frontend (nginx + Vue.js) <--> API Gateway   |
+|                                v             |
+|                       Backend (Spring Boot)  |
+|                          v               v   |
+|                     PostgreSQL       MinIO   |
+|                       + PostGIS      (S3)    |
+|                                              |
+|  Servicios de soporte:                       |
+|  Keycloak, Strapi, Grafana, Prometheus,      |
+|  SonarQube, Redis                            |
++----------------------------------------------+
+    v HTTPS (servicios externos SaaS)
+Infisical (secretos)  -  Google Maps (mapas)
+FCM (notificaciones)  -  GitHub Actions (CI/CD)
 ```
 
 <p align="center" style="background-color:#ffffff; padding:16px; display:inline-block; border-radius:4px;">
@@ -156,10 +156,10 @@ La plataforma tecnológica documenta el producto específico adoptado para cada 
 | **API Gateway** | Kong Gateway | Kong | 3.7 | Sí (open source) | Gateway robusto con soporte para autenticación, rate limiting y enrutamiento. |
 | **Identity Provider** | Keycloak | Red Hat | 24.0 | Sí (open source) | OIDC y OAuth2 estándar; RBAC, SSO; gestión automática del contador de intentos fallidos. |
 | **Frontend** | Vue.js 3 + Bootstrap 5.3+ | Vue.js / Bootstrap | 3.x / 5.3+ | Sí (open source) | Curva de aprendizaje suave; comunidad activa; componentes UI listos para producción. |
-| **Backend — Lenguaje** | OpenJDK | Eclipse Adoptium | Java 26 | Sí (open source) | **Restricción del curso Software 2 (UCO).** |
-| **Backend — Framework** | Spring Boot | VMware | 3.3+ | Sí (open source) | Arquitectura modular; soporte nativo para seguridad, eventos y persistencia. |
-| **Backend — Persistencia** | Spring Data JPA + Hibernate | VMware / Red Hat | 3.x / 6.x | Sí (open source) | Reducción de complejidad y soporte transaccional integrado. |
-| **Backend — Geoespacial** | PostGIS (extensión) | OSGeo | 3.x | Sí (open source) | Consultas espaciales nativas sobre coordenadas GPS y polígonos. |
+| **Backend -- Lenguaje** | OpenJDK | Eclipse Adoptium | Java 26 | Sí (open source) | **Restricción del curso Software 2 (UCO).** |
+| **Backend -- Framework** | Spring Boot | VMware | 3.3+ | Sí (open source) | Arquitectura modular; soporte nativo para seguridad, eventos y persistencia. |
+| **Backend -- Persistencia** | Spring Data JPA + Hibernate | VMware / Red Hat | 3.x / 6.x | Sí (open source) | Reducción de complejidad y soporte transaccional integrado. |
+| **Backend -- Geoespacial** | PostGIS (extensión) | OSGeo | 3.x | Sí (open source) | Consultas espaciales nativas sobre coordenadas GPS y polígonos. |
 | **Database** | PostgreSQL | PostgreSQL Global Dev Group | 16 | Sí (open source) | Base relacional confiable; soporte avanzado para datos geoespaciales mediante PostGIS. |
 | **Blob Storage** | MinIO | MinIO Inc. | Latest | Sí (open source) | Compatible con S3 API; sin costo operativo. |
 | **Key Vault** | Infisical | Infisical | Latest | Sí (capa gratuita) | SaaS sin mantenimiento de proceso `unseal`; secretos siempre disponibles vía CLI/API. |
@@ -187,7 +187,7 @@ La plataforma tecnológica documenta el producto específico adoptado para cada 
 El diagrama de componentes muestra las unidades de software (jars, librerías, paquetes npm) que conforman cada parte del sistema y las dependencias entre ellas. A diferencia del diagrama de despliegue (que muestra los contenedores en ejecución) y del diagrama de paquetes (que muestra la organización del código fuente), el diagrama de componentes detalla las **librerías técnicas concretas** que el equipo integra para construir el Backend y el Frontend.
 
 <a id="sec-1-5-1"></a>
-#### 1.5.1 Diagrama de Componentes — Backend
+#### 1.5.1 Diagrama de Componentes -- Backend
 
 El Backend de Tree Pruning se construye como un único módulo `tree-pruning 0.0.1` que orquesta todas las dependencias técnicas. El proyecto se compila con Maven sobre Java 26 y empaqueta todas las dependencias en una imagen Docker basada en `eclipse-temurin:26-jdk-alpine`.
 
@@ -216,7 +216,7 @@ El Backend de Tree Pruning se construye como un único módulo `tree-pruning 0.0
 </p>
 
 <a id="sec-1-5-2"></a>
-#### 1.5.2 Diagrama de Componentes — Frontend
+#### 1.5.2 Diagrama de Componentes -- Frontend
 
 El Frontend es una SPA (Single Page Application) Vue.js 3 empaquetada con Vite. Todas las dependencias se gestionan vía npm y se compilan en un bundle estático servido por nginx desde el contenedor Docker.
 
@@ -247,7 +247,7 @@ El Frontend es una SPA (Single Page Application) Vue.js 3 empaquetada con Vite. 
 El diagrama de paquetes representa la organización lógica del código fuente en agrupaciones jerárquicas que reflejan la separación de responsabilidades del sistema. Tanto el Backend como el Frontend adoptan los principios de **Clean Architecture**, donde las capas externas dependen de las internas y nunca al revés.
 
 <a id="sec-1-6-1"></a>
-#### 1.6.1 Diagrama de Paquetes — Backend
+#### 1.6.1 Diagrama de Paquetes -- Backend
 
 El Backend combina **Clean Architecture** (capas con flujo de dependencias unidireccional) con **Vertical Slice Architecture** (cada caso de uso es un slice vertical completo dentro de `features/<domain-object>/<transaction>/`). Esta organización garantiza cohesión por caso de uso, aislamiento de cambios y reutilización controlada.
 
@@ -255,31 +255,31 @@ El Backend combina **Clean Architecture** (capas con flujo de dependencias unidi
 
 ```
 co.edu.uco.treepruning
-│
-├── initializer                        (clase main de Spring Boot)
-│
-├── crosscutting                       (preocupaciones transversales:
-│                                       exception, helper, response)
-│
-├── application                        (contratos base globales:
-│                                       inputport, usecase)
-│
-├── features                           (slices verticales por caso de uso)
-│   └── <domain-object>
-│       └── <transaction>
-│           └── application
-│               ├── inputport          (contrato de entrada: dto,
-│               │                       validator, interactor, mapper)
-│               └── usecase            (operación de negocio: domain,
-│                                       impl, mapper, rules)
-│
-└── infrastructure                     (adaptadores)
-    ├── controller                    (adaptadores de entrada — REST)
-    ├── security                      (Spring Security + JWT)
-    └── persistence
-        └── repository                (puertos de salida)
-            ├── adapter/sql/jpa       (implementación JPA)
-            └── sql/jpa               (Spring Data JPA + entidades)
+|
++-- initializer                        (clase main de Spring Boot)
+|
++-- crosscutting                       (preocupaciones transversales:
+|                                       exception, helper, response)
+|
++-- application                        (contratos base globales:
+|                                       inputport, usecase)
+|
++-- features                           (slices verticales por caso de uso)
+|   +-- <domain-object>
+|       +-- <transaction>
+|           +-- application
+|               +-- inputport          (contrato de entrada: dto,
+|               |                       validator, interactor, mapper)
+|               +-- usecase            (operación de negocio: domain,
+|                                       impl, mapper, rules)
+|
++-- infrastructure                     (adaptadores)
+    +-- controller                    (adaptadores de entrada -- REST)
+    +-- security                      (Spring Security + JWT)
+    +-- persistence
+        +-- repository                (puertos de salida)
+            +-- adapter/sql/jpa       (implementación JPA)
+            +-- sql/jpa               (Spring Data JPA + entidades)
 ```
 
 **Responsabilidad de cada paquete:**
@@ -300,7 +300,7 @@ co.edu.uco.treepruning
 </p>
 
 <a id="sec-1-6-2"></a>
-#### 1.6.2 Diagrama de Paquetes — Frontend
+#### 1.6.2 Diagrama de Paquetes -- Frontend
 
 El Frontend también adopta **Clean Architecture**, separando las preocupaciones en cinco capas: presentación de UI, gestión de estado, lógica de dominio, acceso a datos e infraestructura. Esta separación permite cambiar la librería UI o el cliente HTTP sin afectar la lógica de negocio del aplicativo.
 
@@ -308,31 +308,31 @@ El Frontend también adopta **Clean Architecture**, separando las preocupaciones
 
 ```
 src
-│
-├── ui                                 (capa de presentación visual)
-│   ├── router                        (rutas de Vue Router + guards)
-│   ├── views                         (páginas que renderiza el router)
-│   ├── layouts                       (layouts compartidos entre vistas)
-│   ├── components                    (componentes Bootstrap reutilizables)
-│   └── assets                        (imágenes, íconos, estilos globales)
-│
-├── presentation                       (capa de estado e interacción)
-│   ├── stores                        (Pinia: JWT, rol, módulos habilitados)
-│   └── composables                   (lógica reactiva reutilizable:
-│                                      validaciones, formateo, mapa)
-│
-├── domain                             (capa de negocio pura)
-│   ├── usecases                      (casos de uso del aplicativo)
-│   └── entities                      (entidades de dominio)
-│
-├── data                               (capa de acceso a datos)
-│   ├── repositories                  (implementación de repositorios)
-│   └── services                      (servicios Axios al API Gateway)
-│
-└── infra                              (capa de infraestructura técnica)
-    ├── auth                          (integración con Keycloak: login,
-    │                                  refresh, logout)
-    └── storage                       (almacenamiento local de sesión)
+|
++-- ui                                 (capa de presentación visual)
+|   +-- router                        (rutas de Vue Router + guards)
+|   +-- views                         (páginas que renderiza el router)
+|   +-- layouts                       (layouts compartidos entre vistas)
+|   +-- components                    (componentes Bootstrap reutilizables)
+|   +-- assets                        (imágenes, íconos, estilos globales)
+|
++-- presentation                       (capa de estado e interacción)
+|   +-- stores                        (Pinia: JWT, rol, módulos habilitados)
+|   +-- composables                   (lógica reactiva reutilizable:
+|                                      validaciones, formateo, mapa)
+|
++-- domain                             (capa de negocio pura)
+|   +-- usecases                      (casos de uso del aplicativo)
+|   +-- entities                      (entidades de dominio)
+|
++-- data                               (capa de acceso a datos)
+|   +-- repositories                  (implementación de repositorios)
+|   +-- services                      (servicios Axios al API Gateway)
+|
++-- infra                              (capa de infraestructura técnica)
+    +-- auth                          (integración con Keycloak: login,
+    |                                  refresh, logout)
+    +-- storage                       (almacenamiento local de sesión)
 ```
 
 **Responsabilidad de cada paquete:**
@@ -396,11 +396,11 @@ Los atributos de calidad son las propiedades del sistema que determinan su grado
 El rendimiento garantiza que el sistema responde a las solicitudes de los usuarios dentro de los tiempos máximos establecidos, incluso bajo carga concurrente, manteniendo la experiencia de uso fluida para los tres actores.
 
 <a id="sec-2-1-1-1"></a>
-##### 2.1.1.1 Característica CAR-REN-0001 — Tiempos máximos por operación
+##### 2.1.1.1 Característica CAR-REN-0001 -- Tiempos máximos por operación
 
 El sistema debe asegurar que cada una de las operaciones en las cuales se especifique un tiempo máximo de respuesta, cumpla dicho tiempo de respuesta de manera obligatoria.
 
-**Escenario ESC-CAL-REN-0002 — Registro exitoso de información dentro del tiempo máximo**
+**Escenario ESC-CAL-REN-0002 -- Registro exitoso de información dentro del tiempo máximo**
 
 | Campo | Detalle |
 |---|---|
@@ -414,15 +414,15 @@ El sistema debe asegurar que cada una de las operaciones en las cuales se especi
 | **Ambiente** | Operación normal en ambiente productivo |
 | **Artefacto** | Sistema |
 | **Respuesta** | El sistema procesa la solicitud, persiste el registro en la base de datos y muestra el mensaje de éxito |
-| **Medida de la respuesta** | El mensaje de éxito es visible en un tiempo ≤ al definido en la Matriz de Tiempos |
+| **Medida de la respuesta** | El mensaje de éxito es visible en un tiempo  al definido en la Matriz de Tiempos |
 
-**Escenario ESC-CAL-REN-0003 — Carga del mapa dentro del tiempo máximo**
+**Escenario ESC-CAL-REN-0003 -- Carga del mapa dentro del tiempo máximo**
 
 | Campo | Detalle |
 |---|---|
 | **Código** | ESC-CAL-REN-0003 |
 | **Nombre** | Carga de la utilidad de visualización de árboles o podas en el mapa dentro del tiempo máximo |
-| **Objetivo** | Asegurar que el sistema cargue completamente la utilidad de visualización en el mapa en un tiempo ≤ al definido |
+| **Objetivo** | Asegurar que el sistema cargue completamente la utilidad de visualización en el mapa en un tiempo  al definido |
 | **Criterio de éxito** | El mapa con los árboles o podas georreferenciados es visible e interactuable en el tiempo máximo |
 | **Prerequisitos** | El usuario debe estar autenticado con permisos de visualización |
 | **Fuente del estímulo** | Usuario autenticado (encargado de cuadrilla) |
@@ -430,7 +430,7 @@ El sistema debe asegurar que cada una de las operaciones en las cuales se especi
 | **Ambiente** | Operación normal en ambiente productivo |
 | **Artefacto** | Sistema |
 | **Respuesta** | El sistema carga y renderiza el mapa con los árboles o podas georreferenciados |
-| **Medida de la respuesta** | El mapa es completamente visible e interactuable en un tiempo ≤ al definido en la Matriz de Tiempos |
+| **Medida de la respuesta** | El mapa es completamente visible e interactuable en un tiempo  al definido en la Matriz de Tiempos |
 
 <a id="sec-2-1-2"></a>
 #### 2.1.2 Atributo: Confiabilidad
@@ -438,9 +438,9 @@ El sistema debe asegurar que cada una de las operaciones en las cuales se especi
 La confiabilidad garantiza que el sistema mantiene la integridad de la información durante su funcionamiento, asegurando que las operaciones se completen de forma consistente y que los fallos no dejen datos en estados inconsistentes.
 
 <a id="sec-2-1-2-1"></a>
-##### 2.1.2.1 Característica CAR-CON-0001 — Integridad de la información
+##### 2.1.2.1 Característica CAR-CON-0001 -- Integridad de la información
 
-**Escenario ESC-CAL-CON-0001 — Validación y actualización al crear o modificar registros**
+**Escenario ESC-CAL-CON-0001 -- Validación y actualización al crear o modificar registros**
 
 | Campo | Detalle |
 |---|---|
@@ -457,9 +457,9 @@ La confiabilidad garantiza que el sistema mantiene la integridad de la informaci
 | **Medida de la respuesta** | La lista actualizada muestra el registro con los valores exactos ingresados por el usuario |
 
 <a id="sec-2-1-2-2"></a>
-##### 2.1.2.2 Característica CAR-CON-0002 — Atomicidad de operaciones
+##### 2.1.2.2 Característica CAR-CON-0002 -- Atomicidad de operaciones
 
-**Escenario ESC-CAL-CON-0003 — Reversión automática ante pérdida de conexión**
+**Escenario ESC-CAL-CON-0003 -- Reversión automática ante pérdida de conexión**
 
 | Campo | Detalle |
 |---|---|
@@ -481,9 +481,9 @@ La confiabilidad garantiza que el sistema mantiene la integridad de la informaci
 La seguridad protege el acceso no autorizado al sistema mediante métodos de autenticación robustos, control de sesiones y presentación de información según los permisos asignados a cada rol.
 
 <a id="sec-2-1-3-1"></a>
-##### 2.1.3.1 Característica CAR-SEG-0001 — Autenticación y control de acceso
+##### 2.1.3.1 Característica CAR-SEG-0001 -- Autenticación y control de acceso
 
-**Escenario ESC-CAL-SEG-0002 — Bloqueo temporal por 3 intentos fallidos**
+**Escenario ESC-CAL-SEG-0002 -- Bloqueo temporal por 3 intentos fallidos**
 
 | Campo | Detalle |
 |---|---|
@@ -500,9 +500,9 @@ La seguridad protege el acceso no autorizado al sistema mediante métodos de aut
 | **Medida de la respuesta** | La cuenta permanece bloqueada 5 minutos rechazando cualquier intento de acceso durante ese período |
 
 <a id="sec-2-1-3-2"></a>
-##### 2.1.3.2 Característica CAR-SEG-0002 — Módulos según rol
+##### 2.1.3.2 Característica CAR-SEG-0002 -- Módulos según rol
 
-**Escenario ESC-CAL-SEG-0005 — Visualización de módulos según el rol autenticado**
+**Escenario ESC-CAL-SEG-0005 -- Visualización de módulos según el rol autenticado**
 
 | Campo | Detalle |
 |---|---|
@@ -524,15 +524,15 @@ La seguridad protege el acceso no autorizado al sistema mediante métodos de aut
 La disponibilidad garantiza que el sistema esté operativo y accesible durante el horario laboral establecido, con mecanismos de recuperación ante fallos y copias de seguridad diarias.
 
 <a id="sec-2-1-4-1"></a>
-##### 2.1.4.1 Característica CAR-DIS-0001 — Disponibilidad en horario laboral
+##### 2.1.4.1 Característica CAR-DIS-0001 -- Disponibilidad en horario laboral
 
-**Escenario ESC-CAL-DIS-0001 — Disponibilidad y respuesta en horario establecido**
+**Escenario ESC-CAL-DIS-0001 -- Disponibilidad y respuesta en horario establecido**
 
 | Campo | Detalle |
 |---|---|
 | **Código** | ESC-CAL-DIS-0001 |
 | **Nombre** | Disponibilidad y respuesta del sistema durante el horario establecido |
-| **Objetivo** | Asegurar que el sistema esté disponible y responda correctamente durante el horario laboral (6 AM – 6 PM) con disponibilidad del 99.5% anual |
+| **Objetivo** | Asegurar que el sistema esté disponible y responda correctamente durante el horario laboral (6 AM - 6 PM) con disponibilidad del 99.5% anual |
 | **Criterio de éxito** | El sistema está disponible para todos los usuarios, garantizando 99.5% de disponibilidad anual durante el horario laboral |
 | **Prerequisitos** | El usuario debe existir en el sistema con cuenta activa y vigente |
 | **Fuente del estímulo** | Usuario autenticado o por autenticar que intenta acceder dentro del horario laboral |
@@ -545,7 +545,7 @@ La disponibilidad garantiza que el sistema esté operativo y accesible durante e
 <a id="sec-2-1-5"></a>
 #### 2.1.5 Atributo: Escalabilidad
 
-**Escenario ESC-CAL-ESC-0028 — Continuidad operativa ante desactivación de funcionalidad**
+**Escenario ESC-CAL-ESC-0028 -- Continuidad operativa ante desactivación de funcionalidad**
 
 | Campo | Detalle |
 |---|---|
@@ -564,7 +564,7 @@ La disponibilidad garantiza que el sistema esté operativo y accesible durante e
 <a id="sec-2-1-6"></a>
 #### 2.1.6 Atributo: Trazabilidad
 
-**Escenario ESC-CAL-TRA-0036 — Bloqueo y notificación ante 5 intentos fallidos**
+**Escenario ESC-CAL-TRA-0036 -- Bloqueo y notificación ante 5 intentos fallidos**
 
 | Campo | Detalle |
 |---|---|
@@ -583,7 +583,7 @@ La disponibilidad garantiza que el sistema esté operativo y accesible durante e
 <a id="sec-2-1-7"></a>
 #### 2.1.7 Atributo: Usabilidad
 
-**Escenario ESC-CAL-USA-0003 — Interacción y estilo uniforme en formularios**
+**Escenario ESC-CAL-USA-0003 -- Interacción y estilo uniforme en formularios**
 
 | Campo | Detalle |
 |---|---|
@@ -632,11 +632,11 @@ Las restricciones humanas son aquellas relacionadas con la disponibilidad, dedic
 
 | Código | Restricción | Importancia para el proyecto | Riesgos asociados | Plan de acción |
 |---|---|---|---|---|
-| **RN-HUM-001** | El Product Owner no tiene disponibilidad suficiente por sus otras responsabilidades del día a día, lo que dificulta atender sesiones clave para definir y validar el proyecto. | Es importante contar con la disponibilidad del PO para tomar decisiones a tiempo y no frenar el avance del equipo. | • Retraso del proyecto<br>• Reprocesos | Coordinar con anticipación las sesiones y documentar los acuerdos para no depender de su presencia en cada decisión. |
-| **RN-HUM-002** | No existe una persona que pueda reemplazar al Product Owner en caso de ausencia prolongada o imprevista. | Si el PO no puede participar y no hay un respaldo, el proyecto puede quedar sin rumbo en decisiones clave. | • Retraso del proyecto<br>• Fracaso del proyecto | Definir desde el inicio quién puede tomar decisiones en nombre del PO cuando no esté disponible. |
-| **RN-HUM-003** | Las personas que realmente conocen el proceso de podas no siempre pueden participar en las sesiones de definición del sistema. | Tomar decisiones sin los expertos del negocio lleva a construir funcionalidades que luego no sirven o deben rehacerse. | • Reprocesos<br>• Desalineación con el negocio | Organizar los horarios de sesión pensando en la disponibilidad de los actores clave del municipio. |
-| **RN-HUM-004** | Los integrantes del equipo de desarrollo cuentan con compromisos adicionales, lo que limita las horas que pueden dedicar al proyecto. | Si no se planifica bien el trabajo, se puede llegar a los hitos sin el avance esperado. | • Retraso del proyecto<br>• Incumplimiento de entregas | Definir un alcance realista desde el inicio, priorizando las funcionalidades definidas en los requisitos funcionales del proyecto, y gestionar el tiempo disponible del equipo con entregas incrementales. |
-| **RN-HUM-005** | Las validaciones con el cliente solo pueden hacerse en ciertos horarios, lo que genera tiempos muertos en el desarrollo. | El ritmo del desarrollo depende directamente de cuándo el cliente puede revisar y aprobar. Si los espacios de validación son escasos, el equipo queda detenido esperando respuestas, lo que afecta el cumplimiento de los hitos del proyecto. | • Retrasos en feedback<br>• Bloqueos al avance | Acordar ventanas fijas de revisión y usar canales como correo o mensajería para validaciones menores. |
+| **RN-HUM-001** | El Product Owner no tiene disponibilidad suficiente por sus otras responsabilidades del día a día, lo que dificulta atender sesiones clave para definir y validar el proyecto. | Es importante contar con la disponibilidad del PO para tomar decisiones a tiempo y no frenar el avance del equipo. | - Retraso del proyecto<br>- Reprocesos | Coordinar con anticipación las sesiones y documentar los acuerdos para no depender de su presencia en cada decisión. |
+| **RN-HUM-002** | No existe una persona que pueda reemplazar al Product Owner en caso de ausencia prolongada o imprevista. | Si el PO no puede participar y no hay un respaldo, el proyecto puede quedar sin rumbo en decisiones clave. | - Retraso del proyecto<br>- Fracaso del proyecto | Definir desde el inicio quién puede tomar decisiones en nombre del PO cuando no esté disponible. |
+| **RN-HUM-003** | Las personas que realmente conocen el proceso de podas no siempre pueden participar en las sesiones de definición del sistema. | Tomar decisiones sin los expertos del negocio lleva a construir funcionalidades que luego no sirven o deben rehacerse. | - Reprocesos<br>- Desalineación con el negocio | Organizar los horarios de sesión pensando en la disponibilidad de los actores clave del municipio. |
+| **RN-HUM-004** | Los integrantes del equipo de desarrollo cuentan con compromisos adicionales, lo que limita las horas que pueden dedicar al proyecto. | Si no se planifica bien el trabajo, se puede llegar a los hitos sin el avance esperado. | - Retraso del proyecto<br>- Incumplimiento de entregas | Definir un alcance realista desde el inicio, priorizando las funcionalidades definidas en los requisitos funcionales del proyecto, y gestionar el tiempo disponible del equipo con entregas incrementales. |
+| **RN-HUM-005** | Las validaciones con el cliente solo pueden hacerse en ciertos horarios, lo que genera tiempos muertos en el desarrollo. | El ritmo del desarrollo depende directamente de cuándo el cliente puede revisar y aprobar. Si los espacios de validación son escasos, el equipo queda detenido esperando respuestas, lo que afecta el cumplimiento de los hitos del proyecto. | - Retrasos en feedback<br>- Bloqueos al avance | Acordar ventanas fijas de revisión y usar canales como correo o mensajería para validaciones menores. |
 
 <a id="sec-2-3-2"></a>
 #### 2.3.2 Restricciones Legales/Normativas
@@ -645,9 +645,9 @@ Las restricciones legales y normativas son obligaciones impuestas por la normati
 
 | Código | Restricción | Importancia para el proyecto | Riesgos asociados | Plan de acción |
 |---|---|---|---|---|
-| **RN-LEG-001** | El sistema maneja datos personales de ciudadanos, por lo que debe cumplir con la Ley 1581 de 2012 de protección de datos en Colombia. | Tree Pruning registra datos personales de los ciudadanos que radican PQR (nombre, contacto, ubicación). Por ley colombiana, el sistema debe garantizar desde su diseño el tratamiento autorizado de esa información, lo que condiciona funcionalidades como el registro de ciudadanos y la gestión de PQR. | • Riesgo legal<br>• Sanciones administrativas | Incluir un consentimiento informado al registrarse y una política de privacidad visible dentro del sistema. |
-| **RN-LEG-002** | Cualquier poda o tala de árbol debe contar con el permiso o concepto técnico de la autoridad ambiental (CORNARE u otra entidad regional). | En Colombia, cualquier intervención sobre arbolado urbano requiere autorización previa de la autoridad ambiental competente. El sistema debe contemplar este requisito desde el diseño del módulo de podas, ya que sin trazabilidad del permiso, las intervenciones registradas carecen de respaldo legal. | • Riesgo legal<br>• Sanciones ambientales | El sistema debe permitir asociar cada intervención con su respectivo número de permiso o soporte legal. |
-| **RN-LEG-003** | La ley colombiana obliga a las entidades públicas a responder las PQR ciudadanas dentro de unos plazos establecidos (Ley 1755 de 2015). | El módulo de PQR del sistema debe estar diseñado para soportar los plazos legales de respuesta desde el inicio, ya que las entidades públicas no pueden manejar peticiones ciudadanas sin control de tiempos. Esto impacta directamente el diseño del flujo de estados y las alertas del módulo. | • Incumplimiento legal<br>• Riesgo reputacional | El sistema debe registrar la fecha de cada PQR y alertar cuando se acerque el vencimiento del plazo de respuesta. |
+| **RN-LEG-001** | El sistema maneja datos personales de ciudadanos, por lo que debe cumplir con la Ley 1581 de 2012 de protección de datos en Colombia. | Tree Pruning registra datos personales de los ciudadanos que radican PQR (nombre, contacto, ubicación). Por ley colombiana, el sistema debe garantizar desde su diseño el tratamiento autorizado de esa información, lo que condiciona funcionalidades como el registro de ciudadanos y la gestión de PQR. | - Riesgo legal<br>- Sanciones administrativas | Incluir un consentimiento informado al registrarse y una política de privacidad visible dentro del sistema. |
+| **RN-LEG-002** | Cualquier poda o tala de árbol debe contar con el permiso o concepto técnico de la autoridad ambiental (CORNARE u otra entidad regional). | En Colombia, cualquier intervención sobre arbolado urbano requiere autorización previa de la autoridad ambiental competente. El sistema debe contemplar este requisito desde el diseño del módulo de podas, ya que sin trazabilidad del permiso, las intervenciones registradas carecen de respaldo legal. | - Riesgo legal<br>- Sanciones ambientales | El sistema debe permitir asociar cada intervención con su respectivo número de permiso o soporte legal. |
+| **RN-LEG-003** | La ley colombiana obliga a las entidades públicas a responder las PQR ciudadanas dentro de unos plazos establecidos (Ley 1755 de 2015). | El módulo de PQR del sistema debe estar diseñado para soportar los plazos legales de respuesta desde el inicio, ya que las entidades públicas no pueden manejar peticiones ciudadanas sin control de tiempos. Esto impacta directamente el diseño del flujo de estados y las alertas del módulo. | - Incumplimiento legal<br>- Riesgo reputacional | El sistema debe registrar la fecha de cada PQR y alertar cuando se acerque el vencimiento del plazo de respuesta. |
 
 <a id="sec-2-3-3"></a>
 #### 2.3.3 Restricciones de Presupuesto/Costos
@@ -656,9 +656,9 @@ Las restricciones económicas reflejan que el proyecto opera bajo un modelo de p
 
 | Código | Restricción | Importancia para el proyecto | Riesgos asociados | Plan de acción |
 |---|---|---|---|---|
-| **RN-ECO-001** | El proyecto no cuenta con presupuesto para pagar licencias, herramientas o servicios en la nube. | La selección de tecnologías del sistema está condicionada desde el inicio por esta restricción. No se pueden considerar alternativas que impliquen licencias o pagos, lo que limita las opciones de infraestructura, mapas y servicios en la nube disponibles para el proyecto. | • Limitación tecnológica<br>• Deuda técnica | Usar únicamente herramientas gratuitas y de código abierto como PostgreSQL, Leaflet y servicios cloud en su versión gratuita. |
-| **RN-ECO-002** | El municipio necesita que el sistema sea barato de mantener una vez entregado, no puede depender de servicios costosos. | El municipio opera con presupuestos institucionales limitados y no tiene garantizado un contrato de mantenimiento con el equipo de desarrollo. El sistema debe poder sostenerse con la infraestructura disponible sin requerir pagos recurrentes, lo que condiciona las decisiones de arquitectura desde el inicio. | • Abandono del sistema<br>• Dependencia de soluciones costosas | Diseñar la infraestructura con opciones económicas y evitar integraciones que generen costos recurrentes. |
-| **RN-ECO-003** | El proyecto irá recibiendo recursos según los avances aprobados por el cliente, no de forma anticipada. | El equipo no puede planificar suponiendo recursos constantes o anticipados. Cada entrega debe ser demostrable y aprobable por el cliente, lo que obliga a estructurar el proyecto en hitos verificables y condiciona cómo se priorizan las funcionalidades. | • Interrupción del proyecto<br>• Flujo de caja incierto | Planificar entregas incrementales claras y medibles que permitan al cliente aprobar y liberar recursos oportunamente. |
+| **RN-ECO-001** | El proyecto no cuenta con presupuesto para pagar licencias, herramientas o servicios en la nube. | La selección de tecnologías del sistema está condicionada desde el inicio por esta restricción. No se pueden considerar alternativas que impliquen licencias o pagos, lo que limita las opciones de infraestructura, mapas y servicios en la nube disponibles para el proyecto. | - Limitación tecnológica<br>- Deuda técnica | Usar únicamente herramientas gratuitas y de código abierto como PostgreSQL, Leaflet y servicios cloud en su versión gratuita. |
+| **RN-ECO-002** | El municipio necesita que el sistema sea barato de mantener una vez entregado, no puede depender de servicios costosos. | El municipio opera con presupuestos institucionales limitados y no tiene garantizado un contrato de mantenimiento con el equipo de desarrollo. El sistema debe poder sostenerse con la infraestructura disponible sin requerir pagos recurrentes, lo que condiciona las decisiones de arquitectura desde el inicio. | - Abandono del sistema<br>- Dependencia de soluciones costosas | Diseñar la infraestructura con opciones económicas y evitar integraciones que generen costos recurrentes. |
+| **RN-ECO-003** | El proyecto irá recibiendo recursos según los avances aprobados por el cliente, no de forma anticipada. | El equipo no puede planificar suponiendo recursos constantes o anticipados. Cada entrega debe ser demostrable y aprobable por el cliente, lo que obliga a estructurar el proyecto en hitos verificables y condiciona cómo se priorizan las funcionalidades. | - Interrupción del proyecto<br>- Flujo de caja incierto | Planificar entregas incrementales claras y medibles que permitan al cliente aprobar y liberar recursos oportunamente. |
 
 <a id="sec-2-3-4"></a>
 #### 2.3.4 Restricciones de Tiempo
@@ -667,9 +667,9 @@ Las restricciones de tiempo se derivan de la naturaleza académica del proyecto,
 
 | Código | Restricción | Importancia para el proyecto | Riesgos asociados | Plan de acción |
 |---|---|---|---|---|
-| **RN-TMP-001** | El proyecto tiene una fecha de entrega académica fija que no puede moverse. | Al ser un proyecto académico con fecha de entrega inamovible, el equipo debe priorizar desde el inicio qué funcionalidades son viables en el tiempo disponible. Esto obliga a tomar decisiones de alcance tempranas y a no dejar funcionalidades críticas para las últimas semanas. | • Entrega incompleta<br>• Retraso general | Priorizar las funcionalidades más críticas y tener un plan de contingencia para los casos en que algo tome más tiempo. |
-| **RN-TMP-002** | El cliente necesita ver resultados funcionales en poco tiempo para mantener su interés y compromiso con el proyecto. | Un proyecto que tarda mucho en mostrar algo concreto pierde relevancia y apoyo del cliente. | • Pérdida de interés del cliente<br>• Pérdida de valor del proyecto | Trabajar con entregas cortas y frecuentes que muestren avances reales desde las primeras semanas. |
-| **RN-TMP-003** | El avance del desarrollo depende de que el cliente revise y apruebe cada entrega, lo cual no siempre ocurre rápido. | Las demoras del cliente para dar feedback bloquean al equipo y generan retrasos que se van acumulando. | • Bloqueos al desarrollo<br>• Retrasos en cascada | Documentar supuestos de trabajo para avanzar sin esperar aprobación en cada detalle menor, y validar al final de cada ciclo. |
+| **RN-TMP-001** | El proyecto tiene una fecha de entrega académica fija que no puede moverse. | Al ser un proyecto académico con fecha de entrega inamovible, el equipo debe priorizar desde el inicio qué funcionalidades son viables en el tiempo disponible. Esto obliga a tomar decisiones de alcance tempranas y a no dejar funcionalidades críticas para las últimas semanas. | - Entrega incompleta<br>- Retraso general | Priorizar las funcionalidades más críticas y tener un plan de contingencia para los casos en que algo tome más tiempo. |
+| **RN-TMP-002** | El cliente necesita ver resultados funcionales en poco tiempo para mantener su interés y compromiso con el proyecto. | Un proyecto que tarda mucho en mostrar algo concreto pierde relevancia y apoyo del cliente. | - Pérdida de interés del cliente<br>- Pérdida de valor del proyecto | Trabajar con entregas cortas y frecuentes que muestren avances reales desde las primeras semanas. |
+| **RN-TMP-003** | El avance del desarrollo depende de que el cliente revise y apruebe cada entrega, lo cual no siempre ocurre rápido. | Las demoras del cliente para dar feedback bloquean al equipo y generan retrasos que se van acumulando. | - Bloqueos al desarrollo<br>- Retrasos en cascada | Documentar supuestos de trabajo para avanzar sin esperar aprobación en cada detalle menor, y validar al final de cada ciclo. |
 
 <a id="sec-2-3-5"></a>
 #### 2.3.5 Restricciones de Alcance
@@ -678,10 +678,10 @@ Las restricciones de alcance reflejan que el cliente no tiene completamente form
 
 | Código | Restricción | Importancia para el proyecto | Riesgos asociados | Plan de acción |
 |---|---|---|---|---|
-| **RN-SCO-001** | El cliente no tiene completamente definido cómo funciona su proceso de gestión de podas, y quiere ir construyendo sobre la marcha. | Sin una definición clara del proceso de gestión de podas, el equipo debe diseñar con supuestos que el cliente puede refutar más adelante. Esto hace que las decisiones de arquitectura y los flujos del sistema queden expuestos a cambios que obligan a rehacer trabajo ya construido. | • Cambios constantes<br>• Reprocesos | Avanzar con entregas pequeñas y documentar cada decisión, acordando con el cliente qué entra y qué no en cada ciclo. |
-| **RN-SCO-002** | Los requerimientos del sistema no están completamente definidos al inicio y pueden cambiar durante el proyecto. | El sistema no puede diseñarse ni desarrollarse con claridad si los requerimientos cambian constantemente. Esta restricción obliga al equipo a establecer acuerdos formales de control de cambios desde el inicio, para que cada modificación pase por un proceso de validación antes de ser incorporada. | • Desviación del proyecto<br>• Esfuerzo desperdiciado | Definir con claridad desde el inicio qué funcionalidades entran al proyecto basándose en los requisitos funcionales ya documentados, y gestionar cualquier cambio de alcance de forma formal y deliberada antes de incorporarlo al desarrollo. |
-| **RN-SCO-003** | El cliente espera que el equipo de TI defina cómo deben funcionar los procesos del negocio, cuando eso no es responsabilidad del equipo técnico. | Cuando el cliente delega en TI la definición del proceso de negocio, el equipo asume decisiones que no le corresponden y construye flujos basados en su interpretación, no en la realidad operativa del municipio. Esto es un riesgo estructural porque cualquier funcionalidad construida bajo ese supuesto puede ser rechazada completa por los actores reales del proceso. | • Mal diseño funcional<br>• Rechazo posterior de entregables | Dejar claro desde el inicio que TI construye y habilita, pero el negocio define cómo deben funcionar sus procesos. |
-| **RN-SCO-004** | Existe el riesgo de que durante el desarrollo se vayan agregando funcionalidades nuevas que no estaban planeadas. | Agregar cosas sin control hace que el proyecto nunca termine y el equipo se desgaste. | • Retraso del proyecto<br>• Sobrecarga del equipo | Controlar los cambios de alcance con una revisión formal antes de incluir cualquier nueva funcionalidad. |
+| **RN-SCO-001** | El cliente no tiene completamente definido cómo funciona su proceso de gestión de podas, y quiere ir construyendo sobre la marcha. | Sin una definición clara del proceso de gestión de podas, el equipo debe diseñar con supuestos que el cliente puede refutar más adelante. Esto hace que las decisiones de arquitectura y los flujos del sistema queden expuestos a cambios que obligan a rehacer trabajo ya construido. | - Cambios constantes<br>- Reprocesos | Avanzar con entregas pequeñas y documentar cada decisión, acordando con el cliente qué entra y qué no en cada ciclo. |
+| **RN-SCO-002** | Los requerimientos del sistema no están completamente definidos al inicio y pueden cambiar durante el proyecto. | El sistema no puede diseñarse ni desarrollarse con claridad si los requerimientos cambian constantemente. Esta restricción obliga al equipo a establecer acuerdos formales de control de cambios desde el inicio, para que cada modificación pase por un proceso de validación antes de ser incorporada. | - Desviación del proyecto<br>- Esfuerzo desperdiciado | Definir con claridad desde el inicio qué funcionalidades entran al proyecto basándose en los requisitos funcionales ya documentados, y gestionar cualquier cambio de alcance de forma formal y deliberada antes de incorporarlo al desarrollo. |
+| **RN-SCO-003** | El cliente espera que el equipo de TI defina cómo deben funcionar los procesos del negocio, cuando eso no es responsabilidad del equipo técnico. | Cuando el cliente delega en TI la definición del proceso de negocio, el equipo asume decisiones que no le corresponden y construye flujos basados en su interpretación, no en la realidad operativa del municipio. Esto es un riesgo estructural porque cualquier funcionalidad construida bajo ese supuesto puede ser rechazada completa por los actores reales del proceso. | - Mal diseño funcional<br>- Rechazo posterior de entregables | Dejar claro desde el inicio que TI construye y habilita, pero el negocio define cómo deben funcionar sus procesos. |
+| **RN-SCO-004** | Existe el riesgo de que durante el desarrollo se vayan agregando funcionalidades nuevas que no estaban planeadas. | Agregar cosas sin control hace que el proyecto nunca termine y el equipo se desgaste. | - Retraso del proyecto<br>- Sobrecarga del equipo | Controlar los cambios de alcance con una revisión formal antes de incluir cualquier nueva funcionalidad. |
 
 <a id="sec-2-3-6"></a>
 #### 2.3.6 Restricciones Operativas
@@ -690,7 +690,7 @@ Las restricciones operativas son condiciones del entorno del municipio de Rioneg
 
 | Código | Restricción | Impacto en el diseño |
 |---|---|---|
-| **RN-OPE-001** | El sistema debe operar en horario laboral 6 AM – 6 PM de lunes a sábado. | La disponibilidad del 99.5% se mide sobre el horario laboral establecido (ver Anexo C — SLA). Las ventanas de mantenimiento se ubican fuera de este rango. |
+| **RN-OPE-001** | El sistema debe operar en horario laboral 6 AM - 6 PM de lunes a sábado. | La disponibilidad del 99.5% se mide sobre el horario laboral establecido (ver Anexo C -- SLA). Las ventanas de mantenimiento se ubican fuera de este rango. |
 | **RN-OPE-002** | El sistema debe ser accesible desde dispositivos institucionales existentes sin actualizaciones de hardware. | Los requerimientos mínimos del cliente son: Intel Core i3, 4 GB RAM, navegador Chrome/Edge actualizado. El Frontend (Vue.js 3 + Bootstrap 5.3+) debe rendir adecuadamente en esa configuración base. |
 
 
@@ -709,7 +709,7 @@ A diferencia de las decisiones de diseño (que el equipo toma libremente), las r
 ---
 
 <a id="anexo-a"></a>
-### Anexo A — Matriz de Tiempos por Operación
+### Anexo A -- Matriz de Tiempos por Operación
 
 Los escenarios de rendimiento (ESC-CAL-REN-0002 y ESC-CAL-REN-0003) hacen referencia a una "Matriz de Tiempos" que define los tiempos máximos aceptables para cada tipo de operación. La matriz es configurable por el administrador y se almacena en el Parameter Catalog.
 
@@ -718,38 +718,38 @@ Los escenarios de rendimiento (ESC-CAL-REN-0002 y ESC-CAL-REN-0003) hacen refere
 | Registro de un árbol nuevo | 2 segundos | Escritura simple | Inventario |
 | Registro de una poda preventiva individual | 2 segundos | Escritura simple | Podas |
 | Registro de una PQR | 3 segundos | Escritura con archivos | PQR |
-| Carga de mapa con ≤ 500 árboles visibles | 3 segundos | Lectura geográfica | Inventario / Podas |
-| Carga de mapa con 500–2.000 árboles visibles | 5 segundos | Lectura geográfica | Inventario / Podas |
+| Carga de mapa con  500 árboles visibles | 3 segundos | Lectura geográfica | Inventario / Podas |
+| Carga de mapa con 500-2.000 árboles visibles | 5 segundos | Lectura geográfica | Inventario / Podas |
 | Carga del dashboard ejecutivo | 3 segundos | Lectura agregada | Reportes |
-| Generación de reporte filtrado (≤ 10.000 registros) | 10 segundos | Procesamiento | Reportes |
-| Exportación a PDF/Excel (≤ 10.000 registros) | 15 segundos | Procesamiento + I/O | Reportes |
+| Generación de reporte filtrado ( 10.000 registros) | 10 segundos | Procesamiento | Reportes |
+| Exportación a PDF/Excel ( 10.000 registros) | 15 segundos | Procesamiento + I/O | Reportes |
 | Autenticación de usuario | 2 segundos | Seguridad | Transversal |
 | Notificación push entregada | 1 minuto | Mensajería asíncrona | Transversal |
 
 ---
 
 <a id="anexo-b"></a>
-### Anexo B — Matriz de Permisos por Rol
+### Anexo B -- Matriz de Permisos por Rol
 
-El escenario ESC-CAL-SEG-0005 (visualización de módulos según el rol del usuario) se implementa con la siguiente matriz RBAC. Cada celda indica el nivel de acceso del rol al módulo: "Sí" total, "Lec" solo lectura, "Prop" solo propios, "—" sin acceso.
+El escenario ESC-CAL-SEG-0005 (visualización de módulos según el rol del usuario) se implementa con la siguiente matriz RBAC. Cada celda indica el nivel de acceso del rol al módulo: "Sí" total, "Lec" solo lectura, "Prop" solo propios, "--" sin acceso.
 
 | Módulo | Administrador | Encargado de Cuadrilla | Operario | Ciudadano |
 |---|:---:|:---:|:---:|:---:|
-| Administración | Sí | — | No | — |
-| Inventario (Árboles, Sectores, Familias) | Sí | Lec (sectores asignados) | Lec | — |
-| Podas — Planificación | Sí | Sí (sectores asignados) | — | No |
-| Podas — Ejecución y evidencia | Sí | Sí | Sí (asignadas) | — |
-| PQR — Crear | — | No | — | Sí |
-| PQR — Consultar | Sí | Prop (vinculadas a sus podas) | — | Prop (propias) |
-| PQR — Gestionar y cerrar | Sí | Sí (vinculadas a sus podas) | — | No |
-| Reportes y Dashboard | Sí | Lec (filtrado) | — | No |
-| Informes Automáticos | Sí | — | No | — |
+| Administración | Sí | -- | No | -- |
+| Inventario (Árboles, Sectores, Familias) | Sí | Lec (sectores asignados) | Lec | -- |
+| Podas -- Planificación | Sí | Sí (sectores asignados) | -- | No |
+| Podas -- Ejecución y evidencia | Sí | Sí | Sí (asignadas) | -- |
+| PQR -- Crear | -- | No | -- | Sí |
+| PQR -- Consultar | Sí | Prop (vinculadas a sus podas) | -- | Prop (propias) |
+| PQR -- Gestionar y cerrar | Sí | Sí (vinculadas a sus podas) | -- | No |
+| Reportes y Dashboard | Sí | Lec (filtrado) | -- | No |
+| Informes Automáticos | Sí | -- | No | -- |
 | Mapa interactivo | Sí | Sí (sectores asignados) | Lec (asignados) | Lec (público limitado) |
 
 ---
 
 <a id="anexo-c"></a>
-### Anexo C — Disponibilidad y SLA
+### Anexo C -- Disponibilidad y SLA
 
 El escenario ESC-CAL-DIS-0001 establece una disponibilidad mínima del 99.5% durante el horario laboral del municipio.
 
@@ -759,16 +759,16 @@ El sistema debe estar disponible para todos los usuarios durante el horario labo
 
 #### C.2 Métrica de Disponibilidad
 
-- **Horario evaluado:** 6:00 AM – 6:00 PM, lunes a sábado (incluye festivos)
-- **Total de horas hábiles al año:** 12 horas × 6 días × 52 semanas = 3.744 horas
-- **Tiempo máximo de indisponibilidad permitido:** 3.744 × 0.005 = **18,72 horas anuales** (≈ 1,56 horas / mes en promedio)
-- **Tiempo de detección de fallo (alerta automática):** ≤ 1 minuto (Prometheus + Grafana)
-- **Tiempo objetivo de restauración (RTO):** ≤ 30 minutos para fallos de un solo contenedor; ≤ 4 horas para fallos completos de la VM
+- **Horario evaluado:** 6:00 AM - 6:00 PM, lunes a sábado (incluye festivos)
+- **Total de horas hábiles al año:** 12 horas  6 días  52 semanas = 3.744 horas
+- **Tiempo máximo de indisponibilidad permitido:** 3.744  0.005 = **18,72 horas anuales** ( 1,56 horas / mes en promedio)
+- **Tiempo de detección de fallo (alerta automática):**  1 minuto (Prometheus + Grafana)
+- **Tiempo objetivo de restauración (RTO):**  30 minutos para fallos de un solo contenedor;  4 horas para fallos completos de la VM
 
 #### C.3 Horarios de Operación y Mantenimiento
 
-- **Operación productiva:** lunes a sábado, 6:00 AM – 6:00 PM
-- **Ventana de mantenimiento planificado:** sábado, 10:00 PM – 4:00 AM (fuera del horario evaluado)
+- **Operación productiva:** lunes a sábado, 6:00 AM - 6:00 PM
+- **Ventana de mantenimiento planificado:** sábado, 10:00 PM - 4:00 AM (fuera del horario evaluado)
 - **Backup automático de PostgreSQL:** diario, 2:00 AM (cifrado, retención de 30 días)
 - **Renovación de certificados SSL:** automática vía Traefik + Let's Encrypt
 
@@ -776,10 +776,10 @@ El sistema debe estar disponible para todos los usuarios durante el horario labo
 
 | Severidad | Descripción | Tiempo de respuesta | Tiempo de resolución |
 |---|---|---|---|
-| **Sev 1 — Crítica** | Sistema completamente inaccesible para todos los usuarios. | ≤ 15 min | ≤ 4 h |
-| **Sev 2 — Alta** | Un módulo crítico (Inventario, Podas, PQR) no disponible. | ≤ 30 min | ≤ 8 h |
-| **Sev 3 — Media** | Una funcionalidad no esencial falla. Existen alternativas. | ≤ 2 h | ≤ 24 h |
-| **Sev 4 — Baja** | Defecto cosmético o de baja prioridad. | ≤ 24 h | Próximo release |
+| **Sev 1 -- Crítica** | Sistema completamente inaccesible para todos los usuarios. |  15 min |  4 h |
+| **Sev 2 -- Alta** | Un módulo crítico (Inventario, Podas, PQR) no disponible. |  30 min |  8 h |
+| **Sev 3 -- Media** | Una funcionalidad no esencial falla. Existen alternativas. |  2 h |  24 h |
+| **Sev 4 -- Baja** | Defecto cosmético o de baja prioridad. |  24 h | Próximo release |
 
 ---
 
@@ -841,7 +841,7 @@ Cada actor obtiene impactos concretos al usar el sistema. Estos impactos son la 
 ---
 
 <a id="sec-3-4"></a>
-### 3.4 El Qué — Módulos y Entregables
+### 3.4 El Qué -- Módulos y Entregables
 
 Los impactos identificados en la sección anterior se materializan en módulos funcionales del sistema. Esta tabla cierra el mapa de impacto conectando cada actor con los módulos que va a usar y las funcionalidades concretas que recibe.
 
