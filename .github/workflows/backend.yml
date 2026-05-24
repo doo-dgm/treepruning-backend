@@ -74,7 +74,7 @@ jobs:
       - name: SonarQube Scan
         run: |
           chmod +x mvnw
-          ./mvnw sonar:sonar -DskipTests
+          ./mvnw verify sonar:sonar -DskipTests
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
