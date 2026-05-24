@@ -23,7 +23,7 @@
         <java.version>26</java.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <sonar.host.url>https://sonar.treepruning.org</sonar.host.url>
-        <sonar.projectKey>treepruning-backend</sonar.projectKey>
+        <sonar.projectKey>TreePruning-Backend</sonar.projectKey>
         <sonar.projectName>Tree Pruning Backend</sonar.projectName>
         <sonar.java.source>26</sonar.java.source>
         <sonar.coverage.exclusions>
