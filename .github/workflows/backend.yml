@@ -74,7 +74,12 @@ jobs:
       - name: SonarQube Scan
         run: |
           chmod +x mvnw
-          ./mvnw verify sonar:sonar -DskipTests
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            SONAR_KEY="TreePruning-Backend"
+          else
+            SONAR_KEY="TreePruning-Backend-Dev"
+          fi
+          ./mvnw verify sonar:sonar -DskipTests -Dsonar.projectKey=$SONAR_KEY
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
