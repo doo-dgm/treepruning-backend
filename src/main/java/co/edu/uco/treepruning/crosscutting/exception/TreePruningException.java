@@ -12,7 +12,7 @@ public class TreePruningException extends RuntimeException {
     private final int httpStatus;
     private final String code;
     private final String technicalCode;
-    private final Map<String, Object> variables;
+    private final transient Map<String, Object> variables;
 
     // Constructor original — backward compatible
     protected TreePruningException(String userMessage,

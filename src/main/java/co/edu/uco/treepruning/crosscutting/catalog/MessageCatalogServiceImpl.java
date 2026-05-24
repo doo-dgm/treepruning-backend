@@ -2,7 +2,9 @@ package co.edu.uco.treepruning.crosscutting.catalog;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -16,16 +18,17 @@ public class MessageCatalogServiceImpl implements MessageCatalogService {
 
     private final WebClient strapiWebClient;
 
+    // Self-reference via proxy: necesario para que @Cacheable funcione
+    // cuando resolve(codigo, vars) delega a resolve(codigo).
+    // @Lazy evita la dependencia circular en la inicializacion del contexto.
+    @Lazy
+    @Autowired
+    private MessageCatalogService self;
+
     public MessageCatalogServiceImpl(WebClient strapiWebClient) {
         this.strapiWebClient = strapiWebClient;
     }
 
-    /**
-     * Resuelve el texto de un mensaje por su codigo.
-     * El resultado se cachea en Caffeine durante 5 minutos.
-     * Si Strapi no responde o el codigo no existe, devuelve el codigo literal
-     * como fallback para que sea identificable en logs/cliente.
-     */
     @Override
     @Cacheable(value = "messages", key = "#codigo")
     public String resolve(String codigo) {
@@ -54,6 +57,6 @@ public class MessageCatalogServiceImpl implements MessageCatalogService {
 
     @Override
     public String resolve(String codigo, Map<String, Object> vars) {
-        return TemplateRenderer.render(resolve(codigo), vars);
+        return TemplateRenderer.render(self.resolve(codigo), vars);
     }
 }
