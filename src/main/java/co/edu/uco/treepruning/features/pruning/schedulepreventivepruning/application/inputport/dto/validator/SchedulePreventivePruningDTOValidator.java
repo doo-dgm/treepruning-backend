@@ -24,7 +24,7 @@ public final class SchedulePreventivePruningDTOValidator {
         }
     }
 
-    public static void validatePlannedDate(LocalDate plannedDate) {
+    public static void validatePlannedDate(LocalDate plannedDate,int horizonMonths) {
         if (DateHelper.isDefaultDate(
                 DateHelper.getDefault(plannedDate))) {
             throw PlannedDateNotValidForPruningException.createDateIsNull();
@@ -32,7 +32,7 @@ public final class SchedulePreventivePruningDTOValidator {
         if (!DateHelper.isLocalDateAfterOrEquals(plannedDate)) {
             throw PlannedDateNotValidForPruningException.createDateInPast();
         }
-        if (!DateHelper.isLocalDateBefore(plannedDate)) {
+        if (!DateHelper.isLocalDateBefore(plannedDate, horizonMonths)) {
             throw PlannedDateNotValidForPruningException.createDateBeyondHorizon();
         }
     }

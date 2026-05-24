@@ -33,29 +33,29 @@ class SchedulePreventivePruningDTOValidatorTest {
                 .isInstanceOf(TreePruningException.class);
     }
 
-    // ── validatePlannedDate ───────────────────────────────────────────────────
+ // ── validatePlannedDate ───────────────────────────────────────────────────
 
     @Test
     void validatePlannedDate_withTodayDate_doesNotThrow() {
         assertThatNoException()
-                .isThrownBy(() -> SchedulePreventivePruningDTOValidator.validatePlannedDate(LocalDate.now()));
+                .isThrownBy(() -> SchedulePreventivePruningDTOValidator.validatePlannedDate(LocalDate.now(), 12));
     }
 
     @Test
     void validatePlannedDate_withFutureDate_doesNotThrow() {
         assertThatNoException()
-                .isThrownBy(() -> SchedulePreventivePruningDTOValidator.validatePlannedDate(LocalDate.now().plusDays(7)));
+                .isThrownBy(() -> SchedulePreventivePruningDTOValidator.validatePlannedDate(LocalDate.now().plusDays(7), 12));
     }
 
     @Test
     void validatePlannedDate_withNull_throwsException() {
-        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validatePlannedDate(null))
+        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validatePlannedDate(null, 12))
                 .isInstanceOf(TreePruningException.class);
     }
 
     @Test
     void validatePlannedDate_withPastDate_throwsException() {
-        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validatePlannedDate(LocalDate.now().minusDays(1)))
+        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validatePlannedDate(LocalDate.now().minusDays(1), 12))
                 .isInstanceOf(TreePruningException.class);
     }
 

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import co.edu.uco.treepruning.crosscutting.config.ParameterCatalogService;
 import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.inputport.SchedulePreventivePruningInputPort;
 import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.inputport.dto.SchedulePreventivePruningDTO;
 import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.inputport.dto.validator.SchedulePreventivePruningDTOValidator;
@@ -21,14 +22,17 @@ public class SchedulePreventivePruningInteractor implements SchedulePreventivePr
     private final SchedulePreventivePruningUseCase useCase;
     private final SchedulePreventivePruningDTOMapper mapper;
     private final PhotoStoragePort photoStorage;
+    private final ParameterCatalogService parameterCatalog;
 
     public SchedulePreventivePruningInteractor(
             SchedulePreventivePruningUseCase useCase,
             SchedulePreventivePruningDTOMapper mapper,
-            PhotoStoragePort photoStorage) {
+            PhotoStoragePort photoStorage,
+            ParameterCatalogService parameterCatalog) {
         this.useCase = useCase;
         this.mapper = mapper;
         this.photoStorage = photoStorage;
+        this.parameterCatalog = parameterCatalog;
     }
 
     @Override
@@ -41,8 +45,6 @@ public class SchedulePreventivePruningInteractor implements SchedulePreventivePr
         SchedulePreventivePruningDTOValidator.validatePhoto(
                 data.getPhotoBytes(), data.getPhotoContentType());
 
-        // Si la transacción de DB falla más adelante, la foto queda huérfana en MinIO.
-        // TODO: añadir limpieza compensatoria o mover el upload al final del flujo.
         if (data.getPhotoBytes() != null && data.getPhotoBytes().length > 0) {
             String key = photoStorage.upload(
                     data.getPhotoBytes(),
@@ -56,7 +58,11 @@ public class SchedulePreventivePruningInteractor implements SchedulePreventivePr
 
         log.debug("SchedulePreventivePruning — running validation rules");
         SchedulePreventivePruningDTOValidator.validateStatus(domain.getStatus());
-        SchedulePreventivePruningDTOValidator.validatePlannedDate(domain.getPlannedDate());
+
+        int horizonMonths = parameterCatalog.getIntValue("podas.horizonte-meses", 12);
+        log.debug("SchedulePreventivePruning — horizonte de programación: {} meses (desde Strapi)", horizonMonths);
+        SchedulePreventivePruningDTOValidator.validatePlannedDate(domain.getPlannedDate(), horizonMonths);
+
         SchedulePreventivePruningDTOValidator.validateExecutedDate(domain.getExecutedDate(), domain.getPlannedDate());
         SchedulePreventivePruningDTOValidator.validateTree(domain.getTree());
         SchedulePreventivePruningDTOValidator.validateQuadrille(domain.getQuadrille());

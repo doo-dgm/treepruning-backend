@@ -39,4 +39,7 @@ public final class DateHelper {
     public static boolean isLocalDateBefore(final LocalDate value) {
         return value.isBefore(CrossCuttingConstants.maxSchedulingDate());
     }
+    public static boolean isLocalDateBefore(final LocalDate value, int horizonMonths) {
+        return value.isBefore(LocalDate.now().plusMonths(horizonMonths));
+    }
 }
