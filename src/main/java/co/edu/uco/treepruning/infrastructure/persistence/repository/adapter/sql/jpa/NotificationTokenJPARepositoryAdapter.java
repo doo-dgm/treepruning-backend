@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.stereotype.Repository;
+
 import co.edu.uco.treepruning.features.notification.registertoken.application.usecase.domain.NotificationTokenDomain;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.NotificationTokenRepository;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.NotificationTokenEntity;
 
+@Repository
 public class NotificationTokenJPARepositoryAdapter implements NotificationTokenRepository{
 
 	@Override
