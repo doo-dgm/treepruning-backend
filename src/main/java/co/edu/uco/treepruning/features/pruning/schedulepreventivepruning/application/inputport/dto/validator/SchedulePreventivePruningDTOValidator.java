@@ -77,11 +77,14 @@ public final class SchedulePreventivePruningDTOValidator {
         }
     }
 
+    /**
+     * El registro fotográfico es opcional al programar una poda preventiva:
+     * la foto se sube luego al ejecutar la poda en campo. Si está presente,
+     * solo se valida que el largo de la key sea razonable.
+     */
     public static void validatePhotographicRecordPath(String photographicRecordPath) {
         if (TextHelper.isEmptyWithTrim(photographicRecordPath)) {
-            throw TreePruningException.create(
-                    "El registro fotográfico de la poda es obligatorio.",
-                    "SchedulePreventivePruningDTO.photographicRecordPath: null or empty");
+            return;
         }
         if (!TextHelper.lengthIsValidWithTrim(photographicRecordPath,
                 CrossCuttingConstants.SHORT_TEXT_MIN_LENGTH,
@@ -90,6 +93,35 @@ public final class SchedulePreventivePruningDTOValidator {
                     "La ruta del registro fotográfico no puede superar los 500 caracteres.",
                     "SchedulePreventivePruningDTO.photographicRecordPath: exceeds 500 characters");
         }
+    }
+
+    private static final long PHOTO_MAX_SIZE_BYTES = 5L * 1024L * 1024L;
+
+    public static void validatePhoto(byte[] bytes, String contentType) {
+        if (bytes == null || bytes.length == 0) {
+            return;
+        }
+        if (bytes.length > PHOTO_MAX_SIZE_BYTES) {
+            throw TreePruningException.create(
+                    "La fotografía supera el tamaño máximo permitido de 5 MB.",
+                    "SchedulePreventivePruningDTO.photo: size=" + bytes.length + " bytes");
+        }
+        if (!isAllowedImageMime(contentType)) {
+            throw TreePruningException.create(
+                    "Formato de imagen no soportado. Use JPEG, PNG o WebP.",
+                    "SchedulePreventivePruningDTO.photo: contentType=" + contentType);
+        }
+    }
+
+    private static boolean isAllowedImageMime(String contentType) {
+        if (contentType == null) {
+            return false;
+        }
+        String ct = contentType.toLowerCase();
+        return "image/jpeg".equals(ct)
+                || "image/jpg".equals(ct)
+                || "image/png".equals(ct)
+                || "image/webp".equals(ct);
     }
 
     public static void validateObservations(String observations) {

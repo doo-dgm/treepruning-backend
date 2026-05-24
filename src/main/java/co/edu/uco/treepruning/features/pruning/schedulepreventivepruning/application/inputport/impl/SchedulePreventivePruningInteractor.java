@@ -10,6 +10,7 @@ import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.applica
 import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.inputport.impl.mapper.SchedulePreventivePruningDTOMapper;
 import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.SchedulePreventivePruningUseCase;
 import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.domain.SchedulePreventivePruningDomain;
+import co.edu.uco.treepruning.infrastructure.storage.PhotoStoragePort;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -19,17 +20,37 @@ public class SchedulePreventivePruningInteractor implements SchedulePreventivePr
 
     private final SchedulePreventivePruningUseCase useCase;
     private final SchedulePreventivePruningDTOMapper mapper;
+    private final PhotoStoragePort photoStorage;
 
     public SchedulePreventivePruningInteractor(
-            SchedulePreventivePruningUseCase useCase, SchedulePreventivePruningDTOMapper mapper) {
+            SchedulePreventivePruningUseCase useCase,
+            SchedulePreventivePruningDTOMapper mapper,
+            PhotoStoragePort photoStorage) {
         this.useCase = useCase;
         this.mapper = mapper;
+        this.photoStorage = photoStorage;
     }
 
     @Override
     public Void execute(SchedulePreventivePruningDTO data) {
-        log.info("SchedulePreventivePruning — received request: tree={}, plannedDate={}",
-                data.getTree(), data.getPlannedDate());
+        log.info("SchedulePreventivePruning — received request: tree={}, plannedDate={}, photo={}",
+                data.getTree(), data.getPlannedDate(),
+                data.getPhotoBytes() != null ? data.getPhotoBytes().length + "B" : "none");
+
+        log.debug("SchedulePreventivePruning — validating photo metadata");
+        SchedulePreventivePruningDTOValidator.validatePhoto(
+                data.getPhotoBytes(), data.getPhotoContentType());
+
+        // Si la transacción de DB falla más adelante, la foto queda huérfana en MinIO.
+        // TODO: añadir limpieza compensatoria o mover el upload al final del flujo.
+        if (data.getPhotoBytes() != null && data.getPhotoBytes().length > 0) {
+            String key = photoStorage.upload(
+                    data.getPhotoBytes(),
+                    data.getPhotoContentType(),
+                    data.getPhotoOriginalFilename());
+            data.setPhotographicRecordPath(key);
+            log.info("SchedulePreventivePruning — photo uploaded with key={}", key);
+        }
 
         SchedulePreventivePruningDomain domain = mapper.toDomain(data);
 

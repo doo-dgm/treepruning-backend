@@ -15,6 +15,8 @@ import co.edu.uco.treepruning.crosscutting.response.ApiResponse;
 import co.edu.uco.treepruning.crosscutting.util.CrossCuttingConstants;
 import co.edu.uco.treepruning.features.pruning.getpruningbyfilter.application.inputport.GetPruningByFilterInputPort;
 import co.edu.uco.treepruning.features.pruning.getpruningbyfilter.application.inputport.dto.GetPruningDTO;
+import co.edu.uco.treepruning.features.pruning.getpruningphotourl.application.inputport.GetPruningPhotoUrlInputPort;
+import co.edu.uco.treepruning.features.pruning.getpruningphotourl.application.inputport.dto.PruningPhotoUrlDTO;
 import co.edu.uco.treepruning.features.quadrille.getquadrillebyfilter.application.inputport.dto.GetQuadrilleDTO;
 import co.edu.uco.treepruning.features.status.getstatusbyfilter.application.inputport.dto.GetStatusDTO;
 import co.edu.uco.treepruning.features.tree.gettreebyfilter.application.inputport.dto.GetTreeDTO;
@@ -25,9 +27,13 @@ import co.edu.uco.treepruning.features.type.gettypebyfilter.application.inputpor
 public class GetPruningController {
 
     private final GetPruningByFilterInputPort inputPort;
+    private final GetPruningPhotoUrlInputPort getPhotoUrlInputPort;
 
-    public GetPruningController(GetPruningByFilterInputPort inputPort) {
+    public GetPruningController(
+            GetPruningByFilterInputPort inputPort,
+            GetPruningPhotoUrlInputPort getPhotoUrlInputPort) {
         this.inputPort = inputPort;
+        this.getPhotoUrlInputPort = getPhotoUrlInputPort;
     }
 
     /**
@@ -70,5 +76,15 @@ public class GetPruningController {
             throw ResourceNotFoundException.create("Pruning", id);
         }
         return ResponseEntity.ok(ApiResponse.ok("Poda obtenida exitosamente.", result.content().get(0)));
+    }
+
+    /**
+     * Returns a short-lived presigned URL for the photographic evidence of the pruning.
+     * Throws 404 if the pruning does not exist or has no photo attached.
+     */
+    @GetMapping("/{id}/photo-url")
+    public ResponseEntity<ApiResponse<PruningPhotoUrlDTO>> getPhotoUrl(@PathVariable UUID id) {
+        PruningPhotoUrlDTO dto = getPhotoUrlInputPort.execute(id);
+        return ResponseEntity.ok(ApiResponse.ok("Enlace temporal generado.", dto));
     }
 }

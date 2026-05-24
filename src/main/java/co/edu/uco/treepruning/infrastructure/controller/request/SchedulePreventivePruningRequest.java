@@ -10,7 +10,6 @@ public record SchedulePreventivePruningRequest(
         UUID tree,
         UUID quadrille,
         UUID type,
-        String photographicRecordPath,
         String observations
 ) {
 }
