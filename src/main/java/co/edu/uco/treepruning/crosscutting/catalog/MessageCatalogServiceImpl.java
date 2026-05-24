@@ -2,7 +2,6 @@ package co.edu.uco.treepruning.crosscutting.catalog;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -20,13 +19,13 @@ public class MessageCatalogServiceImpl implements MessageCatalogService {
 
     // Self-reference via proxy: necesario para que @Cacheable funcione
     // cuando resolve(codigo, vars) delega a resolve(codigo).
-    // @Lazy evita la dependencia circular en la inicializacion del contexto.
-    @Lazy
-    @Autowired
-    private MessageCatalogService self;
+    // @Lazy en el parametro evita la dependencia circular en la inicializacion del contexto.
+    private final MessageCatalogService self;
 
-    public MessageCatalogServiceImpl(WebClient strapiWebClient) {
+    public MessageCatalogServiceImpl(WebClient strapiWebClient,
+            @Lazy MessageCatalogService self) {
         this.strapiWebClient = strapiWebClient;
+        this.self = self;
     }
 
     @Override
