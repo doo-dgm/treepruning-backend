@@ -1,6 +1,7 @@
 package co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.rules;
 
 import java.io.Serial;
+import java.util.Map;
 import java.util.UUID;
 import co.edu.uco.treepruning.crosscutting.exception.TreePruningException;
 
@@ -9,16 +10,16 @@ public final class PruningTypeNotFoundForPruningException extends TreePruningExc
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private PruningTypeNotFoundForPruningException(String userMessage,
-            String technicalMessage) {
-        super(userMessage, technicalMessage, 404);
+    private PruningTypeNotFoundForPruningException(String code, String technicalCode,
+            Map<String, Object> variables) {
+        super(code, technicalCode, variables, 404);
     }
 
-    public static PruningTypeNotFoundForPruningException create(
-            UUID typeId) {
+    public static PruningTypeNotFoundForPruningException create(UUID typeId) {
         return new PruningTypeNotFoundForPruningException(
-            "No se encontró el tipo de poda seleccionado.",
-            "SchedulePreventivePruning: pruning type not found with id=" + typeId
+                "USER.ERROR.PRUNING.TYPE_NOT_FOUND",
+                "TECHNICAL.ERROR.PRUNING.TYPE_NOT_FOUND",
+                Map.of("typeId", typeId)
         );
     }
 }

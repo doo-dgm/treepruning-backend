@@ -2,6 +2,7 @@ package co.edu.uco.treepruning.infrastructure.storage;
 
 import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -67,9 +68,10 @@ public class MinioPhotoStorageAdapter implements PhotoStoragePort {
         } catch (Exception e) {
             log.error("MinIO upload failed: bucket={}, key={}, error={}",
                     props.getBucket(), key, e.getMessage(), e);
-            throw TreePruningException.create(
-                    "No se pudo guardar el registro fotográfico de la poda.",
-                    "MinIO upload failed for key " + key + ": " + e.getMessage());
+            throw TreePruningException.fromCode(
+                    "USER.ERROR.STORAGE.UPLOAD_FAILED",
+                    "TECHNICAL.ERROR.STORAGE.UPLOAD_FAILED",
+                    Map.of("key", key, "error", e.getMessage() != null ? e.getMessage() : "unknown"));
         }
     }
 
@@ -85,9 +87,10 @@ public class MinioPhotoStorageAdapter implements PhotoStoragePort {
         } catch (Exception e) {
             log.error("MinIO presign failed: bucket={}, key={}, error={}",
                     props.getBucket(), key, e.getMessage(), e);
-            throw TreePruningException.create(
-                    "No se pudo generar el enlace de la fotografía.",
-                    "MinIO presign failed for key " + key + ": " + e.getMessage());
+            throw TreePruningException.fromCode(
+                    "USER.ERROR.STORAGE.PRESIGN_FAILED",
+                    "TECHNICAL.ERROR.STORAGE.PRESIGN_FAILED",
+                    Map.of("key", key, "error", e.getMessage() != null ? e.getMessage() : "unknown"));
         }
     }
 

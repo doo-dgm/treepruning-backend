@@ -1,6 +1,7 @@
 package co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.inputport.dto.validator;
 
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.UUID;
 
 import co.edu.uco.treepruning.crosscutting.exception.TreePruningException;
@@ -18,13 +19,13 @@ public final class SchedulePreventivePruningDTOValidator {
     public static void validateStatus(UUID status) {
         if (UUIDHelper.isDefaultUUID(
                 UUIDHelper.getDefault(status))) {
-            throw TreePruningException.create(
-                    "El estado de la poda es obligatorio.",
-                    "SchedulePreventivePruningDTO.status: null or default UUID");
+            throw TreePruningException.fromCode(
+                    "USER.VALIDATION.PRUNING.STATUS_REQUIRED",
+                    "TECHNICAL.VALIDATION.PRUNING.STATUS_REQUIRED");
         }
     }
 
-    public static void validatePlannedDate(LocalDate plannedDate,int horizonMonths) {
+    public static void validatePlannedDate(LocalDate plannedDate, int horizonMonths) {
         if (DateHelper.isDefaultDate(
                 DateHelper.getDefault(plannedDate))) {
             throw PlannedDateNotValidForPruningException.createDateIsNull();
@@ -38,48 +39,48 @@ public final class SchedulePreventivePruningDTOValidator {
     }
 
     public static void validateExecutedDate(LocalDate executedDate, LocalDate plannedDate) {
-        // executedDate is optional when scheduling — only validate if explicitly set
+        // executedDate is optional when scheduling -- only validate if explicitly set
         // (i.e. not the default sentinel applied by the DTO setter).
         if (DateHelper.isDefaultDate(executedDate)) {
             return;
         }
         if (executedDate.isBefore(plannedDate)) {
-            throw TreePruningException.create(
-                    "La fecha de ejecución no puede ser anterior a la fecha programada.",
-                    "SchedulePreventivePruningDTO.executedDate: before plannedDate");
+            throw TreePruningException.fromCode(
+                    "USER.VALIDATION.PRUNING.EXECUTED_BEFORE_PLANNED",
+                    "TECHNICAL.VALIDATION.PRUNING.EXECUTED_BEFORE_PLANNED");
         }
     }
 
     public static void validateTree(UUID tree) {
         if (UUIDHelper.isDefaultUUID(
                 UUIDHelper.getDefault(tree))) {
-            throw TreePruningException.create(
-                    "El árbol a intervenir es obligatorio.",
-                    "SchedulePreventivePruningDTO.tree: null or default UUID");
+            throw TreePruningException.fromCode(
+                    "USER.VALIDATION.PRUNING.TREE_REQUIRED",
+                    "TECHNICAL.VALIDATION.PRUNING.TREE_REQUIRED");
         }
     }
 
     public static void validateQuadrille(UUID quadrille) {
         if (UUIDHelper.isDefaultUUID(
                 UUIDHelper.getDefault(quadrille))) {
-            throw TreePruningException.create(
-                    "La cuadrilla asignada es obligatoria.",
-                    "SchedulePreventivePruningDTO.quadrille: null or default UUID");
+            throw TreePruningException.fromCode(
+                    "USER.VALIDATION.PRUNING.QUADRILLE_REQUIRED",
+                    "TECHNICAL.VALIDATION.PRUNING.QUADRILLE_REQUIRED");
         }
     }
 
     public static void validateType(UUID type) {
         if (UUIDHelper.isDefaultUUID(
                 UUIDHelper.getDefault(type))) {
-            throw TreePruningException.create(
-                    "El tipo de poda es obligatorio.",
-                    "SchedulePreventivePruningDTO.type: null or default UUID");
+            throw TreePruningException.fromCode(
+                    "USER.VALIDATION.PRUNING.TYPE_REQUIRED",
+                    "TECHNICAL.VALIDATION.PRUNING.TYPE_REQUIRED");
         }
     }
 
     /**
-     * El registro fotográfico es opcional al programar una poda preventiva:
-     * la foto se sube luego al ejecutar la poda en campo. Si está presente,
+     * El registro fotografico es opcional al programar una poda preventiva:
+     * la foto se sube luego al ejecutar la poda en campo. Si esta presente,
      * solo se valida que el largo de la key sea razonable.
      */
     public static void validatePhotographicRecordPath(String photographicRecordPath) {
@@ -89,9 +90,9 @@ public final class SchedulePreventivePruningDTOValidator {
         if (!TextHelper.lengthIsValidWithTrim(photographicRecordPath,
                 CrossCuttingConstants.SHORT_TEXT_MIN_LENGTH,
                 CrossCuttingConstants.SHORT_TEXT_MAX_LENGTH)) {
-            throw TreePruningException.create(
-                    "La ruta del registro fotográfico no puede superar los 500 caracteres.",
-                    "SchedulePreventivePruningDTO.photographicRecordPath: exceeds 500 characters");
+            throw TreePruningException.fromCode(
+                    "USER.VALIDATION.PRUNING.PHOTO_TOO_LONG",
+                    "TECHNICAL.VALIDATION.PRUNING.PHOTO_TOO_LONG");
         }
     }
 
@@ -102,14 +103,16 @@ public final class SchedulePreventivePruningDTOValidator {
             return;
         }
         if (bytes.length > PHOTO_MAX_SIZE_BYTES) {
-            throw TreePruningException.create(
-                    "La fotografía supera el tamaño máximo permitido de 5 MB.",
-                    "SchedulePreventivePruningDTO.photo: size=" + bytes.length + " bytes");
+            throw TreePruningException.fromCode(
+                    "USER.VALIDATION.PRUNING.PHOTO_MAX_SIZE",
+                    "TECHNICAL.VALIDATION.PRUNING.PHOTO_MAX_SIZE",
+                    Map.of("size", bytes.length));
         }
         if (!isAllowedImageMime(contentType)) {
-            throw TreePruningException.create(
-                    "Formato de imagen no soportado. Use JPEG, PNG o WebP.",
-                    "SchedulePreventivePruningDTO.photo: contentType=" + contentType);
+            throw TreePruningException.fromCode(
+                    "USER.VALIDATION.PRUNING.PHOTO_INVALID_FORMAT",
+                    "TECHNICAL.VALIDATION.PRUNING.PHOTO_INVALID_FORMAT",
+                    Map.of("contentType", contentType != null ? contentType : "null"));
         }
     }
 
@@ -126,16 +129,16 @@ public final class SchedulePreventivePruningDTOValidator {
 
     public static void validateObservations(String observations) {
         if (TextHelper.isEmptyWithTrim(observations)) {
-            throw TreePruningException.create(
-                    "Las observaciones de la poda son obligatorias.",
-                    "SchedulePreventivePruningDTO.observations: null or empty");
+            throw TreePruningException.fromCode(
+                    "USER.VALIDATION.PRUNING.OBSERVATIONS_REQUIRED",
+                    "TECHNICAL.VALIDATION.PRUNING.OBSERVATIONS_REQUIRED");
         }
         if (!TextHelper.lengthIsValidWithTrim(observations,
                 CrossCuttingConstants.OBSERVATIONS_MIN_LENGTH,
                 CrossCuttingConstants.OBSERVATIONS_MAX_LENGTH)) {
-            throw TreePruningException.create(
-                    "Las observaciones deben tener entre 10 y 500 caracteres.",
-                    "SchedulePreventivePruningDTO.observations: length out of range [10, 500]");
+            throw TreePruningException.fromCode(
+                    "USER.VALIDATION.PRUNING.OBSERVATIONS_LENGTH",
+                    "TECHNICAL.VALIDATION.PRUNING.OBSERVATIONS_LENGTH");
         }
     }
 }

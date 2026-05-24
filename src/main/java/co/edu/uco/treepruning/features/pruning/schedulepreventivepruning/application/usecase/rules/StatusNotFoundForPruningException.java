@@ -1,6 +1,7 @@
 package co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.rules;
 
 import java.io.Serial;
+import java.util.Map;
 import java.util.UUID;
 import co.edu.uco.treepruning.crosscutting.exception.TreePruningException;
 
@@ -9,16 +10,16 @@ public final class StatusNotFoundForPruningException extends TreePruningExceptio
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private StatusNotFoundForPruningException(String userMessage,
-            String technicalMessage) {
-        super(userMessage, technicalMessage, 404);
+    private StatusNotFoundForPruningException(String code, String technicalCode,
+            Map<String, Object> variables) {
+        super(code, technicalCode, variables, 404);
     }
 
-    public static StatusNotFoundForPruningException create(
-            UUID statusId) {
+    public static StatusNotFoundForPruningException create(UUID statusId) {
         return new StatusNotFoundForPruningException(
-            "No se encontró el estado seleccionado para la poda.",
-            "SchedulePreventivePruning: status not found with id=" + statusId
+                "USER.ERROR.PRUNING.STATUS_NOT_FOUND",
+                "TECHNICAL.ERROR.PRUNING.STATUS_NOT_FOUND",
+                Map.of("statusId", statusId)
         );
     }
 }
