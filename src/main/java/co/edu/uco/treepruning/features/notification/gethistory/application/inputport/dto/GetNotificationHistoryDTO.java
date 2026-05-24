@@ -16,14 +16,6 @@ public class GetNotificationHistoryDTO {
         setSize(size);
     }
 
-    public GetNotificationHistoryDTO(UUID userId) {
-        this(userId, 0, 20);
-    }
-
-    public GetNotificationHistoryDTO() {
-        this(UUIDHelper.getDefault());
-    }
-
     public UUID getUserId() { return userId; }
     public int  getPage()   { return page;   }
     public int  getSize()   { return size;   }

@@ -19,14 +19,6 @@ public class SendNotificationDTO {
         setBody(body);
     }
 
-    public SendNotificationDTO(UUID userId, UUID pruningId) {
-        this(userId, pruningId, "", "");
-    }
-
-    public SendNotificationDTO() {
-        
-    }
-
     public UUID   getUserId()   { return userId;   }
     public UUID getPruningId() { return pruningId; }
     public String getTitle()    { return title;    }

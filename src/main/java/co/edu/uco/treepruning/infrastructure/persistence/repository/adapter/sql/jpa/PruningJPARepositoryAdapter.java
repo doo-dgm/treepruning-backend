@@ -70,4 +70,10 @@ public class PruningJPARepositoryAdapter implements PruningRepository {
     public boolean existsByTreeAndPlannedDate(final UUID treeId, final LocalDate plannedDate) {
         return repository.existsByTree_IdAndPlannedDate(treeId, plannedDate);
     }
+
+	@Override
+	public PruningEntity findById(UUID id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

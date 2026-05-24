@@ -121,17 +121,25 @@
         </dependency>
         
         <!-- OWASP Java HTML Sanitizer -->
-<dependency>
-    <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
-    <artifactId>owasp-java-html-sanitizer</artifactId>
-    <version>20240325.1</version>
-</dependency>
+		<dependency>
+		    <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+		    <artifactId>owasp-java-html-sanitizer</artifactId>
+		    <version>20240325.1</version>
+		</dependency>
         
         <dependency>
 		    <groupId>com.google.firebase</groupId>
 		    <artifactId>firebase-admin</artifactId>
 		    <version>9.9.0</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		    <version>4.1.0-M4</version>
+		    <scope>compile</scope>
+		</dependency>
+
 
     </dependencies>
 

@@ -14,14 +14,6 @@ public final class RegisterTokenDTO {
         setFcmToken(fcmToken);
     }
 
-    public RegisterTokenDTO(UUID userId) {
-        this(userId, "");
-    }
-
-    public RegisterTokenDTO() {
-        this(UUIDHelper.getDefault());
-    }
-
     public UUID   getUserId()  { return userId;   }
     public String getFcmToken() { return fcmToken; }
 

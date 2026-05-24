@@ -12,17 +12,21 @@ public class NotificationHistoryItemDTO {
     private UUID          id;
     private String        title;
     private String        body;
-    private String        referenceId;
-    private String        type;
+    private UUID        pruningId;
+    private UUID        type;
     private LocalDateTime sentAt;
     private boolean       success;
+    	
+    public NotificationHistoryItemDTO() {
+
+	}
 
     public NotificationHistoryItemDTO(
             UUID id,
             String title,
             String body,
-            String referenceId,
-            String type,
+            UUID referenceId,
+            UUID type,
             LocalDateTime sentAt,
             boolean success) {
         setId(id);
@@ -34,15 +38,12 @@ public class NotificationHistoryItemDTO {
         setSuccess(success);
     }
 
-    public NotificationHistoryItemDTO() {
-        this(UUIDHelper.getDefault(), "", "", "", "", LocalDateTime.now(), false);
-    }
 
     public UUID          getId()          { return id;          }
     public String        getTitle()       { return title;       }
     public String        getBody()        { return body;        }
-    public String        getReferenceId() { return referenceId; }
-    public String        getType()        { return type;        }
+    public UUID        getReferenceId() { return pruningId; }
+    public UUID        getType()        { return type;        }
     public LocalDateTime getSentAt()      { return sentAt;      }
     public boolean       isSuccess()      { return success;     }
 
@@ -58,12 +59,12 @@ public class NotificationHistoryItemDTO {
         this.body = TextHelper.getDefault(body);
     }
 
-    private void setReferenceId(final String referenceId) {
-        this.referenceId = TextHelper.getDefault(referenceId);
+    private void setReferenceId(final UUID pruningId) {
+        this.pruningId = UUIDHelper.getDefault(pruningId);
     }
 
-    private void setType(final String type) {
-        this.type = TextHelper.getDefault(type);
+    private void setType(final UUID type) {
+        this.type = UUIDHelper.getDefault(type);
     }
 
     private void setSentAt(final LocalDateTime sentAt) {

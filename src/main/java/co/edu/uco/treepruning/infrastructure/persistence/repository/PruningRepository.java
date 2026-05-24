@@ -16,6 +16,8 @@ public interface PruningRepository {
 
     PageResult<PruningEntity> findByFilter(UUID id, UUID statusId, UUID treeId,
             UUID quadrilleId, UUID typeId, LocalDate plannedDate, PageRequest pageRequest);
+    
+    PruningEntity findById(UUID id);
 
     boolean existsByTreeAndPlannedDate(UUID treeId, LocalDate plannedDate);
 }
