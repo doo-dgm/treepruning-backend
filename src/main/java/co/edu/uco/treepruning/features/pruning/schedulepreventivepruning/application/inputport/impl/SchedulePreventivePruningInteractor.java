@@ -60,7 +60,7 @@ public class SchedulePreventivePruningInteractor implements SchedulePreventivePr
         SchedulePreventivePruningDTOValidator.validateStatus(domain.getStatus());
 
         int horizonMonths = parameterCatalog.getIntValue("podas.horizonte-meses", 12);
-        log.debug("SchedulePreventivePruning — horizonte de programación: {} meses (desde Strapi)", horizonMonths);
+        log.info("SchedulePreventivePruning — horizonte de programación: {} meses (desde Strapi)", horizonMonths);
         SchedulePreventivePruningDTOValidator.validatePlannedDate(domain.getPlannedDate(), horizonMonths);
 
         SchedulePreventivePruningDTOValidator.validateExecutedDate(domain.getExecutedDate(), domain.getPlannedDate());
