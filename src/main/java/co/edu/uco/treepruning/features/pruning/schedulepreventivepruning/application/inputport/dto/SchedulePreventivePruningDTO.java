@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import co.edu.uco.treepruning.crosscutting.helper.DateHelper;
+import co.edu.uco.treepruning.crosscutting.helper.SanitizerHelper;
 import co.edu.uco.treepruning.crosscutting.helper.TextHelper;
 import co.edu.uco.treepruning.crosscutting.helper.UUIDHelper;
 
@@ -96,6 +97,6 @@ public final class SchedulePreventivePruningDTO {
     }
 
     private void setObservations(final String observations) {
-        this.observations = TextHelper.getDefaultWithTrim(observations);
+        this.observations = SanitizerHelper.sanitize(observations);
     }
 }

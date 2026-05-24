@@ -53,8 +53,11 @@ public class SchedulePreventivePruningInteractor implements SchedulePreventivePr
             data.setPhotographicRecordPath(key);
             log.info("SchedulePreventivePruning — photo uploaded with key={}", key);
         }
+        
 
         SchedulePreventivePruningDomain domain = mapper.toDomain(data);
+        
+        log.info("[SANITIZER] observations after sanitization: '{}'", domain.getObservations());
 
         log.debug("SchedulePreventivePruning — running validation rules");
         SchedulePreventivePruningDTOValidator.validateStatus(domain.getStatus());
