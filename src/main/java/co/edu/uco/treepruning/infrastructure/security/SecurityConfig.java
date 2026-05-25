@@ -26,11 +26,13 @@ import co.edu.uco.treepruning.crosscutting.response.ApiResponse;
 public class SecurityConfig {
 
     private final MessageCatalogService catalog;
-    private final ObjectMapper objectMapper;
+    // ObjectMapper no se inyecta via constructor porque la coexistencia de
+    // spring-boot-starter-web y spring-boot-starter-webflux impide que Spring
+    // Boot auto-configure un unico bean ObjectMapper sin ambiguedad.
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public SecurityConfig(MessageCatalogService catalog, ObjectMapper objectMapper) {
+    public SecurityConfig(MessageCatalogService catalog) {
         this.catalog = catalog;
-        this.objectMapper = objectMapper;
     }
 
     @Bean
@@ -48,13 +50,13 @@ public class SecurityConfig {
                     response.setStatus(401);
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     String message = catalog.resolve("USER.ERROR.AUTH.UNAUTHORIZED");
-                    objectMapper.writeValue(response.getWriter(), ApiResponse.error(401, message));
+                    MAPPER.writeValue(response.getWriter(), ApiResponse.error(401, message));
                 })
                 .accessDeniedHandler((request, response, denyEx) -> {
                     response.setStatus(403);
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     String message = catalog.resolve("USER.ERROR.AUTH.FORBIDDEN");
-                    objectMapper.writeValue(response.getWriter(), ApiResponse.error(403, message));
+                    MAPPER.writeValue(response.getWriter(), ApiResponse.error(403, message));
                 }))
 
             // --- Reglas de autorizacion por endpoint ---
