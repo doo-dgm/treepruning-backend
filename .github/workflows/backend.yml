@@ -46,6 +46,42 @@ jobs:
             ${{ env.IMAGE_NAME }}:${{ github.ref == 'refs/heads/main' && 'latest' || 'dev' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          # Desactiva los attestations de provenance/SBOM. Con mode=max generan
+          # blobs adicionales que GHCR intenta resolver via "cross-repo mount"
+          # cuando ya hay capas compartidas en otros packages del owner. Si el
+          # GITHUB_TOKEN no tiene permiso write sobre esos otros packages,
+          # responde 403 al HEAD del blob y aborta el push.
+          provenance: false
+          sbom: false
+
+  sonar-analysis:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Java 26
+        uses: actions/setup-java@v4
+        with:
+          java-version: '26'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: SonarQube Scan
+        run: |
+          chmod +x mvnw
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            SONAR_KEY="TreePruning-Backend"
+          else
+            SONAR_KEY="TreePruning-Backend-Dev"
+          fi
+          ./mvnw verify sonar:sonar -DskipTests -Dsonar.projectKey=$SONAR_KEY
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   sonar-analysis:
     name: SonarQube Analysis

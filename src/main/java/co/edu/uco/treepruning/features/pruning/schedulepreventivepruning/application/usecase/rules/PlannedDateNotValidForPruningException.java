@@ -8,33 +8,28 @@ public final class PlannedDateNotValidForPruningException extends TreePruningExc
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private PlannedDateNotValidForPruningException(String userMessage,
-            String technicalMessage) {
-        super(userMessage, technicalMessage, 400);
+    private PlannedDateNotValidForPruningException(String code, String technicalCode) {
+        super(code, technicalCode, null, 400);
     }
 
-    public static PlannedDateNotValidForPruningException
-            createDateInPast() {
+    public static PlannedDateNotValidForPruningException createDateInPast() {
         return new PlannedDateNotValidForPruningException(
-            "La fecha programada de la poda no puede ser " +
-            "una fecha pasada.",
-            "SchedulePreventivePruning: plannedDate is in the past"
+                "USER.ERROR.PRUNING.PLANNED_DATE_PAST",
+                "TECHNICAL.ERROR.PRUNING.PLANNED_DATE_PAST"
         );
     }
 
-    public static PlannedDateNotValidForPruningException
-            createDateIsNull() {
+    public static PlannedDateNotValidForPruningException createDateIsNull() {
         return new PlannedDateNotValidForPruningException(
-            "La fecha programada de la poda es obligatoria.",
-            "SchedulePreventivePruning: plannedDate is null"
+                "USER.ERROR.PRUNING.PLANNED_DATE_NULL",
+                "TECHNICAL.ERROR.PRUNING.PLANNED_DATE_NULL"
         );
     }
 
-    public static PlannedDateNotValidForPruningException
-            createDateBeyondHorizon() {
+    public static PlannedDateNotValidForPruningException createDateBeyondHorizon() {
         return new PlannedDateNotValidForPruningException(
-            "La fecha programada de la poda excede el horizonte permitido de programación.",
-            "SchedulePreventivePruning: plannedDate is beyond the configured horizon"
+                "USER.ERROR.PRUNING.PLANNED_DATE_BEYOND_HORIZON",
+                "TECHNICAL.ERROR.PRUNING.PLANNED_DATE_BEYOND_HORIZON"
         );
     }
 }

@@ -1,6 +1,7 @@
 package co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.rules;
 
 import java.io.Serial;
+import java.util.Map;
 import java.util.UUID;
 import co.edu.uco.treepruning.crosscutting.exception.TreePruningException;
 
@@ -9,16 +10,16 @@ public final class QuadrilleNotFoundForPruningException extends TreePruningExcep
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private QuadrilleNotFoundForPruningException(String userMessage,
-            String technicalMessage) {
-        super(userMessage, technicalMessage, 404);
+    private QuadrilleNotFoundForPruningException(String code, String technicalCode,
+            Map<String, Object> variables) {
+        super(code, technicalCode, variables, 404);
     }
 
-    public static QuadrilleNotFoundForPruningException create(
-            UUID quadrilleId) {
+    public static QuadrilleNotFoundForPruningException create(UUID quadrilleId) {
         return new QuadrilleNotFoundForPruningException(
-            "No se encontró la cuadrilla seleccionada para programar la poda.",
-            "SchedulePreventivePruning: quadrille not found with id=" + quadrilleId
+                "USER.ERROR.PRUNING.QUADRILLE_NOT_FOUND",
+                "TECHNICAL.ERROR.PRUNING.QUADRILLE_NOT_FOUND",
+                Map.of("quadrilleId", quadrilleId)
         );
     }
 }
