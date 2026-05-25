@@ -44,8 +44,7 @@ jobs:
           tags: |
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
             ${{ env.IMAGE_NAME }}:${{ github.ref == 'refs/heads/main' && 'latest' || 'dev' }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+ 
           provenance: false
           sbom: false
 
