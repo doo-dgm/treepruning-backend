@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/api/v1/notifications")
 public class NotificactionController {
 	
 	private final co.edu.uco.treepruning.features.notification.registertoken.application.inputport.RegisterTokenInputPort registerTokenInputPort;
