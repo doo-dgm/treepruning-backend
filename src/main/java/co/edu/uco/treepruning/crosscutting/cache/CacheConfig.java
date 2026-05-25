@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.RedisSerializer;
 
 import java.time.Duration;
 import java.util.Map;
@@ -20,12 +20,15 @@ public class CacheConfig {
     @Bean
     @Primary
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+        // GenericJackson2JsonRedisSerializer usa Jackson 2.x que tiene formato
+        // consistente entre write y read. GenericJacksonJsonRedisSerializer (3.x)
+        // tenia un mismatch interno: write en @class PROPERTY, read en WRAPPER_ARRAY.
+        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer();
 
         RedisCacheConfiguration defaults = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(30))
                 .serializeValuesWith(
-                    RedisSerializationContext.SerializationPair.fromSerializer(
-                        RedisSerializer.json()));
+                    RedisSerializationContext.SerializationPair.fromSerializer(serializer));
 
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(defaults)
