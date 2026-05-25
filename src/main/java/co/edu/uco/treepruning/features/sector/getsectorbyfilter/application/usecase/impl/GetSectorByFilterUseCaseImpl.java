@@ -1,6 +1,8 @@
 package co.edu.uco.treepruning.features.sector.getsectorbyfilter.application.usecase.impl;
 
 import java.util.List;
+
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import co.edu.uco.treepruning.features.sector.getsectorbyfilter.application.inputport.dto.GetSectorDTO;
 import co.edu.uco.treepruning.features.sector.getsectorbyfilter.application.usecase.GetSectorByFilterUseCase;
@@ -21,6 +23,7 @@ public class GetSectorByFilterUseCaseImpl implements GetSectorByFilterUseCase {
     }
 
     @Override
+    @Cacheable(cacheNames = "sectors", key = "'all'")
     public List<GetSectorDomain> execute(GetSectorDTO filter) {
         return sectorRepository.findByFilter(filter.getId(), filter.getName())
                 .stream()
