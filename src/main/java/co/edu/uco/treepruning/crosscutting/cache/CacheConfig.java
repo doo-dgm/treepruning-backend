@@ -10,6 +10,9 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+
 import java.time.Duration;
 import java.util.Map;
 
@@ -20,10 +23,20 @@ public class CacheConfig {
     @Bean
     @Primary
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        // GenericJackson2JsonRedisSerializer usa Jackson 2.x que tiene formato
-        // consistente entre write y read. GenericJacksonJsonRedisSerializer (3.x)
-        // tenia un mismatch interno: write en @class PROPERTY, read en WRAPPER_ARRAY.
-        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer();
+        // El serializador por defecto escribe en PROPERTY (@class dentro de cada
+        // elemento) pero al leer como Object.class espera WRAPPER_ARRAY y falla.
+        // activateDefaultTyping(ptv, NON_FINAL) usa WRAPPER_ARRAY por defecto en
+        // Jackson 2.x, garantizando que write y read son consistentes.
+        BasicPolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
+                .allowIfSubType("co.edu.uco.treepruning")
+                .allowIfSubType("java.util")
+                .allowIfSubType("java.lang")
+                .build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL);
+
+        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(mapper);
 
         RedisCacheConfiguration defaults = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(30))
