@@ -19,7 +19,7 @@ RUN mvn dependency:go-offline -q -B
 
 # Codigo fuente y build
 COPY src ./src
-RUN mvn package -DskipTests -q -B
+RUN mvn package -DskipTests -B
 
 # ----- Runtime stage -----
 FROM eclipse-temurin:26-jre AS runtime
