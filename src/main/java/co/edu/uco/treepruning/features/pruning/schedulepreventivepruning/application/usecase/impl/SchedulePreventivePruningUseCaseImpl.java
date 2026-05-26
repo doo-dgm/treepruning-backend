@@ -3,9 +3,12 @@ package co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.applic
 import java.util.List;
 import java.util.UUID;
 
+import java.util.Map;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import co.edu.uco.treepruning.crosscutting.config.ParameterCatalogService;
 import co.edu.uco.treepruning.crosscutting.event.PruningScheduledEvent;
 import co.edu.uco.treepruning.crosscutting.exception.TreePruningException;
 import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.SchedulePreventivePruningUseCase;
@@ -30,11 +33,12 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.PruningRepos
 public class SchedulePreventivePruningUseCaseImpl
         implements SchedulePreventivePruningUseCase {
 
-    /** Nombre del tipo en la tabla 'type'. */
-    private static final String TYPE_PREVENTIVE = "Preventiva";
-
-    /** Nombre del estado en la tabla 'status'. */
-    private static final String STATUS_PLANNED  = "Planeada";
+    // Claves en Strapi (coleccion 'parametro'). El valor es el nombre exacto
+    // de la fila en las tablas 'type' / 'status' de la BD. Si el parametro no
+    // existe en Strapi, se lanza la excepcion correspondiente (no hay fallback
+    // hardcoded para evitar que un cambio en BD/CMS quede invisible).
+    private static final String PARAM_TYPE_PREVENTIVE = "podas.tipo-creacion-preventiva";
+    private static final String PARAM_STATUS_PLANNED  = "podas.estado-creacion-default";
 
     private final GetTreeByFilterUseCase              getTreeByFilterUseCase;
     private final GetQuadrilleByFilterUseCase         getQuadrilleByFilterUseCase;
@@ -43,6 +47,7 @@ public class SchedulePreventivePruningUseCaseImpl
     private final PruningRepository                   pruningRepository;
     private final SchedulePreventivePruningDomainMapper domainMapper;
     private final ApplicationEventPublisher           eventPublisher;
+    private final ParameterCatalogService             parameterCatalog;
 
     public SchedulePreventivePruningUseCaseImpl(
             GetTreeByFilterUseCase              getTreeByFilterUseCase,
@@ -51,7 +56,8 @@ public class SchedulePreventivePruningUseCaseImpl
             GetStatusByFilterUseCase            getStatusByFilterUseCase,
             PruningRepository                   pruningRepository,
             SchedulePreventivePruningDomainMapper domainMapper,
-            ApplicationEventPublisher           eventPublisher) {
+            ApplicationEventPublisher           eventPublisher,
+            ParameterCatalogService             parameterCatalog) {
         this.getTreeByFilterUseCase      = getTreeByFilterUseCase;
         this.getQuadrilleByFilterUseCase = getQuadrilleByFilterUseCase;
         this.getTypeByFilterUseCase      = getTypeByFilterUseCase;
@@ -59,28 +65,46 @@ public class SchedulePreventivePruningUseCaseImpl
         this.pruningRepository           = pruningRepository;
         this.domainMapper                = domainMapper;
         this.eventPublisher              = eventPublisher;
+        this.parameterCatalog            = parameterCatalog;
     }
 
     @Override
     public Void execute(SchedulePreventivePruningDomain domain) {
 
-        // 1. Resolver tipo "Preventiva" desde la BD — no lo envia el cliente
+        // 1. Resolver nombre del tipo desde Strapi (parametro configurable),
+        //    luego buscar el UUID en la tabla 'type' por ese nombre.
+        String typeName = parameterCatalog.getValue(PARAM_TYPE_PREVENTIVE);
+        if (typeName == null || typeName.isBlank()) {
+            throw TreePruningException.fromCode(
+                    "USER.ERROR.PRUNING.TYPE_PREVENTIVE_NOT_FOUND",
+                    "TECHNICAL.ERROR.PRUNING.TYPE_PREVENTIVE_NOT_FOUND",
+                    Map.of("parameterKey", PARAM_TYPE_PREVENTIVE));
+        }
         List<GetTypeDomain> types = getTypeByFilterUseCase.execute(
-                new GetTypeDTO(null, TYPE_PREVENTIVE));
+                new GetTypeDTO(null, typeName));
         if (types.isEmpty()) {
             throw TreePruningException.fromCode(
                     "USER.ERROR.PRUNING.TYPE_PREVENTIVE_NOT_FOUND",
-                    "TECHNICAL.ERROR.PRUNING.TYPE_PREVENTIVE_NOT_FOUND");
+                    "TECHNICAL.ERROR.PRUNING.TYPE_PREVENTIVE_NOT_FOUND",
+                    Map.of("typeName", typeName, "parameterKey", PARAM_TYPE_PREVENTIVE));
         }
         UUID typeId = types.get(0).getId();
 
-        // 2. Resolver estado "Planeada" desde la BD — no lo envia el cliente
+        // 2. Resolver nombre del estado desde Strapi, idem.
+        String statusName = parameterCatalog.getValue(PARAM_STATUS_PLANNED);
+        if (statusName == null || statusName.isBlank()) {
+            throw TreePruningException.fromCode(
+                    "USER.ERROR.PRUNING.STATUS_PLANNED_NOT_FOUND",
+                    "TECHNICAL.ERROR.PRUNING.STATUS_PLANNED_NOT_FOUND",
+                    Map.of("parameterKey", PARAM_STATUS_PLANNED));
+        }
         List<GetStatusDomain> statuses = getStatusByFilterUseCase.execute(
-                new GetStatusDTO(null, STATUS_PLANNED));
+                new GetStatusDTO(null, statusName));
         if (statuses.isEmpty()) {
             throw TreePruningException.fromCode(
                     "USER.ERROR.PRUNING.STATUS_PLANNED_NOT_FOUND",
-                    "TECHNICAL.ERROR.PRUNING.STATUS_PLANNED_NOT_FOUND");
+                    "TECHNICAL.ERROR.PRUNING.STATUS_PLANNED_NOT_FOUND",
+                    Map.of("statusName", statusName, "parameterKey", PARAM_STATUS_PLANNED));
         }
         UUID statusId = statuses.get(0).getId();
 

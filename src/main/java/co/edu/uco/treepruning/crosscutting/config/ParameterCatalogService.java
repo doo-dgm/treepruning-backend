@@ -74,6 +74,20 @@ public class ParameterCatalogService {
         }
     }
 
+    /**
+     * Retorna el valor del parametro o {@code null} si no existe.
+     * Usar cuando el caller necesite manejar explicitamente la ausencia
+     * (por ejemplo, lanzando una excepcion semantica del dominio).
+     */
+    public String getValue(String clave) {
+        return parameters.get(clave);
+    }
+
+    /**
+     * Retorna el valor del parametro o {@code defaultValue} si no existe.
+     * Usar para parametros con un fallback razonable (por ejemplo, TTL en
+     * segundos, tamano de pagina, etc.).
+     */
     public String getValue(String clave, String defaultValue) {
         return parameters.getOrDefault(clave, defaultValue);
     }
