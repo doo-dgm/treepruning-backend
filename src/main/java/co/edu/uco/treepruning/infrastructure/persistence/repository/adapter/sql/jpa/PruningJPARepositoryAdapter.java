@@ -71,9 +71,10 @@ public class PruningJPARepositoryAdapter implements PruningRepository {
         return repository.existsByTree_IdAndPlannedDate(treeId, plannedDate);
     }
 
-	@Override
-	public PruningEntity findById(UUID id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public PruningEntity findById(UUID id) {
+        return repository.findById(id)
+                .map(mapper::toEntity)
+                .orElse(null);
+    }
 }
