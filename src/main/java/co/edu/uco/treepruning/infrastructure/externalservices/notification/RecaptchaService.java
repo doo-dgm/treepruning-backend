@@ -2,7 +2,12 @@ package co.edu.uco.treepruning.infrastructure.externalservices.notification;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,14 +16,12 @@ import org.springframework.beans.factory.annotation.Value;
 
 @Service
 @Slf4j
-
 public class RecaptchaService {
-	
-	private static final Logger log = LoggerFactory.getLogger(RecaptchaService.class);
 
-    private static final String VERIFY_URL =
-        "https://www.google.com/recaptcha/api/siteverify";
-    private static final double MIN_SCORE = 0.5;
+    private static final Logger log = LoggerFactory.getLogger(RecaptchaService.class);
+
+    private static final String VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
+    private static final double MIN_SCORE  = 0.5;
 
     @Value("${recaptcha.secret-key}")
     private String secretKey;
@@ -31,10 +34,22 @@ public class RecaptchaService {
             return false;
         }
         try {
-            String url = VERIFY_URL + "?secret=" + secretKey + "&response=" + token;
-            RecaptchaResponse response = restTemplate.getForObject(url, RecaptchaResponse.class);
+            // Google exige POST con form-urlencoded (GET devuelve 405)
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+            body.add("secret",   secretKey);
+            body.add("response", token);
+
+            RecaptchaResponse response = restTemplate.postForObject(
+                VERIFY_URL,
+                new HttpEntity<>(body, headers),
+                RecaptchaResponse.class
+            );
+
             boolean valid = response != null && response.isSuccess() && response.getScore() >= MIN_SCORE;
-            log.info("RecaptchaService — score: {}, valid: {}", 
+            log.info("RecaptchaService — score: {}, valid: {}",
                 response != null ? response.getScore() : "null", valid);
             return valid;
         } catch (Exception e) {
