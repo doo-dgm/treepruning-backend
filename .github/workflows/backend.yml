@@ -96,7 +96,7 @@ jobs:
         with:
           target: 'https://api-dev.treepruning.org'
           fail_action: false
-          artifact_name: zap-report
+          artifact_name: zap_report
 
   deploy-prod:
     name: Deploy a Prod
