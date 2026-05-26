@@ -11,7 +11,6 @@ import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.applica
 import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.inputport.impl.mapper.SchedulePreventivePruningDTOMapper;
 import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.SchedulePreventivePruningUseCase;
 import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.domain.SchedulePreventivePruningDomain;
-import co.edu.uco.treepruning.infrastructure.storage.PhotoStoragePort;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -21,17 +20,14 @@ public class SchedulePreventivePruningInteractor implements SchedulePreventivePr
 
     private final SchedulePreventivePruningUseCase useCase;
     private final SchedulePreventivePruningDTOMapper mapper;
-    private final PhotoStoragePort photoStorage;
     private final ParameterCatalogService parameterCatalog;
 
     public SchedulePreventivePruningInteractor(
             SchedulePreventivePruningUseCase useCase,
             SchedulePreventivePruningDTOMapper mapper,
-            PhotoStoragePort photoStorage,
             ParameterCatalogService parameterCatalog) {
         this.useCase = useCase;
         this.mapper = mapper;
-        this.photoStorage = photoStorage;
         this.parameterCatalog = parameterCatalog;
     }
 
@@ -39,21 +35,10 @@ public class SchedulePreventivePruningInteractor implements SchedulePreventivePr
     public Void execute(SchedulePreventivePruningDTO data) {
         log.info("SchedulePreventivePruning — received request: tree={}, plannedDate={}, photo={}",
                 data.getTree(), data.getPlannedDate(),
-                data.getPhotoBytes() != null ? data.getPhotoBytes().length + "B" : "none");
+                data.getPhotographicRecordPath() != null ? data.getPhotographicRecordPath() : "none");
 
-        log.debug("SchedulePreventivePruning — validating photo metadata");
-        SchedulePreventivePruningDTOValidator.validatePhoto(
-                data.getPhotoBytes(), data.getPhotoContentType());
-
-        if (data.getPhotoBytes() != null && data.getPhotoBytes().length > 0) {
-            String key = photoStorage.upload(
-                    data.getPhotoBytes(),
-                    data.getPhotoContentType(),
-                    data.getPhotoOriginalFilename());
-            data.setPhotographicRecordPath(key);
-            log.info("SchedulePreventivePruning — photo uploaded with key={}", key);
-        }
-        
+        // Las fotos se suben previamente via POST /api/v1/photos.
+        // El campo photographicRecordPath llega ya con la(s) key(s) de MinIO.
 
         SchedulePreventivePruningDomain domain = mapper.toDomain(data);
         

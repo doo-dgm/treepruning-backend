@@ -24,11 +24,17 @@ public class MinioPhotoStorageAdapter implements PhotoStoragePort {
     private static final Logger log = LoggerFactory.getLogger(MinioPhotoStorageAdapter.class);
 
     private final MinioClient client;
+    /** Cliente separado apuntando al endpoint publico — usado solo para generar presigned URLs. */
+    private final MinioClient publicClient;
     private final StorageProperties props;
 
     public MinioPhotoStorageAdapter(MinioClient client, StorageProperties props) {
         this.client = client;
-        this.props = props;
+        this.props  = props;
+        this.publicClient = MinioClient.builder()
+                .endpoint(props.getPublicEndpoint())
+                .credentials(props.getAccessKey(), props.getSecretKey())
+                .build();
         ensureBucketExists();
     }
 
@@ -48,12 +54,21 @@ public class MinioPhotoStorageAdapter implements PhotoStoragePort {
     }
 
     @Override
-    public String upload(byte[] bytes, String contentType, String originalFilename) {
+    public String upload(byte[] bytes, String contentType, String originalFilename, String uploadedByUserId) {
         LocalDate today = LocalDate.now();
-        String key = String.format("%d/%02d/%s%s",
+        // Key: {year}/{month}/{userId}/{uuid}.{ext}
+        // Permite ver en el MinIO Console a que usuario pertenece cada imagen.
+        String key = String.format("%d/%02d/%s/%s%s",
                 today.getYear(), today.getMonthValue(),
+                uploadedByUserId,
                 UUID.randomUUID(),
                 resolveExtension(originalFilename, contentType));
+
+        Map<String, String> metadata = Map.of(
+                "uploaded-by",   uploadedByUserId,
+                "upload-date",   today.toString(),
+                "original-name", originalFilename != null ? originalFilename : "unknown"
+        );
 
         try (ByteArrayInputStream in = new ByteArrayInputStream(bytes)) {
             client.putObject(PutObjectArgs.builder()
@@ -61,9 +76,10 @@ public class MinioPhotoStorageAdapter implements PhotoStoragePort {
                     .object(key)
                     .stream(in, bytes.length, -1)
                     .contentType(contentType)
+                    .userMetadata(metadata)
                     .build());
-            log.info("MinIO upload OK: bucket={}, key={}, size={}",
-                    props.getBucket(), key, bytes.length);
+            log.info("MinIO upload OK: bucket={}, key={}, user={}, size={}",
+                    props.getBucket(), key, uploadedByUserId, bytes.length);
             return key;
         } catch (Exception e) {
             log.error("MinIO upload failed: bucket={}, key={}, error={}",
@@ -78,7 +94,7 @@ public class MinioPhotoStorageAdapter implements PhotoStoragePort {
     @Override
     public String presignedUrl(String key) {
         try {
-            return client.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+            return publicClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
                     .method(Method.GET)
                     .bucket(props.getBucket())
                     .object(key)

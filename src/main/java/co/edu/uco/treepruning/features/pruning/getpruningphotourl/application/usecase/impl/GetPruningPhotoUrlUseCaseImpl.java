@@ -1,5 +1,7 @@
 package co.edu.uco.treepruning.features.pruning.getpruningphotourl.application.usecase.impl;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -41,12 +43,17 @@ public class GetPruningPhotoUrlUseCaseImpl implements GetPruningPhotoUrlUseCase 
             throw ResourceNotFoundException.create("Pruning", pruningId);
         }
 
-        String key = result.content().get(0).getPhotographicRecordPath();
-        if (TextHelper.isEmptyWithTrim(key)) {
+        String raw = result.content().get(0).getPhotographicRecordPath();
+        if (TextHelper.isEmptyWithTrim(raw)) {
             throw PhotoNotAvailableForPruningException.create(pruningId);
         }
 
-        String url = photoStorage.presignedUrl(key);
-        return new PruningPhotoUrlDTO(url, storageProperties.getPresignedUrlExpirySeconds());
+        List<String> urls = Arrays.stream(raw.split(","))
+                .map(String::trim)
+                .filter(k -> !k.isEmpty())
+                .map(photoStorage::presignedUrl)
+                .toList();
+
+        return new PruningPhotoUrlDTO(urls, storageProperties.getPresignedUrlExpirySeconds());
     }
 }
