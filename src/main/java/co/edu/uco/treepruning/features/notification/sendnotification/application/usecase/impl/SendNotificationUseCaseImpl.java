@@ -58,27 +58,26 @@ public class SendNotificationUseCaseImpl implements SendNotificationUseCase {
             return null;
         }
 
+        PruningEntity pruningEntity = pruningRepository.findById(domain.getPruningId());
+
+        NotificationHistoryDomain historyDomain = new NotificationHistoryDomain(
+            domain.getUserId(),
+            domain.getTitle(),
+            domain.getBody(),
+            domain.getPruningId(),
+            pruningEntity.getType().getId(),
+            LocalDateTime.now()
+        );
+
+        NotificationHistoryEntity historyEntity = historyDomainMapper.toEntity(historyDomain);
+        historyRepository.save(historyEntity);
+
         for (NotificationTokenDomain token : tokens) {
             boolean success = fcmService.send(
                 token.getFcmToken(),
                 domain.getTitle(),
                 domain.getBody()
             );
-            
-            PruningEntity pruningEntity = pruningRepository.findById(domain.getPruningId());
-            
-            NotificationHistoryDomain historyDomain = new NotificationHistoryDomain(
-				domain.getUserId(),
-				domain.getTitle(),
-				domain.getBody(),
-				domain.getPruningId(),
-				pruningEntity.getType().getId(),
-				LocalDateTime.now()
-			);
-            
-            NotificationHistoryEntity entity = historyDomainMapper.toEntity(historyDomain);
-
-            historyRepository.save(entity);
 
             if (!success) {
                 log.warn("SendNotificationUseCaseImpl — deactivating invalid token");
