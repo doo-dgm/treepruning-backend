@@ -1,0 +1,76 @@
+package co.edu.uco.treepruning.infrastructure.externalservices.notification;
+
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.LinkedMultiValueMap;
+
+import com.google.api.client.util.Value;
+
+import co.edu.uco.treepruning.crosscutting.exception.TreePruningException;
+import co.edu.uco.treepruning.features.auth.login.application.inputport.dto.LoginResponseDTO;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class KeycloakAuthService {
+	
+	private static final Logger log = LoggerFactory.getLogger(KeycloakAuthService.class);
+
+    @Value("${keycloak.auth-server-url}")
+    private String keycloakUrl;
+
+    @Value("${keycloak.realm}")
+    private String realm;
+
+    @Value("${keycloak.resource}")
+    private String clientId;
+
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    public LoginResponseDTO login(String username, String password) {
+        String tokenUrl = keycloakUrl + "/realms/" + realm
+            + "/protocol/openid-connect/token";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("grant_type", "password");
+        body.add("client_id",  clientId);
+        body.add("username",   username);
+        body.add("password",   password);
+
+        try {
+            ResponseEntity<Map> response = restTemplate.postForEntity(
+                tokenUrl,
+                new HttpEntity<>(body, headers),
+                Map.class
+            );
+
+            Map<?, ?> data = response.getBody();
+            return new LoginResponseDTO(
+                (String) data.get("access_token"),
+                (String) data.get("refresh_token"),
+                (Integer) data.get("expires_in")
+            );
+        } catch (HttpClientErrorException e) {
+            log.warn("KeycloakAuthService — login fallido: {}", e.getMessage());
+            throw TreePruningException.create(
+                "Usuario o contraseña incorrectos.",
+                e.getMessage()
+            );
+        }
+    }
+}
