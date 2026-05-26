@@ -27,22 +27,18 @@ import lombok.extern.slf4j.Slf4j;
 public class KeycloakAuthService {
 	
 	private static final Logger log = LoggerFactory.getLogger(KeycloakAuthService.class);
+	
+	@Value("${kc.issuer-uri}")
+	private String issuerUri;
 
-    @Value("${keycloak.auth-server-url}")
-    private String keycloakUrl;
-
-    @Value("${keycloak.realm}")
-    private String realm;
-
-    @Value("${keycloak.resource}")
-    private String clientId;
+	@Value("${kc.client-id}")  // ← ajusta al nombre que tengas en application.properties
+	private String clientId;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
     public LoginResponseDTO login(String username, String password) {
-        String tokenUrl = keycloakUrl + "/realms/" + realm
-            + "/protocol/openid-connect/token";
-
+    	String tokenUrl = issuerUri + "/protocol/openid-connect/token";
+    	
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 

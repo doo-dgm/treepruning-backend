@@ -11,6 +11,7 @@ import com.google.api.client.util.Value;
 
 @Service
 @Slf4j
+
 public class RecaptchaService {
 	
 	private static final Logger log = LoggerFactory.getLogger(RecaptchaService.class);
