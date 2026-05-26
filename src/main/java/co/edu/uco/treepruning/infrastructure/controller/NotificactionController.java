@@ -46,7 +46,7 @@ public class NotificactionController {
 	    registerTokenInputPort.execute(
 	        new RegisterTokenDTO(
 	            UUID.fromString(jwt.getSubject()),
-	            request.token()
+	            request.token(), request.language()
 	        )
 	    );
 	    return ResponseEntity

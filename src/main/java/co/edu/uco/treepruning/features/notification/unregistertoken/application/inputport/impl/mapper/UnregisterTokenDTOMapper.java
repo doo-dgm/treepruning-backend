@@ -11,6 +11,6 @@ public interface UnregisterTokenDTOMapper {
 
     default NotificationTokenDomain toDomain(UnregisterTokenDTO dto) {
         if (ObjectHelper.isNull(dto)) return new NotificationTokenDomain();
-        return new NotificationTokenDomain(UUIDHelper.getDefault(), dto.getFcmToken());
+        return new NotificationTokenDomain(UUIDHelper.getDefault(), dto.getFcmToken(), "es");
     }
 }
