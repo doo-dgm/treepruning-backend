@@ -90,6 +90,10 @@ jobs:
     needs: deploy-dev
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    permissions:
+      contents: read
+      issues: write
+      actions: write
     steps:
       - name: ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.12.0
