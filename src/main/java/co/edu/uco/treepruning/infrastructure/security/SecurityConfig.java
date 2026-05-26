@@ -73,6 +73,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/v1/sectors/**").hasAnyRole("PERSON", "MANAGER", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/v1/statuses/**").hasAnyRole("PERSON", "MANAGER", "ADMIN")
 
+                // Subida de fotos de evidencia: solo MANAGER y ADMIN
+                .requestMatchers(HttpMethod.POST, "/api/v1/photos").hasAnyRole("MANAGER", "ADMIN")
+
                 // Gestion interna del arbolado: MANAGER y ADMIN
                 .requestMatchers("/api/v1/prunings/**").hasAnyRole("MANAGER", "ADMIN")
                 .requestMatchers("/api/v1/trees/**").hasAnyRole("MANAGER", "ADMIN")

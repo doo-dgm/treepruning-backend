@@ -19,10 +19,6 @@ public final class SchedulePreventivePruningDTO {
     private String photographicRecordPath;
     private String observations;
 
-    private final byte[] photoBytes;
-    private final String photoContentType;
-    private final String photoOriginalFilename;
-
     public SchedulePreventivePruningDTO(
             UUID status,
             LocalDate plannedDate,
@@ -32,22 +28,6 @@ public final class SchedulePreventivePruningDTO {
             UUID type,
             String photographicRecordPath,
             String observations) {
-        this(status, plannedDate, executedDate, tree, quadrille, type,
-                photographicRecordPath, observations, null, null, null);
-    }
-
-    public SchedulePreventivePruningDTO(
-            UUID status,
-            LocalDate plannedDate,
-            LocalDate executedDate,
-            UUID tree,
-            UUID quadrille,
-            UUID type,
-            String photographicRecordPath,
-            String observations,
-            byte[] photoBytes,
-            String photoContentType,
-            String photoOriginalFilename) {
         setStatus(status);
         setPlannedDate(plannedDate);
         setExecutedDate(executedDate);
@@ -56,22 +36,16 @@ public final class SchedulePreventivePruningDTO {
         setType(type);
         setPhotographicRecordPath(photographicRecordPath);
         setObservations(observations);
-        this.photoBytes = photoBytes;
-        this.photoContentType = photoContentType;
-        this.photoOriginalFilename = photoOriginalFilename;
     }
 
-    public UUID getStatus() { return status; }
-    public LocalDate getPlannedDate() { return plannedDate; }
-    public LocalDate getExecutedDate() { return executedDate; }
-    public UUID getTree() { return tree; }
-    public UUID getQuadrille() { return quadrille; }
-    public UUID getType() { return type; }
-    public String getPhotographicRecordPath() { return photographicRecordPath; }
-    public String getObservations() { return observations; }
-    public byte[] getPhotoBytes() { return photoBytes; }
-    public String getPhotoContentType() { return photoContentType; }
-    public String getPhotoOriginalFilename() { return photoOriginalFilename; }
+    public UUID getStatus()                      { return status; }
+    public LocalDate getPlannedDate()            { return plannedDate; }
+    public LocalDate getExecutedDate()           { return executedDate; }
+    public UUID getTree()                        { return tree; }
+    public UUID getQuadrille()                   { return quadrille; }
+    public UUID getType()                        { return type; }
+    public String getPhotographicRecordPath()    { return photographicRecordPath; }
+    public String getObservations()              { return observations; }
 
     private void setStatus(final UUID status) {
         this.status = UUIDHelper.getDefault(status);
