@@ -22,6 +22,7 @@ import io.minio.http.Method;
 public class MinioPhotoStorageAdapter implements PhotoStoragePort {
 
     private static final Logger log = LoggerFactory.getLogger(MinioPhotoStorageAdapter.class);
+    private static final String UNKNOWN = "unknown";
 
     private final MinioClient client;
     /** Cliente separado apuntando al endpoint publico — usado solo para generar presigned URLs. */
@@ -67,7 +68,7 @@ public class MinioPhotoStorageAdapter implements PhotoStoragePort {
         Map<String, String> metadata = Map.of(
                 "uploaded-by",   uploadedByUserId,
                 "upload-date",   today.toString(),
-                "original-name", originalFilename != null ? originalFilename : "unknown"
+                "original-name", originalFilename != null ? originalFilename : UNKNOWN
         );
 
         try (ByteArrayInputStream in = new ByteArrayInputStream(bytes)) {
@@ -85,9 +86,9 @@ public class MinioPhotoStorageAdapter implements PhotoStoragePort {
             log.error("MinIO upload failed: bucket={}, key={}, error={}",
                     props.getBucket(), key, e.getMessage(), e);
             throw TreePruningException.fromCode(
-                    "USER.ERROR.STORAGE.UPLOAD_FAILED",
+                    "ERROR.STORAGE.UPLOAD_FAILED",
                     "TECHNICAL.ERROR.STORAGE.UPLOAD_FAILED",
-                    Map.of("key", key, "error", e.getMessage() != null ? e.getMessage() : "unknown"));
+                    Map.of("key", key, "error", e.getMessage() != null ? e.getMessage() : UNKNOWN));
         }
     }
 
@@ -104,9 +105,9 @@ public class MinioPhotoStorageAdapter implements PhotoStoragePort {
             log.error("MinIO presign failed: bucket={}, key={}, error={}",
                     props.getBucket(), key, e.getMessage(), e);
             throw TreePruningException.fromCode(
-                    "USER.ERROR.STORAGE.PRESIGN_FAILED",
+                    "ERROR.STORAGE.PRESIGN_FAILED",
                     "TECHNICAL.ERROR.STORAGE.PRESIGN_FAILED",
-                    Map.of("key", key, "error", e.getMessage() != null ? e.getMessage() : "unknown"));
+                    Map.of("key", key, "error", e.getMessage() != null ? e.getMessage() : UNKNOWN));
         }
     }
 

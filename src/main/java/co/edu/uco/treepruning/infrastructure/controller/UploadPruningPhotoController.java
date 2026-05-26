@@ -47,7 +47,7 @@ public class UploadPruningPhotoController {
             bytes = file.getBytes();
         } catch (IOException e) {
             throw TreePruningException.fromCode(
-                    "USER.ERROR.PRUNING.PHOTO_READ_FAILED",
+                    "ERROR.PRUNING.PHOTO_READ_FAILED",
                     "TECHNICAL.ERROR.PRUNING.PHOTO_READ_FAILED",
                     Map.of("error", e.getMessage() != null ? e.getMessage() : "unknown"));
         }

@@ -53,6 +53,11 @@ public class KeycloakAuthService {
             );
 
             Map<?, ?> data = response.getBody();
+            if (data == null) {
+                throw TreePruningException.create(
+                    "Error al autenticar: respuesta vacia del servidor.",
+                    "KeycloakAuthService: response body is null");
+            }
             return new LoginResponseDTO(
                 (String) data.get("access_token"),
                 (String) data.get("refresh_token"),

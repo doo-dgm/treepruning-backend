@@ -25,6 +25,10 @@ import co.edu.uco.treepruning.crosscutting.response.ApiResponse;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    private static final String ROLE_ADMIN   = "ADMIN";
+    private static final String ROLE_MANAGER = "MANAGER";
+    private static final String ROLE_PERSON  = "PERSON";
+
     private final MessageCatalogService catalog;
     // ObjectMapper no se inyecta via constructor porque la coexistencia de
     // spring-boot-starter-web y spring-boot-starter-webflux impide que Spring
@@ -49,13 +53,13 @@ public class SecurityConfig {
                 .authenticationEntryPoint((request, response, authEx) -> {
                     response.setStatus(401);
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                    String message = catalog.resolve("USER.ERROR.AUTH.UNAUTHORIZED");
+                    String message = catalog.resolve("ERROR.AUTH.UNAUTHORIZED");
                     MAPPER.writeValue(response.getWriter(), ApiResponse.error(401, message));
                 })
                 .accessDeniedHandler((request, response, denyEx) -> {
                     response.setStatus(403);
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                    String message = catalog.resolve("USER.ERROR.AUTH.FORBIDDEN");
+                    String message = catalog.resolve("ERROR.AUTH.FORBIDDEN");
                     MAPPER.writeValue(response.getWriter(), ApiResponse.error(403, message));
                 }))
 
@@ -63,28 +67,28 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
 
                 // Actuator y documentacion: solo ADMIN
-                .requestMatchers("/actuator/**").hasRole("ADMIN")
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").hasRole("ADMIN")
+                .requestMatchers("/actuator/**").hasRole(ROLE_ADMIN)
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").hasRole(ROLE_ADMIN)
 
                 // PQR: PERSON puede radicar, MANAGER y ADMIN tambien
-                .requestMatchers(HttpMethod.POST, "/api/v1/pqrs").hasAnyRole("PERSON", "MANAGER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/v1/pqrs").hasAnyRole(ROLE_PERSON, ROLE_MANAGER, ROLE_ADMIN)
 
                 // Catalogos que PERSON necesita para llenar el formulario de PQR
-                .requestMatchers(HttpMethod.GET, "/api/v1/sectors/**").hasAnyRole("PERSON", "MANAGER", "ADMIN")
-                .requestMatchers(HttpMethod.GET, "/api/v1/statuses/**").hasAnyRole("PERSON", "MANAGER", "ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/v1/sectors/**").hasAnyRole(ROLE_PERSON, ROLE_MANAGER, ROLE_ADMIN)
+                .requestMatchers(HttpMethod.GET, "/api/v1/statuses/**").hasAnyRole(ROLE_PERSON, ROLE_MANAGER, ROLE_ADMIN)
 
                 // Subida de fotos de evidencia: solo MANAGER y ADMIN
-                .requestMatchers(HttpMethod.POST, "/api/v1/photos").hasAnyRole("MANAGER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/v1/photos").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
 
                 // Gestion interna del arbolado: MANAGER y ADMIN
-                .requestMatchers("/api/v1/prunings/**").hasAnyRole("MANAGER", "ADMIN")
-                .requestMatchers("/api/v1/trees/**").hasAnyRole("MANAGER", "ADMIN")
-                .requestMatchers("/api/v1/quadrilles/**").hasAnyRole("MANAGER", "ADMIN")
-                .requestMatchers("/api/v1/persons/**").hasAnyRole("MANAGER", "ADMIN")
-                .requestMatchers("/api/v1/families/**").hasAnyRole("MANAGER", "ADMIN")
-                .requestMatchers("/api/v1/managers/**").hasAnyRole("MANAGER", "ADMIN")
-                .requestMatchers("/api/v1/types/**").hasAnyRole("MANAGER", "ADMIN")
-                .requestMatchers("/api/v1/programmings/**").hasAnyRole("MANAGER", "ADMIN")
+                .requestMatchers("/api/v1/prunings/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
+                .requestMatchers("/api/v1/trees/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
+                .requestMatchers("/api/v1/quadrilles/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
+                .requestMatchers("/api/v1/persons/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
+                .requestMatchers("/api/v1/families/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
+                .requestMatchers("/api/v1/managers/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
+                .requestMatchers("/api/v1/types/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
+                .requestMatchers("/api/v1/programmings/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
                 
                 // Login: endpoint publico, no requiere autenticacion
                 .requestMatchers("/api/v1/auth/login").permitAll()

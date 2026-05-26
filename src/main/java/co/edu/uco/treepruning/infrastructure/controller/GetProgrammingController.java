@@ -38,7 +38,7 @@ public class GetProgrammingController {
             @Parameter(description = "Identificador unico de la programacion") @RequestParam(required = false) UUID id) {
         List<GetProgrammingDTO> results = inputPort.execute(
                 new GetProgrammingDTO(id, null, 0, 0));
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.PROGRAMMING.LIST"), results));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.PROGRAMMING.LIST"), results));
     }
 
     @Operation(summary = "Obtener programacion por ID", description = "Retorna el detalle de una programacion dado su identificador. Retorna 404 si no existe.")
@@ -50,6 +50,6 @@ public class GetProgrammingController {
         if (results.isEmpty()) {
             throw ResourceNotFoundException.create("Programming", id);
         }
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.PROGRAMMING.GET"), results.get(0)));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.PROGRAMMING.GET"), results.get(0)));
     }
 }

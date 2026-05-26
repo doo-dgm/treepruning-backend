@@ -18,7 +18,7 @@ public final class TreeAlreadyScheduledForDateException extends TreePruningExcep
 
     public static TreeAlreadyScheduledForDateException create(UUID treeId, LocalDate plannedDate) {
         return new TreeAlreadyScheduledForDateException(
-                "USER.ERROR.PRUNING.TREE_ALREADY_SCHEDULED",
+                "ERROR.PRUNING.TREE_ALREADY_SCHEDULED",
                 "TECHNICAL.ERROR.PRUNING.TREE_ALREADY_SCHEDULED",
                 Map.of("treeId", treeId, "plannedDate", plannedDate)
         );

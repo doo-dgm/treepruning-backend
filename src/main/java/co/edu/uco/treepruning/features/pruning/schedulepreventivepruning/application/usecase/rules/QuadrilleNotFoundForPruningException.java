@@ -17,7 +17,7 @@ public final class QuadrilleNotFoundForPruningException extends TreePruningExcep
 
     public static QuadrilleNotFoundForPruningException create(UUID quadrilleId) {
         return new QuadrilleNotFoundForPruningException(
-                "USER.ERROR.PRUNING.QUADRILLE_NOT_FOUND",
+                "ERROR.PRUNING.QUADRILLE_NOT_FOUND",
                 "TECHNICAL.ERROR.PRUNING.QUADRILLE_NOT_FOUND",
                 Map.of("quadrilleId", quadrilleId)
         );

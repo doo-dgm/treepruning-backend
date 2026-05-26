@@ -40,7 +40,7 @@ public class GetFamilyController {
             @Parameter(description = "Nombre cientifico (busqueda parcial)") @RequestParam(required = false) String scientificName) {
         List<GetFamilyDTO> results = inputPort.execute(
                 new GetFamilyDTO(id, commonName, scientificName));
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.FAMILY.LIST"), results));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.FAMILY.LIST"), results));
     }
 
     @Operation(summary = "Obtener familia botanica por ID", description = "Retorna el detalle de una familia botanica dado su identificador. Retorna 404 si no existe.")
@@ -51,6 +51,6 @@ public class GetFamilyController {
         if (results.isEmpty()) {
             throw ResourceNotFoundException.create("Family", id);
         }
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.FAMILY.GET"), results.get(0)));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.FAMILY.GET"), results.get(0)));
     }
 }

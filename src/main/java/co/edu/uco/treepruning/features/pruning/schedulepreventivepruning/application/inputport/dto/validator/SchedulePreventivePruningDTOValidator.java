@@ -22,12 +22,12 @@ public final class SchedulePreventivePruningDTOValidator {
     public static void validateTrees(List<UUID> trees) {
         if (trees == null || trees.isEmpty()) {
             throw TreePruningException.fromCode(
-                    "USER.VALIDATION.PRUNING.TREES_REQUIRED",
+                    "VALIDATION.PRUNING.TREES_REQUIRED",
                     "TECHNICAL.VALIDATION.PRUNING.TREES_REQUIRED");
         }
         if (trees.size() > MAX_TREES) {
             throw TreePruningException.fromCode(
-                    "USER.VALIDATION.PRUNING.TREES_MAX",
+                    "VALIDATION.PRUNING.TREES_MAX",
                     "TECHNICAL.VALIDATION.PRUNING.TREES_MAX",
                     Map.of("max", MAX_TREES));
         }
@@ -50,7 +50,7 @@ public final class SchedulePreventivePruningDTOValidator {
     public static void validateQuadrille(UUID quadrille) {
         if (UUIDHelper.isDefaultUUID(UUIDHelper.getDefault(quadrille))) {
             throw TreePruningException.fromCode(
-                    "USER.VALIDATION.PRUNING.QUADRILLE_REQUIRED",
+                    "VALIDATION.PRUNING.QUADRILLE_REQUIRED",
                     "TECHNICAL.VALIDATION.PRUNING.QUADRILLE_REQUIRED");
         }
     }
@@ -67,7 +67,7 @@ public final class SchedulePreventivePruningDTOValidator {
                 CrossCuttingConstants.SHORT_TEXT_MIN_LENGTH,
                 CrossCuttingConstants.SHORT_TEXT_MAX_LENGTH)) {
             throw TreePruningException.fromCode(
-                    "USER.VALIDATION.PRUNING.PHOTO_TOO_LONG",
+                    "VALIDATION.PRUNING.PHOTO_TOO_LONG",
                     "TECHNICAL.VALIDATION.PRUNING.PHOTO_TOO_LONG");
         }
     }
@@ -82,13 +82,13 @@ public final class SchedulePreventivePruningDTOValidator {
         }
         if (bytes.length > PHOTO_MAX_SIZE_BYTES) {
             throw TreePruningException.fromCode(
-                    "USER.VALIDATION.PRUNING.PHOTO_MAX_SIZE",
+                    "VALIDATION.PRUNING.PHOTO_MAX_SIZE",
                     "TECHNICAL.VALIDATION.PRUNING.PHOTO_MAX_SIZE",
                     Map.of("size", bytes.length));
         }
         if (!isAllowedImageMime(contentType)) {
             throw TreePruningException.fromCode(
-                    "USER.VALIDATION.PRUNING.PHOTO_INVALID_FORMAT",
+                    "VALIDATION.PRUNING.PHOTO_INVALID_FORMAT",
                     "TECHNICAL.VALIDATION.PRUNING.PHOTO_INVALID_FORMAT",
                     Map.of("contentType", contentType != null ? contentType : "null"));
         }

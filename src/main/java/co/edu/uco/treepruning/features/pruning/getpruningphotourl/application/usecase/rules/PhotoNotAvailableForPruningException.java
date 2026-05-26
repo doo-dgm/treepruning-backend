@@ -18,7 +18,7 @@ public final class PhotoNotAvailableForPruningException extends TreePruningExcep
 
     public static PhotoNotAvailableForPruningException create(UUID pruningId) {
         return new PhotoNotAvailableForPruningException(
-                "USER.ERROR.PRUNING.PHOTO_NOT_AVAILABLE",
+                "ERROR.PRUNING.PHOTO_NOT_AVAILABLE",
                 "TECHNICAL.ERROR.PRUNING.PHOTO_NOT_AVAILABLE",
                 Map.of("pruningId", pruningId)
         );

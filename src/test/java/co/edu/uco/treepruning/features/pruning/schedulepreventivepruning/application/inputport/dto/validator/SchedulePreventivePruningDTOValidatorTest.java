@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -28,7 +27,7 @@ class SchedulePreventivePruningDTOValidatorTest {
     void validateTrees_withMaxTrees_doesNotThrow() {
         List<UUID> fiftyTrees = IntStream.range(0, 50)
                 .mapToObj(i -> UUID.randomUUID())
-                .collect(Collectors.toList());
+                .toList();
         assertThatNoException()
                 .isThrownBy(() -> SchedulePreventivePruningDTOValidator.validateTrees(fiftyTrees));
     }
@@ -49,7 +48,7 @@ class SchedulePreventivePruningDTOValidatorTest {
     void validateTrees_withMoreThanMax_throwsException() {
         List<UUID> tooMany = IntStream.range(0, 51)
                 .mapToObj(i -> UUID.randomUUID())
-                .collect(Collectors.toList());
+                .toList();
         assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validateTrees(tooMany))
                 .isInstanceOf(TreePruningException.class);
     }

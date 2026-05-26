@@ -39,7 +39,7 @@ public class GetSectorController {
             @Parameter(description = "Identificador unico del sector") @RequestParam(required = false) UUID id,
             @Parameter(description = "Nombre del sector (busqueda parcial)") @RequestParam(required = false) String name) {
         List<GetSectorDTO> results = inputPort.execute(new GetSectorDTO(id, name));
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.SECTOR.LIST"), results));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.SECTOR.LIST"), results));
     }
 
     @Operation(summary = "Obtener sector por ID", description = "Retorna el detalle de un sector dado su identificador. Retorna 404 si no existe.")
@@ -50,6 +50,6 @@ public class GetSectorController {
         if (results.isEmpty()) {
             throw ResourceNotFoundException.create("Sector", id);
         }
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.SECTOR.GET"), results.get(0)));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.SECTOR.GET"), results.get(0)));
     }
 }

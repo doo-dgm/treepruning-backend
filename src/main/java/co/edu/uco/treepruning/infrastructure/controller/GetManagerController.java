@@ -37,7 +37,7 @@ public class GetManagerController {
     public ResponseEntity<ApiResponse<List<GetManagerDTO>>> getByFilter(
             @Parameter(description = "Identificador unico del gestor") @RequestParam(required = false) UUID id) {
         List<GetManagerDTO> results = inputPort.execute(new GetManagerDTO(id));
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.MANAGER.LIST"), results));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.MANAGER.LIST"), results));
     }
 
     @Operation(summary = "Obtener gestor por ID", description = "Retorna el detalle de un gestor dado su identificador. Retorna 404 si no existe.")
@@ -48,6 +48,6 @@ public class GetManagerController {
         if (results.isEmpty()) {
             throw ResourceNotFoundException.create("Manager", id);
         }
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.MANAGER.GET"), results.get(0)));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.MANAGER.GET"), results.get(0)));
     }
 }

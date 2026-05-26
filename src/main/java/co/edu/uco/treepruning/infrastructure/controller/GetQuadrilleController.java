@@ -41,7 +41,7 @@ public class GetQuadrilleController {
             @Parameter(description = "Identificador del gestor responsable") @RequestParam(required = false) UUID managerId) {
         List<GetQuadrilleDTO> results = inputPort.execute(
                 new GetQuadrilleDTO(id, quadrilleName, new GetManagerDTO(managerId)));
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.QUADRILLE.LIST"), results));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.QUADRILLE.LIST"), results));
     }
 
     @Operation(summary = "Obtener cuadrilla por ID", description = "Retorna el detalle de una cuadrilla dado su identificador. Retorna 404 si no existe.")
@@ -52,6 +52,6 @@ public class GetQuadrilleController {
         if (results.isEmpty()) {
             throw ResourceNotFoundException.create("Quadrille", id);
         }
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.QUADRILLE.GET"), results.get(0)));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.QUADRILLE.GET"), results.get(0)));
     }
 }

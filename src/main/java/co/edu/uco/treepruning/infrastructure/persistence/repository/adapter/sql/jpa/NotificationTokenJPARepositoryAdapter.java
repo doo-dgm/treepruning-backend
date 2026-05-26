@@ -34,13 +34,13 @@ public class NotificationTokenJPARepositoryAdapter implements NotificationTokenR
 	@Override
 	public List<NotificationTokenDomain> findAllActiveByUserId(final UUID userId) {
 		// TODO Auto-generated method stub
-		return null;
+		return List.of();
 	}
 
 	@Override
 	public Optional<NotificationTokenDomain> findByFcmToken(final String fcmToken) {
 		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
 	}
 
 }

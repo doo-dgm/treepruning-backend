@@ -36,15 +36,17 @@ public class SchedulePreventivePruningController {
 
     @Operation(
         summary = "Programar podas preventivas",
-        description = "Registra una poda preventiva por cada arbol de la lista. "
-            + "El tipo ('Preventiva') y el estado ('Planeada') se resuelven automaticamente desde la BD; "
-            + "el cliente NO los envia.\n\n"
-            + "**Flujo para adjuntar fotos:**\n"
-            + "1. Subir cada imagen a `POST /api/v1/photos` (multipart). Cada llamada retorna una key.\n"
-            + "2. Para una foto: usar la key directamente en `photographicRecordPath`.\n"
-            + "3. Para varias fotos: concatenar las keys separadas por coma sin espacios: "
-            + "`2026/05/userId/a.jpg,2026/05/userId/b.jpg`.\n"
-            + "4. Sin fotos: omitir el campo o enviarlo como `null`."
+        description = """
+            Registra una poda preventiva por cada arbol de la lista. \
+            El tipo ('Preventiva') y el estado ('Planeada') se resuelven automaticamente desde la BD; \
+            el cliente NO los envia.
+
+            **Flujo para adjuntar fotos:**
+            1. Subir cada imagen a `POST /api/v1/photos` (multipart). Cada llamada retorna una key.
+            2. Para una foto: usar la key directamente en `photographicRecordPath`.
+            3. Para varias fotos: concatenar las keys separadas por coma sin espacios: \
+            `2026/05/userId/a.jpg,2026/05/userId/b.jpg`.
+            4. Sin fotos: omitir el campo o enviarlo como `null`."""
     )
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<Map<String, Object>>> schedule(
@@ -62,7 +64,7 @@ public class SchedulePreventivePruningController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.created(
-                        catalog.resolve("USER.SUCCESS.PRUNING.SCHEDULED"),
+                        catalog.resolve("SUCCESS.PRUNING.SCHEDULED"),
                         Map.of("count", created)));
     }
 }
