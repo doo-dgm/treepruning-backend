@@ -17,7 +17,7 @@ public final class StatusNotFoundForPruningException extends TreePruningExceptio
 
     public static StatusNotFoundForPruningException create(UUID statusId) {
         return new StatusNotFoundForPruningException(
-                "USER.ERROR.PRUNING.STATUS_NOT_FOUND",
+                "ERROR.PRUNING.STATUS_NOT_FOUND",
                 "TECHNICAL.ERROR.PRUNING.STATUS_NOT_FOUND",
                 Map.of("statusId", statusId)
         );

@@ -19,7 +19,7 @@ RUN mvn dependency:go-offline -q -B
 
 # Codigo fuente y build
 COPY src ./src
-RUN mvn package -DskipTests -q -B
+RUN mvn package -DskipTests -B
 
 # ----- Runtime stage -----
 FROM eclipse-temurin:26-jre AS runtime
@@ -29,3 +29,4 @@ COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
+# cache-bust: 2026-05-25

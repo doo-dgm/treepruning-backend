@@ -17,7 +17,7 @@ public final class TreeNotFoundForPruningException extends TreePruningException 
 
     public static TreeNotFoundForPruningException create(UUID treeId) {
         return new TreeNotFoundForPruningException(
-                "USER.ERROR.PRUNING.TREE_NOT_FOUND",
+                "ERROR.PRUNING.TREE_NOT_FOUND",
                 "TECHNICAL.ERROR.PRUNING.TREE_NOT_FOUND",
                 Map.of("treeId", treeId)
         );

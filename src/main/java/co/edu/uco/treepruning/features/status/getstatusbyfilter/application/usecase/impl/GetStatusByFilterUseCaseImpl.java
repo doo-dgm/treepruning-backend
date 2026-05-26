@@ -1,6 +1,8 @@
 package co.edu.uco.treepruning.features.status.getstatusbyfilter.application.usecase.impl;
 
 import java.util.List;
+
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import co.edu.uco.treepruning.features.status.getstatusbyfilter.application.inputport.dto.GetStatusDTO;
 import co.edu.uco.treepruning.features.status.getstatusbyfilter.application.usecase.GetStatusByFilterUseCase;
@@ -21,6 +23,7 @@ public class GetStatusByFilterUseCaseImpl implements GetStatusByFilterUseCase {
     }
 
     @Override
+    @Cacheable(cacheNames = "statuses", key = "'all'")
     public List<GetStatusDomain> execute(GetStatusDTO filter) {
         return statusRepository.findByFilter(filter.getId(), filter.getName())
                 .stream()

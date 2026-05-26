@@ -10,7 +10,7 @@ import co.edu.uco.treepruning.features.notification.registertoken.application.us
 import co.edu.uco.treepruning.infrastructure.persistence.repository.NotificationTokenRepository;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class RegisterTokenUseCaseImpl implements RegisterTokenUseCase {
 
     private static final Logger log = LoggerFactory.getLogger(RegisterTokenUseCaseImpl.class);

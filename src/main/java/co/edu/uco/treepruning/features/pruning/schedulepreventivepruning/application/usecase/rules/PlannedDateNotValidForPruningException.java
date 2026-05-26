@@ -14,21 +14,21 @@ public final class PlannedDateNotValidForPruningException extends TreePruningExc
 
     public static PlannedDateNotValidForPruningException createDateInPast() {
         return new PlannedDateNotValidForPruningException(
-                "USER.ERROR.PRUNING.PLANNED_DATE_PAST",
+                "ERROR.PRUNING.PLANNED_DATE_PAST",
                 "TECHNICAL.ERROR.PRUNING.PLANNED_DATE_PAST"
         );
     }
 
     public static PlannedDateNotValidForPruningException createDateIsNull() {
         return new PlannedDateNotValidForPruningException(
-                "USER.ERROR.PRUNING.PLANNED_DATE_NULL",
+                "ERROR.PRUNING.PLANNED_DATE_NULL",
                 "TECHNICAL.ERROR.PRUNING.PLANNED_DATE_NULL"
         );
     }
 
     public static PlannedDateNotValidForPruningException createDateBeyondHorizon() {
         return new PlannedDateNotValidForPruningException(
-                "USER.ERROR.PRUNING.PLANNED_DATE_BEYOND_HORIZON",
+                "ERROR.PRUNING.PLANNED_DATE_BEYOND_HORIZON",
                 "TECHNICAL.ERROR.PRUNING.PLANNED_DATE_BEYOND_HORIZON"
         );
     }

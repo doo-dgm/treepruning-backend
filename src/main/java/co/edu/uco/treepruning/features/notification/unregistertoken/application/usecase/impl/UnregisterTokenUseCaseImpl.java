@@ -11,7 +11,7 @@ import co.edu.uco.treepruning.features.notification.unregistertoken.application.
 import co.edu.uco.treepruning.infrastructure.persistence.repository.NotificationTokenRepository;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class UnregisterTokenUseCaseImpl implements UnregisterTokenUseCase {
 
     private static final Logger log = LoggerFactory.getLogger(UnregisterTokenUseCaseImpl.class);
@@ -30,7 +30,7 @@ public class UnregisterTokenUseCaseImpl implements UnregisterTokenUseCase {
         tokenRepository.findByFcmToken(domain.getFcmToken())
             .ifPresent(token -> {
                 token.deactivate();
-                tokenRepository.save(domainMapper.toEntity(domain));
+                tokenRepository.save(domainMapper.toEntity(token));
             });
         return null;
     }

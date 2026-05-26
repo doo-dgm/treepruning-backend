@@ -4,36 +4,56 @@ import co.edu.uco.treepruning.crosscutting.exception.TreePruningException;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SchedulePreventivePruningDTOValidatorTest {
 
-    // ── validateStatus ────────────────────────────────────────────────────────
+    // ── validateTrees ─────────────────────────────────────────────────────────
 
     @Test
-    void validateStatus_withValidUUID_doesNotThrow() {
+    void validateTrees_withOneTree_doesNotThrow() {
         assertThatNoException()
-                .isThrownBy(() -> SchedulePreventivePruningDTOValidator.validateStatus(UUID.randomUUID()));
+                .isThrownBy(() -> SchedulePreventivePruningDTOValidator.validateTrees(
+                        List.of(UUID.randomUUID())));
     }
 
     @Test
-    void validateStatus_withNull_throwsException() {
-        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validateStatus(null))
-                .isInstanceOf(TreePruningException.class)
-                .hasMessageContaining("status");
+    void validateTrees_withMaxTrees_doesNotThrow() {
+        List<UUID> fiftyTrees = IntStream.range(0, 50)
+                .mapToObj(i -> UUID.randomUUID())
+                .toList();
+        assertThatNoException()
+                .isThrownBy(() -> SchedulePreventivePruningDTOValidator.validateTrees(fiftyTrees));
     }
 
     @Test
-    void validateStatus_withDefaultUUID_throwsException() {
-        UUID defaultUUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
-        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validateStatus(defaultUUID))
+    void validateTrees_withNull_throwsException() {
+        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validateTrees(null))
                 .isInstanceOf(TreePruningException.class);
     }
 
- // ── validatePlannedDate ───────────────────────────────────────────────────
+    @Test
+    void validateTrees_withEmptyList_throwsException() {
+        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validateTrees(Collections.emptyList()))
+                .isInstanceOf(TreePruningException.class);
+    }
+
+    @Test
+    void validateTrees_withMoreThanMax_throwsException() {
+        List<UUID> tooMany = IntStream.range(0, 51)
+                .mapToObj(i -> UUID.randomUUID())
+                .toList();
+        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validateTrees(tooMany))
+                .isInstanceOf(TreePruningException.class);
+    }
+
+    // ── validatePlannedDate ───────────────────────────────────────────────────
 
     @Test
     void validatePlannedDate_withTodayDate_doesNotThrow() {
@@ -59,29 +79,18 @@ class SchedulePreventivePruningDTOValidatorTest {
                 .isInstanceOf(TreePruningException.class);
     }
 
-    // ── validateExecutedDate ──────────────────────────────────────────────────
+    // ── validateQuadrille ─────────────────────────────────────────────────────
 
     @Test
-    void validateExecutedDate_withNull_doesNotThrow() {
+    void validateQuadrille_withValidUUID_doesNotThrow() {
         assertThatNoException()
-                .isThrownBy(() -> SchedulePreventivePruningDTOValidator.validateExecutedDate(null, LocalDate.now()));
+                .isThrownBy(() -> SchedulePreventivePruningDTOValidator.validateQuadrille(UUID.randomUUID()));
     }
 
     @Test
-    void validateExecutedDate_afterPlannedDate_doesNotThrow() {
-        LocalDate planned = LocalDate.now();
-        LocalDate executed = planned.plusDays(1);
-        assertThatNoException()
-                .isThrownBy(() -> SchedulePreventivePruningDTOValidator.validateExecutedDate(executed, planned));
-    }
-
-    @Test
-    void validateExecutedDate_beforePlannedDate_throwsException() {
-        LocalDate planned = LocalDate.now().plusDays(5);
-        LocalDate executed = LocalDate.now().plusDays(2);
-        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validateExecutedDate(executed, planned))
-                .isInstanceOf(TreePruningException.class)
-                .hasMessageContaining("ejecución");
+    void validateQuadrille_withNull_throwsException() {
+        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validateQuadrille(null))
+                .isInstanceOf(TreePruningException.class);
     }
 
     // ── validatePhotographicRecordPath ────────────────────────────────────────
@@ -93,15 +102,17 @@ class SchedulePreventivePruningDTOValidatorTest {
     }
 
     @Test
-    void validatePhotographicRecordPath_withNull_throwsException() {
-        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validatePhotographicRecordPath(null))
-                .isInstanceOf(TreePruningException.class);
+    void validatePhotographicRecordPath_withNull_doesNotThrow() {
+        // Campo opcional: null es valido
+        assertThatNoException()
+                .isThrownBy(() -> SchedulePreventivePruningDTOValidator.validatePhotographicRecordPath(null));
     }
 
     @Test
-    void validatePhotographicRecordPath_withEmptyString_throwsException() {
-        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validatePhotographicRecordPath("   "))
-                .isInstanceOf(TreePruningException.class);
+    void validatePhotographicRecordPath_withEmptyString_doesNotThrow() {
+        // Campo opcional: cadena vacia es valida
+        assertThatNoException()
+                .isThrownBy(() -> SchedulePreventivePruningDTOValidator.validatePhotographicRecordPath("   "));
     }
 
     @Test
@@ -109,62 +120,5 @@ class SchedulePreventivePruningDTOValidatorTest {
         String longPath = "a".repeat(501);
         assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validatePhotographicRecordPath(longPath))
                 .isInstanceOf(TreePruningException.class);
-    }
-
-    // ── validateObservations ──────────────────────────────────────────────────
-
-    @Test
-    void validateObservations_withValidText_doesNotThrow() {
-        assertThatNoException()
-                .isThrownBy(() -> SchedulePreventivePruningDTOValidator.validateObservations("Poda preventiva del árbol en zona norte."));
-    }
-
-    @Test
-    void validateObservations_withNull_throwsException() {
-        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validateObservations(null))
-                .isInstanceOf(TreePruningException.class);
-    }
-
-    @Test
-    void validateObservations_belowMinLength_throwsException() {
-        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validateObservations("Corta"))
-                .isInstanceOf(TreePruningException.class)
-                .hasMessageContaining("10");
-    }
-
-    @Test
-    void validateObservations_exceeds500Chars_throwsException() {
-        String longText = "a".repeat(501);
-        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validateObservations(longText))
-                .isInstanceOf(TreePruningException.class);
-    }
-
-    // ── validateTree / validateQuadrille / validateType ──────────────────────
-
-    @Test
-    void validateTree_withValidUUID_doesNotThrow() {
-        assertThatNoException()
-                .isThrownBy(() -> SchedulePreventivePruningDTOValidator.validateTree(UUID.randomUUID()));
-    }
-
-    @Test
-    void validateTree_withNull_throwsException() {
-        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validateTree(null))
-                .isInstanceOf(TreePruningException.class)
-                .hasMessageContaining("árbol");
-    }
-
-    @Test
-    void validateQuadrille_withNull_throwsException() {
-        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validateQuadrille(null))
-                .isInstanceOf(TreePruningException.class)
-                .hasMessageContaining("cuadrilla");
-    }
-
-    @Test
-    void validateType_withNull_throwsException() {
-        assertThatThrownBy(() -> SchedulePreventivePruningDTOValidator.validateType(null))
-                .isInstanceOf(TreePruningException.class)
-                .hasMessageContaining("tipo");
     }
 }

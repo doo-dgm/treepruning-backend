@@ -71,7 +71,7 @@ public class GetPruningController {
                         new GetTypeDTO(typeId),
                         null, null, null, page, size));
 
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.PRUNING.LIST"), result));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.PRUNING.LIST"), result));
     }
 
     @Operation(summary = "Obtener poda por ID", description = "Retorna el detalle de una poda dado su identificador. Retorna 404 si no existe.")
@@ -83,7 +83,7 @@ public class GetPruningController {
         if (result.content().isEmpty()) {
             throw ResourceNotFoundException.create("Pruning", id);
         }
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.PRUNING.GET"), result.content().get(0)));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.PRUNING.GET"), result.content().get(0)));
     }
 
     @Operation(
@@ -95,6 +95,6 @@ public class GetPruningController {
     public ResponseEntity<ApiResponse<PruningPhotoUrlDTO>> getPhotoUrl(
             @Parameter(description = "Identificador unico de la poda") @PathVariable UUID id) {
         PruningPhotoUrlDTO dto = getPhotoUrlInputPort.execute(id);
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.PRUNING.PHOTO_URL"), dto));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.PRUNING.PHOTO_URL"), dto));
     }
 }

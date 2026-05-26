@@ -7,6 +7,7 @@ import co.edu.uco.treepruning.features.family.getfamilybyfilter.application.usec
 import co.edu.uco.treepruning.features.family.getfamilybyfilter.application.usecase.domain.GetFamilyDomain;
 import co.edu.uco.treepruning.features.family.getfamilybyfilter.application.usecase.impl.mapper.GetFamilyDomainMapper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.FamilyRepository;
+import org.springframework.cache.annotation.Cacheable;
 
 @Service
 public class GetFamilyByFilterUseCaseImpl implements GetFamilyByFilterUseCase {
@@ -21,6 +22,7 @@ public class GetFamilyByFilterUseCaseImpl implements GetFamilyByFilterUseCase {
     }
 
     @Override
+    @Cacheable(cacheNames = "families", key = "'all'")
     public List<GetFamilyDomain> execute(GetFamilyDTO filter) {
         return familyRepository.findByFilter(filter.getId(), filter.getCommonName(), filter.getScientificName())
                 .stream()

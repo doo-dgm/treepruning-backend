@@ -42,7 +42,7 @@ public class GetTreeController {
             @Parameter(description = "Identificador del sector geografico") @RequestParam(required = false) UUID sectorId) {
         List<GetTreeDTO> results = inputPort.execute(
                 new GetTreeDTO(id, null, null, new GetFamilyDTO(familyId), new GetSectorDTO(sectorId), null));
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.TREE.LIST"), results));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.TREE.LIST"), results));
     }
 
     @Operation(summary = "Obtener arbol por ID", description = "Retorna el detalle de un arbol dado su identificador. Retorna 404 si no existe.")
@@ -53,6 +53,6 @@ public class GetTreeController {
         if (results.isEmpty()) {
             throw ResourceNotFoundException.create("Tree", id);
         }
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.TREE.GET"), results.get(0)));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.TREE.GET"), results.get(0)));
     }
 }

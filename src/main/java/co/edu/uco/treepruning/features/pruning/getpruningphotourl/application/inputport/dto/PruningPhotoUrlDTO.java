@@ -1,4 +1,6 @@
 package co.edu.uco.treepruning.features.pruning.getpruningphotourl.application.inputport.dto;
 
-public record PruningPhotoUrlDTO(String url, int expiresInSeconds) {
+import java.util.List;
+
+public record PruningPhotoUrlDTO(List<String> urls, int expiresInSeconds) {
 }

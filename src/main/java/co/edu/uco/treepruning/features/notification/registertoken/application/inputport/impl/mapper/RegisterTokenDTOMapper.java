@@ -10,6 +10,6 @@ public interface RegisterTokenDTOMapper {
 
     default NotificationTokenDomain toDomain(RegisterTokenDTO dto) {
         if (ObjectHelper.isNull(dto)) return new NotificationTokenDomain();
-        return new NotificationTokenDomain(dto.getUserId(), dto.getFcmToken());
+        return new NotificationTokenDomain(dto.getUserId(), dto.getFcmToken(), dto.getLanguage());
     }
 }

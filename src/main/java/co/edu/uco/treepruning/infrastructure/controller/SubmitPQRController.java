@@ -44,6 +44,6 @@ public class SubmitPQRController {
         ));
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(ApiResponse.created(catalog.resolve("USER.SUCCESS.PQR.CREATED"), null));
+                .body(ApiResponse.created(catalog.resolve("SUCCESS.PQR.CREATED"), null));
     }
 }

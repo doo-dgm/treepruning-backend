@@ -40,7 +40,7 @@ public class GetPersonController {
             @Parameter(description = "Primer apellido (busqueda parcial)") @RequestParam(required = false) String firstLastName) {
         List<GetPersonDTO> results = inputPort.execute(
                 new GetPersonDTO(id, firstName, null, firstLastName, null, null, null, null, null, null, 0));
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.PERSON.LIST"), results));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.PERSON.LIST"), results));
     }
 
     @Operation(summary = "Obtener persona por ID", description = "Retorna el detalle de una persona dado su identificador. Retorna 404 si no existe.")
@@ -51,6 +51,6 @@ public class GetPersonController {
         if (results.isEmpty()) {
             throw ResourceNotFoundException.create("Person", id);
         }
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.PERSON.GET"), results.get(0)));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.PERSON.GET"), results.get(0)));
     }
 }

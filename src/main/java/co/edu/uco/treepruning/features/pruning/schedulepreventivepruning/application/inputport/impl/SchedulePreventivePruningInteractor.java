@@ -11,7 +11,6 @@ import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.applica
 import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.inputport.impl.mapper.SchedulePreventivePruningDTOMapper;
 import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.SchedulePreventivePruningUseCase;
 import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.domain.SchedulePreventivePruningDomain;
-import co.edu.uco.treepruning.infrastructure.storage.PhotoStoragePort;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -19,64 +18,44 @@ public class SchedulePreventivePruningInteractor implements SchedulePreventivePr
 
     private static final Logger log = LoggerFactory.getLogger(SchedulePreventivePruningInteractor.class);
 
-    private final SchedulePreventivePruningUseCase useCase;
-    private final SchedulePreventivePruningDTOMapper mapper;
-    private final PhotoStoragePort photoStorage;
-    private final ParameterCatalogService parameterCatalog;
+    private final SchedulePreventivePruningUseCase     useCase;
+    private final SchedulePreventivePruningDTOMapper   mapper;
+    private final ParameterCatalogService              parameterCatalog;
 
     public SchedulePreventivePruningInteractor(
-            SchedulePreventivePruningUseCase useCase,
+            SchedulePreventivePruningUseCase   useCase,
             SchedulePreventivePruningDTOMapper mapper,
-            PhotoStoragePort photoStorage,
-            ParameterCatalogService parameterCatalog) {
-        this.useCase = useCase;
-        this.mapper = mapper;
-        this.photoStorage = photoStorage;
+            ParameterCatalogService            parameterCatalog) {
+        this.useCase          = useCase;
+        this.mapper           = mapper;
         this.parameterCatalog = parameterCatalog;
     }
 
     @Override
-    public Void execute(SchedulePreventivePruningDTO data) {
-        log.info("SchedulePreventivePruning — received request: tree={}, plannedDate={}, photo={}",
-                data.getTree(), data.getPlannedDate(),
-                data.getPhotoBytes() != null ? data.getPhotoBytes().length + "B" : "none");
-
-        log.debug("SchedulePreventivePruning — validating photo metadata");
-        SchedulePreventivePruningDTOValidator.validatePhoto(
-                data.getPhotoBytes(), data.getPhotoContentType());
-
-        if (data.getPhotoBytes() != null && data.getPhotoBytes().length > 0) {
-            String key = photoStorage.upload(
-                    data.getPhotoBytes(),
-                    data.getPhotoContentType(),
-                    data.getPhotoOriginalFilename());
-            data.setPhotographicRecordPath(key);
-            log.info("SchedulePreventivePruning — photo uploaded with key={}", key);
-        }
-        
-
-        SchedulePreventivePruningDomain domain = mapper.toDomain(data);
-        
-        log.info("[SANITIZER] observations after sanitization: '{}'", domain.getObservations());
+    public Integer execute(SchedulePreventivePruningDTO data) {
+        log.info("SchedulePreventivePruning — received request: trees={}, plannedDate={}, photo={}",
+                data.getTrees().size(),
+                data.getPlannedDate(),
+                data.getPhotographicRecordPath() != null ? data.getPhotographicRecordPath() : "none");
 
         log.debug("SchedulePreventivePruning — running validation rules");
-        SchedulePreventivePruningDTOValidator.validateStatus(domain.getStatus());
+        SchedulePreventivePruningDTOValidator.validateTrees(data.getTrees());
 
         int horizonMonths = parameterCatalog.getIntValue("podas.horizonte-meses", 12);
-        log.debug("SchedulePreventivePruning — horizonte de programación: {} meses (desde Strapi)", horizonMonths);
-        SchedulePreventivePruningDTOValidator.validatePlannedDate(domain.getPlannedDate(), horizonMonths);
+        log.debug("SchedulePreventivePruning — horizonte de programacion: {} meses (desde Strapi)", horizonMonths);
+        SchedulePreventivePruningDTOValidator.validatePlannedDate(data.getPlannedDate(), horizonMonths);
 
-        SchedulePreventivePruningDTOValidator.validateExecutedDate(domain.getExecutedDate(), domain.getPlannedDate());
-        SchedulePreventivePruningDTOValidator.validateTree(domain.getTree());
-        SchedulePreventivePruningDTOValidator.validateQuadrille(domain.getQuadrille());
-        SchedulePreventivePruningDTOValidator.validateType(domain.getType());
-        SchedulePreventivePruningDTOValidator.validatePhotographicRecordPath(domain.getPhotographicRecordPath());
-        SchedulePreventivePruningDTOValidator.validateObservations(domain.getObservations());
+        SchedulePreventivePruningDTOValidator.validateQuadrille(data.getQuadrille());
+        SchedulePreventivePruningDTOValidator.validatePhotographicRecordPath(data.getPhotographicRecordPath());
 
-        log.debug("SchedulePreventivePruning — validation passed, delegating to use case");
-        useCase.execute(domain);
+        log.debug("SchedulePreventivePruning — validation passed, mapping to domain");
+        SchedulePreventivePruningDomain domain = mapper.toDomain(data);
 
-        log.info("SchedulePreventivePruning — pruning scheduled successfully with id={}", domain.getId());
-        return null;
+        log.debug("SchedulePreventivePruning — delegating to use case");
+        int created = useCase.execute(domain);
+
+        log.info("SchedulePreventivePruning — {} poda(s) preventiva(s) programada(s) exitosamente",
+                created);
+        return created;
     }
 }

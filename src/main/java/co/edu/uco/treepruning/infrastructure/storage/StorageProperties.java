@@ -6,6 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class StorageProperties {
 
     private String endpoint;
+    /** URL publica de MinIO (via Traefik). Se usa para generar presigned URLs accesibles externamente. */
+    private String publicEndpoint;
     private String bucket;
     private String accessKey;
     private String secretKey;
@@ -16,6 +18,13 @@ public class StorageProperties {
     }
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
+    }
+
+    public String getPublicEndpoint() {
+        return publicEndpoint != null ? publicEndpoint : endpoint;
+    }
+    public void setPublicEndpoint(String publicEndpoint) {
+        this.publicEndpoint = publicEndpoint;
     }
 
     public String getBucket() {

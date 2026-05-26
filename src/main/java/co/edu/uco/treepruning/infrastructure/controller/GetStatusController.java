@@ -39,7 +39,7 @@ public class GetStatusController {
             @Parameter(description = "Identificador unico del estado") @RequestParam(required = false) UUID id,
             @Parameter(description = "Nombre del estado (busqueda parcial)") @RequestParam(required = false) String name) {
         List<GetStatusDTO> results = inputPort.execute(new GetStatusDTO(id, name));
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.STATUS.LIST"), results));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.STATUS.LIST"), results));
     }
 
     @Operation(summary = "Obtener estado por ID", description = "Retorna el detalle de un estado dado su identificador. Retorna 404 si no existe.")
@@ -50,6 +50,6 @@ public class GetStatusController {
         if (results.isEmpty()) {
             throw ResourceNotFoundException.create("Status", id);
         }
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.STATUS.GET"), results.get(0)));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.STATUS.GET"), results.get(0)));
     }
 }

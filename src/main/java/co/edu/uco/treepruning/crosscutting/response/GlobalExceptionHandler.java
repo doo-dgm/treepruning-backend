@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleGenericException(Exception ex) {
         String techMsg = catalog.resolve("TECHNICAL.ERROR.GENERIC.INTERNAL");
         log.error("[500] {} | {}", "TECHNICAL.ERROR.GENERIC.INTERNAL", techMsg, ex);
-        String message = catalog.resolve("USER.ERROR.GENERIC.INTERNAL");
+        String message = catalog.resolve("ERROR.GENERIC.INTERNAL");
         return ResponseEntity
                 .status(500)
                 .body(ApiResponse.error(500, message));

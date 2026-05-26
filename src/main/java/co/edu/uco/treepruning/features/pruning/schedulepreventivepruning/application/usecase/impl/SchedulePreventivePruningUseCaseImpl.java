@@ -1,95 +1,136 @@
 package co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.impl;
 
-
 import java.util.List;
-import org.springframework.stereotype.Service;
+import java.util.Map;
+import java.util.UUID;
+
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+
+import co.edu.uco.treepruning.crosscutting.config.ParameterCatalogService;
 import co.edu.uco.treepruning.crosscutting.event.PruningScheduledEvent;
+import co.edu.uco.treepruning.crosscutting.exception.TreePruningException;
+import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.SchedulePreventivePruningUseCase;
+import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.domain.SchedulePreventivePruningDomain;
+import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.impl.mapper.SchedulePreventivePruningDomainMapper;
+import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.rules.QuadrilleNotFoundForPruningException;
+import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.rules.TreeAlreadyScheduledForDateException;
+import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.rules.TreeNotFoundForPruningException;
 import co.edu.uco.treepruning.features.quadrille.getquadrillebyfilter.application.inputport.dto.GetQuadrilleDTO;
 import co.edu.uco.treepruning.features.quadrille.getquadrillebyfilter.application.usecase.GetQuadrilleByFilterUseCase;
-import co.edu.uco.treepruning.features.quadrille.getquadrillebyfilter.application.usecase.domain.GetQuadrilleDomain;
 import co.edu.uco.treepruning.features.status.getstatusbyfilter.application.inputport.dto.GetStatusDTO;
 import co.edu.uco.treepruning.features.status.getstatusbyfilter.application.usecase.GetStatusByFilterUseCase;
 import co.edu.uco.treepruning.features.status.getstatusbyfilter.application.usecase.domain.GetStatusDomain;
 import co.edu.uco.treepruning.features.tree.gettreebyfilter.application.inputport.dto.GetTreeDTO;
 import co.edu.uco.treepruning.features.tree.gettreebyfilter.application.usecase.GetTreeByFilterUseCase;
-import co.edu.uco.treepruning.features.tree.gettreebyfilter.application.usecase.domain.GetTreeDomain;
 import co.edu.uco.treepruning.features.type.gettypebyfilter.application.inputport.dto.GetTypeDTO;
 import co.edu.uco.treepruning.features.type.gettypebyfilter.application.usecase.GetTypeByFilterUseCase;
 import co.edu.uco.treepruning.features.type.gettypebyfilter.application.usecase.domain.GetTypeDomain;
-import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.SchedulePreventivePruningUseCase;
-import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.domain.SchedulePreventivePruningDomain;
-import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.impl.mapper.SchedulePreventivePruningDomainMapper;
-import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.rules.QuadrilleNotFoundForPruningException;
-import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.rules.StatusNotFoundForPruningException;
-import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.rules.PruningTypeNotFoundForPruningException;
-import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.rules.TreeAlreadyScheduledForDateException;
-import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.usecase.rules.TreeNotFoundForPruningException;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.PruningRepository;
 
 @Service
 public class SchedulePreventivePruningUseCaseImpl
         implements SchedulePreventivePruningUseCase {
 
-    private final GetTreeByFilterUseCase getTreeByFilterUseCase;
-    private final GetQuadrilleByFilterUseCase getQuadrilleByFilterUseCase;
-    private final GetTypeByFilterUseCase getTypeByFilterUseCase;
-    private final GetStatusByFilterUseCase getStatusByFilterUseCase;
-    private final PruningRepository pruningRepository;
+    // Claves en Strapi (coleccion 'parametro'). El valor es el nombre exacto
+    // de la fila en las tablas 'type' / 'status' de la BD.
+    private static final String PARAM_TYPE_PREVENTIVE = "podas.tipo-creacion-preventiva";
+    private static final String PARAM_STATUS_PLANNED  = "podas.estado-creacion-default";
+
+    // Defaults usados si el parametro no existe aun en Strapi (fase inicial)
+    private static final String DEFAULT_TYPE_NAME   = "Preventiva";
+    private static final String DEFAULT_STATUS_NAME = "Planeada";
+
+    private final GetTreeByFilterUseCase               getTreeByFilterUseCase;
+    private final GetQuadrilleByFilterUseCase          getQuadrilleByFilterUseCase;
+    private final GetTypeByFilterUseCase               getTypeByFilterUseCase;
+    private final GetStatusByFilterUseCase             getStatusByFilterUseCase;
+    private final PruningRepository                    pruningRepository;
     private final SchedulePreventivePruningDomainMapper domainMapper;
-    private final ApplicationEventPublisher eventPublisher;
+    private final ApplicationEventPublisher            eventPublisher;
+    private final ParameterCatalogService              parameterCatalog;
 
     public SchedulePreventivePruningUseCaseImpl(
-            GetTreeByFilterUseCase getTreeByFilterUseCase,
-            GetQuadrilleByFilterUseCase getQuadrilleByFilterUseCase,
-            GetTypeByFilterUseCase getTypeByFilterUseCase,
-            GetStatusByFilterUseCase getStatusByFilterUseCase,
-            PruningRepository pruningRepository,
+            GetTreeByFilterUseCase               getTreeByFilterUseCase,
+            GetQuadrilleByFilterUseCase          getQuadrilleByFilterUseCase,
+            GetTypeByFilterUseCase               getTypeByFilterUseCase,
+            GetStatusByFilterUseCase             getStatusByFilterUseCase,
+            PruningRepository                    pruningRepository,
             SchedulePreventivePruningDomainMapper domainMapper,
-            ApplicationEventPublisher eventPublisher) {
-        this.getTreeByFilterUseCase = getTreeByFilterUseCase;
+            ApplicationEventPublisher            eventPublisher,
+            ParameterCatalogService              parameterCatalog) {
+        this.getTreeByFilterUseCase      = getTreeByFilterUseCase;
         this.getQuadrilleByFilterUseCase = getQuadrilleByFilterUseCase;
-        this.getTypeByFilterUseCase = getTypeByFilterUseCase;
-        this.getStatusByFilterUseCase = getStatusByFilterUseCase;
-        this.pruningRepository = pruningRepository;
-        this.domainMapper = domainMapper;
-        this.eventPublisher = eventPublisher;
+        this.getTypeByFilterUseCase      = getTypeByFilterUseCase;
+        this.getStatusByFilterUseCase    = getStatusByFilterUseCase;
+        this.pruningRepository           = pruningRepository;
+        this.domainMapper                = domainMapper;
+        this.eventPublisher              = eventPublisher;
+        this.parameterCatalog            = parameterCatalog;
     }
 
     @Override
-    public Void execute(SchedulePreventivePruningDomain data) {
-        List<GetTreeDomain> trees = getTreeByFilterUseCase.execute(new GetTreeDTO(data.getTree()));
-        if (trees.isEmpty()) {
-            throw TreeNotFoundForPruningException.create(data.getTree());
-        }
+    public Integer execute(SchedulePreventivePruningDomain domain) {
 
-        List<GetQuadrilleDomain> quadrilles = getQuadrilleByFilterUseCase.execute(new GetQuadrilleDTO(data.getQuadrille()));
-        if (quadrilles.isEmpty()) {
-            throw QuadrilleNotFoundForPruningException.create(data.getQuadrille());
-        }
-
-        List<GetTypeDomain> types = getTypeByFilterUseCase.execute(new GetTypeDTO(data.getType()));
+        // 1. Resolver nombre del tipo desde Strapi (con fallback al default)
+        String typeName = parameterCatalog.getValue(PARAM_TYPE_PREVENTIVE, DEFAULT_TYPE_NAME);
+        List<GetTypeDomain> types = getTypeByFilterUseCase.execute(
+                new GetTypeDTO(null, typeName));
         if (types.isEmpty()) {
-            throw PruningTypeNotFoundForPruningException.create(data.getType());
+            throw TreePruningException.fromCode(
+                    "ERROR.PRUNING.TYPE_NOT_FOUND",
+                    "TECHNICAL.ERROR.PRUNING.TYPE_NOT_FOUND",
+                    Map.of("typeName", typeName, "parameterKey", PARAM_TYPE_PREVENTIVE));
         }
+        UUID typeId = types.get(0).getId();
 
-        List<GetStatusDomain> statuses = getStatusByFilterUseCase.execute(new GetStatusDTO(data.getStatus()));
+        // 2. Resolver nombre del estado desde Strapi (con fallback al default)
+        String statusName = parameterCatalog.getValue(PARAM_STATUS_PLANNED, DEFAULT_STATUS_NAME);
+        List<GetStatusDomain> statuses = getStatusByFilterUseCase.execute(
+                new GetStatusDTO(null, statusName));
         if (statuses.isEmpty()) {
-            throw StatusNotFoundForPruningException.create(data.getStatus());
+            throw TreePruningException.fromCode(
+                    "ERROR.PRUNING.STATUS_NOT_FOUND",
+                    "TECHNICAL.ERROR.PRUNING.STATUS_NOT_FOUND",
+                    Map.of("statusName", statusName, "parameterKey", PARAM_STATUS_PLANNED));
+        }
+        UUID statusId = statuses.get(0).getId();
+
+        // 3. Validar que la cuadrilla existe
+        if (getQuadrilleByFilterUseCase.execute(
+                new GetQuadrilleDTO(domain.getQuadrille())).isEmpty()) {
+            throw QuadrilleNotFoundForPruningException.create(domain.getQuadrille());
         }
 
-        if (pruningRepository.existsByTreeAndPlannedDate(
-                data.getTree(), data.getPlannedDate())) {
-            throw TreeAlreadyScheduledForDateException.create(
-                    data.getTree(), data.getPlannedDate());
+        // 4. Crear una poda preventiva por cada arbol
+        int created = 0;
+        for (UUID treeId : domain.getTrees()) {
+
+            if (getTreeByFilterUseCase.execute(new GetTreeDTO(treeId)).isEmpty()) {
+                throw TreeNotFoundForPruningException.create(treeId);
+            }
+
+            if (pruningRepository.existsByTreeAndPlannedDate(treeId, domain.getPlannedDate())) {
+                throw TreeAlreadyScheduledForDateException.create(treeId, domain.getPlannedDate());
+            }
+
+            SchedulePreventivePruningDomain perTreeDomain = new SchedulePreventivePruningDomain(
+                    statusId,
+                    domain.getPlannedDate(),
+                    null,
+                    treeId,
+                    domain.getQuadrille(),
+                    typeId,
+                    domain.getPhotographicRecordPath(),
+                    domain.getObservations());
+
+            pruningRepository.create(domainMapper.toEntity(perTreeDomain));
+            eventPublisher.publishEvent(
+                    new PruningScheduledEvent(
+                            perTreeDomain.getId(), treeId, domain.getPlannedDate()));
+            created++;
         }
 
-        pruningRepository.create(domainMapper.toEntity(data));
-        
-        eventPublisher.publishEvent(
-        	    new PruningScheduledEvent(data.getId(), data.getTree(), data.getPlannedDate())
-        	);
-
-        return null;
+        return created;
     }
 }

@@ -1,17 +1,13 @@
 name: Backend CI/CD
-
 on:
   push:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
   workflow_dispatch:
-
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/tree-pruning-backend
-
 jobs:
-
   build-and-push:
     name: Build & Push Docker image
     runs-on: ubuntu-latest
@@ -20,14 +16,11 @@ jobs:
       packages: write
     outputs:
       image-tag: ${{ github.sha }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
       - name: Login to GitHub Container Registry
         if: github.event_name == 'push'
         uses: docker/login-action@v3
@@ -35,7 +28,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -44,13 +36,6 @@ jobs:
           tags: |
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
             ${{ env.IMAGE_NAME }}:${{ github.ref == 'refs/heads/main' && 'latest' || 'dev' }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          # Desactiva los attestations de provenance/SBOM. Con mode=max generan
-          # blobs adicionales que GHCR intenta resolver via "cross-repo mount"
-          # cuando ya hay capas compartidas en otros packages del owner. Si el
-          # GITHUB_TOKEN no tiene permiso write sobre esos otros packages,
-          # responde 403 al HEAD del blob y aborta el push.
           provenance: false
           sbom: false
 
@@ -63,14 +48,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Set up Java 26
         uses: actions/setup-java@v4
         with:
           java-version: '26'
           distribution: 'temurin'
           cache: maven
-
       - name: SonarQube Scan
         run: |
           chmod +x mvnw
@@ -83,34 +66,11 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  sonar-analysis:
-    name: SonarQube Analysis
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up Java 26
-        uses: actions/setup-java@v4
-        with:
-          java-version: '26'
-          distribution: 'temurin'
-          cache: maven
-
-      - name: SonarQube Scan
-        run: ./mvnw sonar:sonar -DskipTests
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
   deploy-dev:
     name: Deploy a Dev
     needs: build-and-push
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
-
     steps:
       - name: Disparar actualizacion en infra
         uses: peter-evans/repository-dispatch@v3
@@ -125,13 +85,42 @@ jobs:
               "actor": "${{ github.actor }}"
             }
 
+  zap-scan:
+    name: OWASP ZAP Baseline Scan
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Prepare report file
+        run: |
+          touch ${{ github.workspace }}/zap-report.html
+          chmod 777 ${{ github.workspace }}/zap-report.html
+      - name: ZAP Baseline Scan
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/zap/wrk:rw \
+            ghcr.io/zaproxy/zaproxy:stable \
+            zap-baseline.py \
+            -t https://api-dev.treepruning.org \
+            -r zap-report.html \
+            -I
+        continue-on-error: true
+      - name: Upload ZAP Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zap-report
+          path: ${{ github.workspace }}/zap-report.html
+
   deploy-prod:
     name: Deploy a Prod
     needs: build-and-push
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: production
-
     steps:
       - name: Disparar actualizacion en infra
         uses: peter-evans/repository-dispatch@v3

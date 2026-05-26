@@ -15,12 +15,13 @@ public interface NotificationTokenDomainMapper {
 			domain.getId(),
 			domain.getUserId(),
 			domain.getFcmToken(),
+			domain.getLanguage(),
 			domain.getCreatedAt(),
 			domain.getUpdatedAt(),
 			domain.isActive()
 		);
 	}
-	
+
 	default NotificationTokenDomain toDomain(NotificationTokenEntity entity) {
 		if (entity == null) {
 			return null;
@@ -29,6 +30,7 @@ public interface NotificationTokenDomainMapper {
 			entity.getId(),
 			entity.getUserId(),
 			entity.getFcmToken(),
+			entity.getLanguage(),
 			entity.getCreatedAt(),
 			entity.getUpdatedAt(),
 			entity.isActive()

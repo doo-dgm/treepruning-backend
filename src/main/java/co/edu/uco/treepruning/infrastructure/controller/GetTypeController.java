@@ -38,7 +38,7 @@ public class GetTypeController {
             @Parameter(description = "Identificador unico del tipo de poda") @RequestParam(required = false) UUID id,
             @Parameter(description = "Nombre del tipo (busqueda parcial)") @RequestParam(required = false) String name) {
         List<GetTypeDTO> results = inputPort.execute(new GetTypeDTO(id, name));
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.TYPE.LIST"), results));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.TYPE.LIST"), results));
     }
 
     @Operation(summary = "Obtener tipo de poda por ID", description = "Retorna el detalle de un tipo de poda dado su identificador. Retorna 404 si no existe.")
@@ -49,6 +49,6 @@ public class GetTypeController {
         if (results.isEmpty()) {
             throw ResourceNotFoundException.create("Type", id);
         }
-        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("USER.SUCCESS.TYPE.GET"), results.get(0)));
+        return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.TYPE.GET"), results.get(0)));
     }
 }

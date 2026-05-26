@@ -16,7 +16,7 @@ public final class ResourceNotFoundException extends TreePruningException {
 
     public static ResourceNotFoundException create(String entityName, UUID id) {
         return new ResourceNotFoundException(
-                "USER.ERROR.GENERIC.RESOURCE_NOT_FOUND",
+                "ERROR.GENERIC.RESOURCE_NOT_FOUND",
                 "TECHNICAL.ERROR.GENERIC.RESOURCE_NOT_FOUND",
                 Map.of("entityName", entityName, "id", id)
         );

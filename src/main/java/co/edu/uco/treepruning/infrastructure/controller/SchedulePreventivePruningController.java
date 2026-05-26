@@ -1,19 +1,16 @@
 package co.edu.uco.treepruning.infrastructure.controller;
 
-import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import co.edu.uco.treepruning.crosscutting.catalog.MessageCatalogService;
-import co.edu.uco.treepruning.crosscutting.exception.TreePruningException;
 import co.edu.uco.treepruning.crosscutting.response.ApiResponse;
 import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.inputport.SchedulePreventivePruningInputPort;
 import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.inputport.dto.SchedulePreventivePruningDTO;
@@ -38,47 +35,36 @@ public class SchedulePreventivePruningController {
     }
 
     @Operation(
-        summary = "Programar poda preventiva",
-        description = "Registra una nueva poda preventiva en el sistema. "
-            + "La parte 'data' contiene el JSON con los datos de la poda; "
-            + "la parte 'photo' (opcional) es la imagen de evidencia (JPEG, PNG o WebP, max 5 MB)."
+        summary = "Programar podas preventivas",
+        description = """
+            Registra una poda preventiva por cada arbol de la lista. \
+            El tipo ('Preventiva') y el estado ('Planeada') se resuelven automaticamente desde la BD; \
+            el cliente NO los envia.
+
+            **Flujo para adjuntar fotos:**
+            1. Subir cada imagen a `POST /api/v1/photos` (multipart). Cada llamada retorna una key.
+            2. Para una foto: usar la key directamente en `photographicRecordPath`.
+            3. Para varias fotos: concatenar las keys separadas por coma sin espacios: \
+            `2026/05/userId/a.jpg,2026/05/userId/b.jpg`.
+            4. Sin fotos: omitir el campo o enviarlo como `null`."""
     )
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<Void>> schedule(
-            @Parameter(description = "Datos de la poda en formato JSON") @RequestPart("data") SchedulePreventivePruningRequest request,
-            @Parameter(description = "Imagen de evidencia fotografica (JPEG, PNG o WebP, max 5 MB)") @RequestPart(value = "photo", required = false) MultipartFile photo) {
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponse<Map<String, Object>>> schedule(
+            @Parameter(description = "Datos de las podas en formato JSON")
+            @RequestBody SchedulePreventivePruningRequest request) {
 
-        byte[] photoBytes = null;
-        String contentType = null;
-        String originalFilename = null;
-        if (photo != null && !photo.isEmpty()) {
-            try {
-                photoBytes = photo.getBytes();
-            } catch (IOException e) {
-                throw TreePruningException.fromCode(
-                        "USER.ERROR.PRUNING.PHOTO_READ_FAILED",
-                        "TECHNICAL.ERROR.PRUNING.PHOTO_READ_FAILED",
-                        Map.of("error", e.getMessage() != null ? e.getMessage() : "unknown"));
-            }
-            contentType = photo.getContentType();
-            originalFilename = photo.getOriginalFilename();
-        }
-
-        schedulePreventivePruningInputPort.execute(new SchedulePreventivePruningDTO(
-                request.status(),
+        int created = schedulePreventivePruningInputPort.execute(new SchedulePreventivePruningDTO(
+                request.trees(),
                 request.plannedDate(),
-                request.executedDate(),
-                request.tree(),
                 request.quadrille(),
-                request.type(),
-                null,
-                request.observations(),
-                photoBytes,
-                contentType,
-                originalFilename
+                request.photographicRecordPath(),
+                request.observations()
         ));
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(ApiResponse.created(catalog.resolve("USER.SUCCESS.PRUNING.SCHEDULED"), null));
+                .body(ApiResponse.created(
+                        catalog.resolve("SUCCESS.PRUNING.SCHEDULED"),
+                        Map.of("count", created)));
     }
 }

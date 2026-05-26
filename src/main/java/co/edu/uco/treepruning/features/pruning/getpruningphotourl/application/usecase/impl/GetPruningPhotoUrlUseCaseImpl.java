@@ -1,13 +1,12 @@
 package co.edu.uco.treepruning.features.pruning.getpruningphotourl.application.usecase.impl;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import co.edu.uco.treepruning.crosscutting.exception.ResourceNotFoundException;
 import co.edu.uco.treepruning.crosscutting.helper.TextHelper;
-import co.edu.uco.treepruning.crosscutting.pagination.PageRequest;
-import co.edu.uco.treepruning.crosscutting.pagination.PageResult;
 import co.edu.uco.treepruning.features.pruning.getpruningphotourl.application.inputport.dto.PruningPhotoUrlDTO;
 import co.edu.uco.treepruning.features.pruning.getpruningphotourl.application.usecase.GetPruningPhotoUrlUseCase;
 import co.edu.uco.treepruning.features.pruning.getpruningphotourl.application.usecase.rules.PhotoNotAvailableForPruningException;
@@ -34,19 +33,22 @@ public class GetPruningPhotoUrlUseCaseImpl implements GetPruningPhotoUrlUseCase 
 
     @Override
     public PruningPhotoUrlDTO execute(UUID pruningId) {
-        PageResult<PruningEntity> result = pruningRepository.findByFilter(
-                pruningId, null, null, null, null, null, PageRequest.of(0, 1));
-
-        if (result.content().isEmpty()) {
+        PruningEntity entity = pruningRepository.findById(pruningId);
+        if (entity == null) {
             throw ResourceNotFoundException.create("Pruning", pruningId);
         }
 
-        String key = result.content().get(0).getPhotographicRecordPath();
-        if (TextHelper.isEmptyWithTrim(key)) {
+        String raw = entity.getPhotographicRecordPath();
+        if (TextHelper.isEmptyWithTrim(raw)) {
             throw PhotoNotAvailableForPruningException.create(pruningId);
         }
 
-        String url = photoStorage.presignedUrl(key);
-        return new PruningPhotoUrlDTO(url, storageProperties.getPresignedUrlExpirySeconds());
+        List<String> urls = java.util.Arrays.stream(raw.split(","))
+                .map(String::trim)
+                .filter(k -> !k.isEmpty())
+                .map(photoStorage::presignedUrl)
+                .toList();
+
+        return new PruningPhotoUrlDTO(urls, storageProperties.getPresignedUrlExpirySeconds());
     }
 }

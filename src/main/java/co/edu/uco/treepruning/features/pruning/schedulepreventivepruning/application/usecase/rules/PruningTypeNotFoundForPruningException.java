@@ -17,7 +17,7 @@ public final class PruningTypeNotFoundForPruningException extends TreePruningExc
 
     public static PruningTypeNotFoundForPruningException create(UUID typeId) {
         return new PruningTypeNotFoundForPruningException(
-                "USER.ERROR.PRUNING.TYPE_NOT_FOUND",
+                "ERROR.PRUNING.TYPE_NOT_FOUND",
                 "TECHNICAL.ERROR.PRUNING.TYPE_NOT_FOUND",
                 Map.of("typeId", typeId)
         );
