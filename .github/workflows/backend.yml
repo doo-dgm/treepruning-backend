@@ -94,6 +94,10 @@ jobs:
       contents: read
       issues: write
     steps:
+      - name: Prepare report file
+        run: |
+          touch ${{ github.workspace }}/zap-report.html
+          chmod 777 ${{ github.workspace }}/zap-report.html
       - name: ZAP Baseline Scan
         run: |
           docker run --rm \
