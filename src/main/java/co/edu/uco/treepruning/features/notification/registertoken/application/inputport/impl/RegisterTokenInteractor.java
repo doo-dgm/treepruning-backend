@@ -11,7 +11,7 @@ import co.edu.uco.treepruning.features.notification.registertoken.application.in
 import co.edu.uco.treepruning.features.notification.registertoken.application.usecase.RegisterTokenUseCase;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class RegisterTokenInteractor implements RegisterTokenInputPort {
 
     private static final Logger log = LoggerFactory.getLogger(RegisterTokenInteractor.class);

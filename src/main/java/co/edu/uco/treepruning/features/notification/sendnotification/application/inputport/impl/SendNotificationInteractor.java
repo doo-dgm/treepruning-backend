@@ -11,7 +11,7 @@ import co.edu.uco.treepruning.features.notification.sendnotification.application
 import co.edu.uco.treepruning.features.notification.sendnotification.application.usecase.SendNotificationUseCase;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class SendNotificationInteractor implements SendNotificationInputPort {
 
     private static final Logger log = LoggerFactory.getLogger(SendNotificationInteractor.class);
