@@ -4,11 +4,12 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.event.EventListener;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import co.edu.uco.treepruning.features.notification.sendnotification.application.usecase.SendNotificationUseCase;
 import co.edu.uco.treepruning.features.notification.sendnotification.application.usecase.domain.SendNotificationDomain;
@@ -30,7 +31,10 @@ public class NotificationEventListener {
         this.sendNotificationUseCase = sendNotificationUseCase;
     }
 
-    @EventListener
+    // AFTER_COMMIT: la poda ya está committed cuando esto corre,
+    // así que pruningRepository.findById() la encontrará en T2 (REQUIRES_NEW).
+    // Sigue en el mismo hilo de la request → SecurityContext disponible.
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onPruningScheduled(PruningScheduledEvent event) {
         UUID userId = resolveCurrentUserId();
         if (userId == null) {
