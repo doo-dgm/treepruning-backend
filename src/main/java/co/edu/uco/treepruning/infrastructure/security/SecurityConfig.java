@@ -85,9 +85,14 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/managers/**").hasAnyRole("MANAGER", "ADMIN")
                 .requestMatchers("/api/v1/types/**").hasAnyRole("MANAGER", "ADMIN")
                 .requestMatchers("/api/v1/programmings/**").hasAnyRole("MANAGER", "ADMIN")
+                
+                // Login: endpoint publico, no requiere autenticacion
+                .requestMatchers("/api/v1/auth/login").permitAll()
 
                 // Cualquier otro endpoint: autenticado (al menos con token valido)
                 .anyRequest().authenticated())
+            
+      
 
             // --- JWT Resource Server: valida tokens emitidos por Keycloak ---
             .oauth2ResourceServer(oauth2 ->
