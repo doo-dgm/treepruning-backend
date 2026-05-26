@@ -33,9 +33,10 @@ public class SchedulePreventivePruningController {
     }
 
     @Operation(
-        summary = "Programar poda preventiva",
-        description = "Registra una nueva poda preventiva en el sistema. "
-            + "Envia un JSON con los datos de la poda.\n\n"
+        summary = "Programar podas preventivas",
+        description = "Registra una poda preventiva por cada arbol de la lista. "
+            + "El tipo ('Preventiva') y el estado ('Planeada') se resuelven automaticamente desde la BD; "
+            + "el cliente NO los envia.\n\n"
             + "**Flujo para adjuntar fotos:**\n"
             + "1. Subir cada imagen a `POST /api/v1/photos` (multipart). Cada llamada retorna una key.\n"
             + "2. Para una foto: usar la key directamente en `photographicRecordPath`.\n"
@@ -45,20 +46,21 @@ public class SchedulePreventivePruningController {
     )
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<Void>> schedule(
-            @Parameter(description = "Datos de la poda en formato JSON") @RequestBody SchedulePreventivePruningRequest request) {
+            @Parameter(description = "Datos de las podas en formato JSON")
+            @RequestBody SchedulePreventivePruningRequest request) {
 
         schedulePreventivePruningInputPort.execute(new SchedulePreventivePruningDTO(
-                request.status(),
+                request.trees(),
                 request.plannedDate(),
-                request.executedDate(),
-                request.tree(),
                 request.quadrille(),
-                request.type(),
                 request.photographicRecordPath(),
                 request.observations()
         ));
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(ApiResponse.created(catalog.resolve("USER.SUCCESS.PRUNING.SCHEDULED"), null));
+                .body(ApiResponse.created(
+                        catalog.resolve("USER.SUCCESS.PRUNING.SCHEDULED"),
+                        null));
     }
 }

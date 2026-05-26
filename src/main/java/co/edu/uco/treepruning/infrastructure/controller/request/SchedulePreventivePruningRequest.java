@@ -1,29 +1,24 @@
 package co.edu.uco.treepruning.infrastructure.controller.request;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record SchedulePreventivePruningRequest(
 
-        @Schema(description = "UUID del estado de la poda", example = "550e8400-e29b-41d4-a716-446655440000")
-        UUID status,
+        @Schema(
+            description = "Lista de UUIDs de los arboles a intervenir (1 a 50).",
+            example = "[\"550e8400-e29b-41d4-a716-446655440001\"]"
+        )
+        List<UUID> trees,
 
         @Schema(description = "Fecha programada de la poda (yyyy-MM-dd)", example = "2025-06-15")
         LocalDate plannedDate,
 
-        @Schema(description = "Fecha de ejecucion (yyyy-MM-dd). Null si aun no se ha ejecutado.", example = "null", nullable = true)
-        LocalDate executedDate,
-
-        @Schema(description = "UUID del arbol a intervenir", example = "550e8400-e29b-41d4-a716-446655440001")
-        UUID tree,
-
         @Schema(description = "UUID de la cuadrilla asignada", example = "550e8400-e29b-41d4-a716-446655440002")
         UUID quadrille,
-
-        @Schema(description = "UUID del tipo de poda", example = "550e8400-e29b-41d4-a716-446655440003")
-        UUID type,
 
         @Schema(
             description = "Keys de MinIO de las fotos de evidencia, obtenidas subiendo cada imagen a POST /api/v1/photos. "
