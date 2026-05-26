@@ -7,7 +7,7 @@ import org.springframework.web.client.RestTemplate;
 import lombok.extern.slf4j.Slf4j;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.google.api.client.util.Value;
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 @Slf4j
