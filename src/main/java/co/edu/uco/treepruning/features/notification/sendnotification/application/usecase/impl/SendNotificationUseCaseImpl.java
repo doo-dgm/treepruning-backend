@@ -3,6 +3,8 @@ package co.edu.uco.treepruning.features.notification.sendnotification.applicatio
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +25,7 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.Pruni
 
 
 @Service
+@Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SendNotificationUseCaseImpl implements SendNotificationUseCase {
 
     private static final Logger log = LoggerFactory.getLogger(SendNotificationUseCaseImpl.class);
