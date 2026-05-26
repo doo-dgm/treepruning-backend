@@ -32,7 +32,7 @@ public class SchedulePreventivePruningInteractor implements SchedulePreventivePr
     }
 
     @Override
-    public Void execute(SchedulePreventivePruningDTO data) {
+    public Integer execute(SchedulePreventivePruningDTO data) {
         log.info("SchedulePreventivePruning — received request: trees={}, plannedDate={}, photo={}",
                 data.getTrees().size(),
                 data.getPlannedDate(),
@@ -52,10 +52,10 @@ public class SchedulePreventivePruningInteractor implements SchedulePreventivePr
         SchedulePreventivePruningDomain domain = mapper.toDomain(data);
 
         log.debug("SchedulePreventivePruning — delegating to use case");
-        useCase.execute(domain);
+        int created = useCase.execute(domain);
 
         log.info("SchedulePreventivePruning — {} poda(s) preventiva(s) programada(s) exitosamente",
-                domain.getTrees().size());
-        return null;
+                created);
+        return created;
     }
 }

@@ -69,7 +69,7 @@ public class SchedulePreventivePruningUseCaseImpl
     }
 
     @Override
-    public Void execute(SchedulePreventivePruningDomain domain) {
+    public Integer execute(SchedulePreventivePruningDomain domain) {
 
         // 1. Resolver nombre del tipo desde Strapi (parametro configurable),
         //    luego buscar el UUID en la tabla 'type' por ese nombre.
@@ -115,6 +115,7 @@ public class SchedulePreventivePruningUseCaseImpl
         }
 
         // 4. Crear una poda preventiva por cada arbol
+        int created = 0;
         for (UUID treeId : domain.getTrees()) {
 
             if (getTreeByFilterUseCase.execute(new GetTreeDTO(treeId)).isEmpty()) {
@@ -140,8 +141,9 @@ public class SchedulePreventivePruningUseCaseImpl
             eventPublisher.publishEvent(
                     new PruningScheduledEvent(
                             perTreeDomain.getId(), treeId, domain.getPlannedDate()));
+            created++;
         }
 
-        return null;
+        return created;
     }
 }

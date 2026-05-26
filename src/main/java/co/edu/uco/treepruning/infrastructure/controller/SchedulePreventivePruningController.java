@@ -1,5 +1,7 @@
 package co.edu.uco.treepruning.infrastructure.controller;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,11 +47,11 @@ public class SchedulePreventivePruningController {
             + "4. Sin fotos: omitir el campo o enviarlo como `null`."
     )
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse<Void>> schedule(
+    public ResponseEntity<ApiResponse<Map<String, Object>>> schedule(
             @Parameter(description = "Datos de las podas en formato JSON")
             @RequestBody SchedulePreventivePruningRequest request) {
 
-        schedulePreventivePruningInputPort.execute(new SchedulePreventivePruningDTO(
+        int created = schedulePreventivePruningInputPort.execute(new SchedulePreventivePruningDTO(
                 request.trees(),
                 request.plannedDate(),
                 request.quadrille(),
@@ -61,6 +63,6 @@ public class SchedulePreventivePruningController {
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.created(
                         catalog.resolve("USER.SUCCESS.PRUNING.SCHEDULED"),
-                        null));
+                        Map.of("count", created)));
     }
 }
