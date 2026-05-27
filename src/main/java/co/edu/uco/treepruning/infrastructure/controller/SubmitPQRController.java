@@ -30,8 +30,14 @@ public class SubmitPQRController {
 
     @Operation(
         summary = "Registrar PQR",
-        description = "Crea una nueva Peticion, Queja o Reclamo relacionada con el estado del arbolado urbano del municipio."
+        description = "Crea una Peticion, Queja o Reclamo ciudadana sobre el arbolado urbano. " +
+                "Disponible para roles PERSON, MANAGER y ADMIN."
     )
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "PQR registrado."),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Datos invalidos (sector/estado/persona inexistentes, fecha invalida, etc.).", content = @io.swagger.v3.oas.annotations.media.Content),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "JWT ausente o invalido.", content = @io.swagger.v3.oas.annotations.media.Content)
+    })
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> submit(@RequestBody SubmitPQRRequest request) {
         submitPQRInputPort.execute(new SubmitPQRDTO(

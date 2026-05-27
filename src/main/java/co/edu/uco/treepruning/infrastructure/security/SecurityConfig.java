@@ -66,9 +66,13 @@ public class SecurityConfig {
             // --- Reglas de autorizacion por endpoint ---
             .authorizeHttpRequests(auth -> auth
 
-                // Actuator y documentacion: solo ADMIN
+                // Actuator: solo ADMIN
                 .requestMatchers("/actuator/**").hasRole(ROLE_ADMIN)
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").hasRole(ROLE_ADMIN)
+
+                // Swagger / OpenAPI: publico (la API real sigue protegida con JWT).
+                // Util para sustentacion y exploracion en dev. En prod la
+                // exposicion se controla en Kong (no se enruta /swagger-ui).
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
                 // PQR: PERSON puede radicar, MANAGER y ADMIN tambien
                 .requestMatchers(HttpMethod.POST, "/api/v1/pqrs").hasAnyRole(ROLE_PERSON, ROLE_MANAGER, ROLE_ADMIN)

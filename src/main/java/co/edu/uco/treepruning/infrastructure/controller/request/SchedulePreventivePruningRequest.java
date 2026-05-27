@@ -8,29 +8,25 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public record SchedulePreventivePruningRequest(
 
-        @Schema(
-            description = "Lista de UUIDs de los arboles a intervenir (1 a 50).",
-            example = "[\"550e8400-e29b-41d4-a716-446655440001\"]"
-        )
+        @Schema(description = "UUIDs de los arboles a intervenir (1 a 50).", requiredMode = Schema.RequiredMode.REQUIRED,
+                example = "[\"550e8400-e29b-41d4-a716-446655440001\"]")
         List<UUID> trees,
 
-        @Schema(description = "Fecha programada de la poda (yyyy-MM-dd)", example = "2025-06-15")
+        @Schema(description = "Fecha planeada (yyyy-MM-dd). Debe ser hoy o futura.", requiredMode = Schema.RequiredMode.REQUIRED,
+                example = "2025-06-15")
         LocalDate plannedDate,
 
-        @Schema(description = "UUID de la cuadrilla asignada", example = "550e8400-e29b-41d4-a716-446655440002")
+        @Schema(description = "UUID de la cuadrilla asignada.", requiredMode = Schema.RequiredMode.REQUIRED,
+                example = "550e8400-e29b-41d4-a716-446655440002")
         UUID quadrille,
 
-        @Schema(
-            description = "Keys de MinIO de las fotos de evidencia, obtenidas subiendo cada imagen a POST /api/v1/photos. "
-                + "Una foto: '2026/05/{userId}/uuid.jpg'. "
-                + "Varias fotos: separar con coma sin espacios: '2026/05/{userId}/a.jpg,2026/05/{userId}/b.jpg'. "
-                + "Null o ausente si no hay fotos.",
-            example = "2026/05/550e8400-e29b-41d4-a716-446655440000/3f2504e0-4f89-11d3-9a0c-0305e82c3301.jpg",
-            nullable = true
-        )
+        @Schema(description = "Key(s) de MinIO de las fotos. Multiples keys separadas por coma sin espacios. Opcional.",
+                example = "2026/05/userId/a.jpg,2026/05/userId/b.jpg",
+                nullable = true)
         String photographicRecordPath,
 
-        @Schema(description = "Observaciones libres sobre la poda. Null o ausente si no aplica.", nullable = true)
+        @Schema(description = "Observaciones libres. Opcional.", nullable = true,
+                example = "Arbol con ramas sobre cableado electrico")
         String observations
 
 ) {

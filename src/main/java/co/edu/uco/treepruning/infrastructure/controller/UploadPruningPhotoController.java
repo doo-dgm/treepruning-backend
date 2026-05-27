@@ -33,10 +33,16 @@ public class UploadPruningPhotoController {
 
     @Operation(
         summary = "Subir foto de evidencia",
-        description = "Sube una imagen (JPEG, PNG o WebP, max 5 MB) a MinIO y "
-            + "devuelve la ruta interna. Usar la ruta en photographicRecordPath "
-            + "al programar la poda."
+        description = "Sube una imagen (JPEG/PNG/WebP, max 5 MB) a MinIO. " +
+                "El path retornado lleva el userId del JWT (aislamiento por usuario) " +
+                "y se usa en el campo photographicRecordPath al programar la poda."
     )
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Foto almacenada. data.path = key MinIO."),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Archivo invalido (vacio, > 5MB o formato no permitido).", content = @io.swagger.v3.oas.annotations.media.Content),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "JWT ausente o invalido.", content = @io.swagger.v3.oas.annotations.media.Content),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Rol sin permiso (requiere MANAGER o ADMIN).", content = @io.swagger.v3.oas.annotations.media.Content)
+    })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<Map<String, String>>> upload(
             @RequestPart("file") MultipartFile file,
