@@ -1,6 +1,8 @@
 package co.edu.uco.treepruning.features.sector.getsectorbyfilter.application.usecase.domain;
 
 import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import co.edu.uco.treepruning.crosscutting.helper.TextHelper;
 import co.edu.uco.treepruning.crosscutting.helper.UUIDHelper;
 
@@ -8,7 +10,10 @@ public final class GetSectorDomain {
     private UUID id;
     private String name;
 
-    public GetSectorDomain(UUID id, String name) {
+    @JsonCreator
+    public GetSectorDomain(
+            @JsonProperty("id") UUID id,
+            @JsonProperty("name") String name) {
         setId(id);
         setName(name);
     }
