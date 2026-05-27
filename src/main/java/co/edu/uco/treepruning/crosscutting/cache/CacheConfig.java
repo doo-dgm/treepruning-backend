@@ -18,7 +18,7 @@ import java.util.Map;
 @Configuration
 public class CacheConfig {
 
-    @Bean
+    @Bean("cacheManager")
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
 
         StringRedisSerializer keySerializer = new StringRedisSerializer();
