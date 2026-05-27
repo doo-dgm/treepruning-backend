@@ -35,6 +35,15 @@ public class SecurityConfig {
     // Boot auto-configure un unico bean ObjectMapper sin ambiguedad.
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
+    /**
+     * Cuando es {@code true} los paths de Swagger / OpenAPI quedan publicos
+     * (ideal para demos y dev). Cuando es {@code false} (default) exigen rol
+     * ADMIN — comportamiento esperado en produccion.
+     * Se activa via env var APP_SWAGGER_PUBLIC=true solo en backend-dev.
+     */
+    @Value("${app.swagger.public:false}")
+    private boolean swaggerPublic;
+
     public SecurityConfig(MessageCatalogService catalog) {
         this.catalog = catalog;
     }
@@ -64,44 +73,53 @@ public class SecurityConfig {
                 }))
 
             // --- Reglas de autorizacion por endpoint ---
-            .authorizeHttpRequests(auth -> auth
+            .authorizeHttpRequests(auth -> {
 
                 // Actuator: solo ADMIN
-                .requestMatchers("/actuator/**").hasRole(ROLE_ADMIN)
+                auth.requestMatchers("/actuator/**").hasRole(ROLE_ADMIN);
 
-                // Swagger / OpenAPI: publico (la API real sigue protegida con JWT).
-                // Util para sustentacion y exploracion en dev. En prod la
-                // exposicion se controla en Kong (no se enruta /swagger-ui).
-                // /api/v1/openapi/** es el path reubicado del JSON + swagger-config
-                // para evadir el bloqueo de Cloudflare WAF sobre /v3/api-docs.
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                .requestMatchers("/api/v1/openapi", "/api/v1/openapi/**", "/api/v1/openapi.yaml").permitAll()
+                // Swagger / OpenAPI:
+                //   - En dev (app.swagger.public=true): publico para demo y exploracion.
+                //   - En prod (default false): exige rol ADMIN incluso si Kong lo enrutara.
+                // Defensa en profundidad: Kong no enruta /swagger-ui en prod, y aun
+                // si alguien accediera al backend por la red interna, Spring Security
+                // exigiria ADMIN.
+                String[] swaggerPaths = {
+                        "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
+                        "/api/v1/openapi", "/api/v1/openapi/**", "/api/v1/openapi.yaml"
+                };
+                if (swaggerPublic) {
+                    auth.requestMatchers(swaggerPaths).permitAll();
+                } else {
+                    auth.requestMatchers(swaggerPaths).hasRole(ROLE_ADMIN);
+                }
 
                 // PQR: PERSON puede radicar, MANAGER y ADMIN tambien
-                .requestMatchers(HttpMethod.POST, "/api/v1/pqrs").hasAnyRole(ROLE_PERSON, ROLE_MANAGER, ROLE_ADMIN)
+                auth.requestMatchers(HttpMethod.POST, "/api/v1/pqrs").hasAnyRole(ROLE_PERSON, ROLE_MANAGER, ROLE_ADMIN);
 
                 // Catalogos que PERSON necesita para llenar el formulario de PQR
-                .requestMatchers(HttpMethod.GET, "/api/v1/sectors/**").hasAnyRole(ROLE_PERSON, ROLE_MANAGER, ROLE_ADMIN)
-                .requestMatchers(HttpMethod.GET, "/api/v1/statuses/**").hasAnyRole(ROLE_PERSON, ROLE_MANAGER, ROLE_ADMIN)
+                auth.requestMatchers(HttpMethod.GET, "/api/v1/sectors/**").hasAnyRole(ROLE_PERSON, ROLE_MANAGER, ROLE_ADMIN);
+                auth.requestMatchers(HttpMethod.GET, "/api/v1/statuses/**").hasAnyRole(ROLE_PERSON, ROLE_MANAGER, ROLE_ADMIN);
 
                 // Subida de fotos de evidencia: solo MANAGER y ADMIN
-                .requestMatchers(HttpMethod.POST, "/api/v1/photos").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
+                auth.requestMatchers(HttpMethod.POST, "/api/v1/photos").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN);
 
                 // Gestion interna del arbolado: MANAGER y ADMIN
-                .requestMatchers("/api/v1/prunings/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
-                .requestMatchers("/api/v1/trees/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
-                .requestMatchers("/api/v1/quadrilles/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
-                .requestMatchers("/api/v1/persons/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
-                .requestMatchers("/api/v1/families/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
-                .requestMatchers("/api/v1/managers/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
-                .requestMatchers("/api/v1/types/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
-                .requestMatchers("/api/v1/programmings/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN)
-                
+                auth.requestMatchers("/api/v1/prunings/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN);
+                auth.requestMatchers("/api/v1/trees/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN);
+                auth.requestMatchers("/api/v1/quadrilles/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN);
+                auth.requestMatchers("/api/v1/persons/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN);
+                auth.requestMatchers("/api/v1/families/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN);
+                auth.requestMatchers("/api/v1/managers/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN);
+                auth.requestMatchers("/api/v1/types/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN);
+                auth.requestMatchers("/api/v1/programmings/**").hasAnyRole(ROLE_MANAGER, ROLE_ADMIN);
+
                 // Login: endpoint publico, no requiere autenticacion
-                .requestMatchers("/api/v1/auth/login").permitAll()
+                auth.requestMatchers("/api/v1/auth/login").permitAll();
 
                 // Cualquier otro endpoint: autenticado (al menos con token valido)
-                .anyRequest().authenticated())
+                auth.anyRequest().authenticated();
+            })
             
       
 
