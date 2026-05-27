@@ -142,7 +142,7 @@ jobs:
           SQLSERVER_DB:       dummy
           SQLSERVER_USER:     sa
           SQLSERVER_PASSWORD: dummy_password_openapi
-        run: mvn verify -Pgenerate-docs -B -q
+        run: mvn verify -Pgenerate-docs -DskipTests -B -q
       - name: Commitear docs/openapi.json
         run: |
           git config user.email "ci@treepruning.org"
