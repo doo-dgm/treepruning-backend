@@ -72,10 +72,10 @@ public class SecurityConfig {
                 // Swagger / OpenAPI: publico (la API real sigue protegida con JWT).
                 // Util para sustentacion y exploracion en dev. En prod la
                 // exposicion se controla en Kong (no se enruta /swagger-ui).
-                // /api/v1/openapi.json es el JSON de OpenAPI movido fuera del
-                // path canonico /v3/api-docs para evadir el bloqueo de Cloudflare.
+                // /api/v1/openapi/** es el path reubicado del JSON + swagger-config
+                // para evadir el bloqueo de Cloudflare WAF sobre /v3/api-docs.
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                .requestMatchers("/api/v1/openapi.json").permitAll()
+                .requestMatchers("/api/v1/openapi", "/api/v1/openapi/**", "/api/v1/openapi.yaml").permitAll()
 
                 // PQR: PERSON puede radicar, MANAGER y ADMIN tambien
                 .requestMatchers(HttpMethod.POST, "/api/v1/pqrs").hasAnyRole(ROLE_PERSON, ROLE_MANAGER, ROLE_ADMIN)

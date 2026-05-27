@@ -37,7 +37,10 @@
 		    <dependency>
 		    <groupId>org.springdoc</groupId>
 		    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-		    <version>2.8.8</version>
+		    <!-- 3.x es la linea compatible con Spring Boot 4 / Spring Framework 7.
+		         La 2.x quedo limitada a Spring Boot 3 (Spring Framework 6) y al
+		         servir webjars con Spring 7 lanza NoResourceFoundException. -->
+		    <version>3.0.3</version>
 		</dependency>
 		<!-- Kafka — listener CDC para invalidación de caché Redis -->
 		<dependency>
