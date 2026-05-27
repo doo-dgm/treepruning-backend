@@ -21,7 +21,12 @@ public class CacheConfig {
     @Primary
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
 
-        ObjectMapper mapper = JsonMapper.builder().build();
+        ObjectMapper mapper = JsonMapper.builder()
+                .activateDefaultTyping(
+                    new com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator(),
+                    ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE
+                )
+                .build();
 
         GenericJackson2JsonRedisSerializer serializer =
                 new GenericJackson2JsonRedisSerializer(mapper);
