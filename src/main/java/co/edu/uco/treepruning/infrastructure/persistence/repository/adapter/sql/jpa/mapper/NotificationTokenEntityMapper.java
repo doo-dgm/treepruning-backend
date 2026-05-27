@@ -7,6 +7,30 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.enti
 
 @Mapper(componentModel = "spring")
 public interface NotificationTokenEntityMapper {
-	NotificationTokenJPAEntity toJPA(NotificationTokenEntity entity);
-	NotificationTokenEntity toEntity(NotificationTokenJPAEntity jpaEntity);
+
+    default NotificationTokenJPAEntity toJPA(NotificationTokenEntity entity) {
+        if (entity == null) return null;
+        return new NotificationTokenJPAEntity(
+            entity.getId(),
+            entity.getUserId(),
+            entity.getFcmToken(),
+            entity.getLanguage(),
+            entity.getCreatedAt(),
+            entity.getUpdatedAt(),
+            entity.isActive()
+        );
+    }
+
+    default NotificationTokenEntity toEntity(NotificationTokenJPAEntity jpa) {
+        if (jpa == null) return null;
+        return new NotificationTokenEntity(
+            jpa.getId(),
+            jpa.getUserId(),
+            jpa.getFcmToken(),
+            jpa.getLanguage(),
+            jpa.getCreatedAt(),
+            jpa.getUpdatedAt(),
+            jpa.isActive()
+        );
+    }
 }

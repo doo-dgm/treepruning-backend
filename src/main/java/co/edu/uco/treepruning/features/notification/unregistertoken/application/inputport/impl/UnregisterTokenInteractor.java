@@ -10,7 +10,7 @@ import co.edu.uco.treepruning.features.notification.unregistertoken.application.
 import co.edu.uco.treepruning.features.notification.unregistertoken.application.usecase.UnregisterTokenUseCase;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class UnregisterTokenInteractor implements UnregisterTokenInputPort {
 
     private static final Logger log = LoggerFactory.getLogger(UnregisterTokenInteractor.class);
