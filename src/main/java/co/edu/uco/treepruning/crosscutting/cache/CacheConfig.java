@@ -17,7 +17,7 @@ import java.util.Map;
 @Configuration
 public class CacheConfig {
 
-    @Bean
+    @Bean("cacheManager")
     @Primary
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
 
