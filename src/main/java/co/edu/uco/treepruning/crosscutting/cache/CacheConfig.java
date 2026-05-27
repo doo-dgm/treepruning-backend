@@ -3,6 +3,8 @@ package co.edu.uco.treepruning.crosscutting.cache;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.cfg.ConstructorDetector;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+
+import org.springframework.boot.cache.autoconfigure.RedisCacheManagerBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -19,21 +21,15 @@ import java.util.Map;
 @Configuration
 public class CacheConfig {
 
-    @Bean("cacheManager")
-    @Primary
-    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-
+    @Bean
+    public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
         StringRedisSerializer keySerializer = new StringRedisSerializer();
 
-        // messages: String puro de Strapi — sin JSON, legible en redis-cli, TTL 5 min
         RedisCacheConfiguration messagesConfig = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(SerializationPair.fromSerializer(keySerializer))
                 .serializeValuesWith(SerializationPair.fromSerializer(keySerializer))
                 .entryTtl(Duration.ofMinutes(5));
 
-        // dominio: JSON con type info para clases final y concretas (EVERYTHING).
-        // ConstructorDetector.USE_PROPERTIES_BASED + flag -parameters en pom permiten
-        // reconstruir domain classes (all-args constructor, sin no-arg) sin @JsonCreator.
         ObjectMapper mapper = new ObjectMapper()
                 .setConstructorDetector(ConstructorDetector.USE_PROPERTIES_BASED)
                 .activateDefaultTyping(
@@ -50,7 +46,7 @@ public class CacheConfig {
                         new GenericJackson2JsonRedisSerializer(mapper)))
                 .entryTtl(Duration.ofMinutes(30));
 
-        return RedisCacheManager.builder(connectionFactory)
+        return builder -> builder
                 .cacheDefaults(domainConfig)
                 .withInitialCacheConfigurations(Map.of(
                         "messages", messagesConfig,
@@ -58,7 +54,6 @@ public class CacheConfig {
                         "types",    domainConfig,
                         "sectors",  domainConfig,
                         "families", domainConfig
-                ))
-                .build();
+                ));
     }
 }
