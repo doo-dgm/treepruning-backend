@@ -13,7 +13,13 @@ import co.edu.uco.treepruning.features.pqr.submitpqr.application.inputport.Submi
 import co.edu.uco.treepruning.features.pqr.submitpqr.application.inputport.dto.SubmitPQRDTO;
 import co.edu.uco.treepruning.infrastructure.controller.request.SubmitPQRRequest;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+// Nota: io.swagger.v3.oas.annotations.responses.ApiResponse comparte nombre
+// con nuestra clase ApiResponse del paquete crosscutting.response, por eso
+// se usa fully-qualified mas abajo.
 
 @Tag(name = "PQRs", description = "Registro de Peticiones, Quejas y Reclamos relacionadas con el arbolado urbano")
 @RestController
@@ -33,10 +39,18 @@ public class SubmitPQRController {
         description = "Crea una Peticion, Queja o Reclamo ciudadana sobre el arbolado urbano. " +
                 "Disponible para roles PERSON, MANAGER y ADMIN."
     )
-    @io.swagger.v3.oas.annotations.responses.ApiResponses({
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "PQR registrado."),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Datos invalidos (sector/estado/persona inexistentes, fecha invalida, etc.).", content = @io.swagger.v3.oas.annotations.media.Content),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "JWT ausente o invalido.", content = @io.swagger.v3.oas.annotations.media.Content)
+    @ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "201",
+                description  = "PQR registrado."),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "400",
+                description  = "Datos invalidos (sector/estado/persona inexistentes, fecha invalida, etc.).",
+                content      = @Content),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "401",
+                description  = "JWT ausente o invalido.",
+                content      = @Content)
     })
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> submit(@RequestBody SubmitPQRRequest request) {

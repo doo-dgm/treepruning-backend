@@ -37,9 +37,9 @@
 		    <dependency>
 		    <groupId>org.springdoc</groupId>
 		    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-		    <!-- 3.x es la linea compatible con Spring Boot 4 / Spring Framework 7.
-		         La 2.x quedo limitada a Spring Boot 3 (Spring Framework 6) y al
-		         servir webjars con Spring 7 lanza NoResourceFoundException. -->
+		    <!-- 3.x es la linea oficial para Spring Boot 4 / Spring Framework 7.
+		         La 2.8.x funcionaba, pero la 3.x garantiza compatibilidad a
+		         futuro y servido correcto de los assets webjars de Swagger UI. -->
 		    <version>3.0.3</version>
 		</dependency>
 		<!-- Kafka — listener CDC para invalidación de caché Redis -->

@@ -17,8 +17,13 @@ import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.applica
 import co.edu.uco.treepruning.infrastructure.controller.request.SchedulePreventivePruningRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+// Nota: io.swagger.v3.oas.annotations.responses.ApiResponse comparte nombre
+// con nuestra clase ApiResponse del paquete crosscutting.response, por eso
+// se usa fully-qualified mas abajo. No es ruido evitable.
 
 @Tag(name = "Podas", description = "Gestion y consulta de podas preventivas del arbolado urbano")
 @RestController
@@ -42,10 +47,21 @@ public class SchedulePreventivePruningController {
                 "Para fotos: subir primero a POST /photos y usar la key (o keys separadas por coma) en photographicRecordPath."
     )
     @ApiResponses({
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Podas creadas. data.count = numero de podas registradas."),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Validacion fallida (arboles vacios, fecha pasada, foto > 5MB, etc.).", content = @io.swagger.v3.oas.annotations.media.Content),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "JWT ausente o invalido.", content = @io.swagger.v3.oas.annotations.media.Content),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Rol sin permiso (requiere MANAGER o ADMIN).", content = @io.swagger.v3.oas.annotations.media.Content)
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "201",
+                description  = "Podas creadas. data.count = numero de podas registradas."),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "400",
+                description  = "Validacion fallida (arboles vacios, fecha pasada, foto > 5MB, etc.).",
+                content      = @Content),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "401",
+                description  = "JWT ausente o invalido.",
+                content      = @Content),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "403",
+                description  = "Rol sin permiso (requiere MANAGER o ADMIN).",
+                content      = @Content)
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<Map<String, Object>>> schedule(

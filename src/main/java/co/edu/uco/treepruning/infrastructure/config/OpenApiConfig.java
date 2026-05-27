@@ -44,7 +44,7 @@ public class OpenApiConfig {
         // expone), por lo que la ausencia del server es coherente.
         if (serverPublicUrl != null && !serverPublicUrl.isBlank()) {
             openAPI.servers(List.of(
-                    new Server().url(serverPublicUrl).description("Dev (vis Kong)")
+                    new Server().url(serverPublicUrl).description("Dev (via Kong)")
             ));
         }
         return openAPI
@@ -52,7 +52,7 @@ public class OpenApiConfig {
                         .title("Tree Pruning API")
                         .version("1.0.0")
                         .description("API REST del sistema de gestion de podas preventivas del " +
-                                "arbolado urbano de Rionegro. Autenticacion vis JWT emitido por Keycloak.")
+                                "arbolado urbano de Rionegro. Autenticacion via JWT emitido por Keycloak.")
                         .contact(new Contact()
                                 .name("Equipo Tree Pruning - UCO")))
                 .addSecurityItem(new SecurityRequirement().addList(BEARER_SCHEME_NAME))

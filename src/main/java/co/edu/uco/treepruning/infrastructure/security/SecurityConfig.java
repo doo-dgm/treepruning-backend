@@ -120,8 +120,6 @@ public class SecurityConfig {
                 // Cualquier otro endpoint: autenticado (al menos con token valido)
                 auth.anyRequest().authenticated();
             })
-            
-      
 
             // --- JWT Resource Server: valida tokens emitidos por Keycloak ---
             .oauth2ResourceServer(oauth2 ->

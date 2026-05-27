@@ -18,7 +18,13 @@ import co.edu.uco.treepruning.crosscutting.response.ApiResponse;
 import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.application.inputport.dto.validator.SchedulePreventivePruningDTOValidator;
 import co.edu.uco.treepruning.infrastructure.storage.PhotoStoragePort;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+// Nota: io.swagger.v3.oas.annotations.responses.ApiResponse comparte nombre
+// con nuestra clase ApiResponse del paquete crosscutting.response, por eso
+// se usa fully-qualified mas abajo.
 
 @Tag(name = "Fotos", description = "Subida de evidencia fotografica de podas")
 @RestController
@@ -37,11 +43,22 @@ public class UploadPruningPhotoController {
                 "El path retornado lleva el userId del JWT (aislamiento por usuario) " +
                 "y se usa en el campo photographicRecordPath al programar la poda."
     )
-    @io.swagger.v3.oas.annotations.responses.ApiResponses({
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Foto almacenada. data.path = key MinIO."),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Archivo invalido (vacio, > 5MB o formato no permitido).", content = @io.swagger.v3.oas.annotations.media.Content),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "JWT ausente o invalido.", content = @io.swagger.v3.oas.annotations.media.Content),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Rol sin permiso (requiere MANAGER o ADMIN).", content = @io.swagger.v3.oas.annotations.media.Content)
+    @ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "200",
+                description  = "Foto almacenada. data.path = key MinIO."),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "400",
+                description  = "Archivo invalido (vacio, > 5MB o formato no permitido).",
+                content      = @Content),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "401",
+                description  = "JWT ausente o invalido.",
+                content      = @Content),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "403",
+                description  = "Rol sin permiso (requiere MANAGER o ADMIN).",
+                content      = @Content)
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<Map<String, String>>> upload(
