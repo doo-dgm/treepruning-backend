@@ -3,11 +3,8 @@ package co.edu.uco.treepruning.crosscutting.cache;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.cfg.ConstructorDetector;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-
-import org.springframework.boot.cache.autoconfigure.RedisCacheManagerBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -22,7 +19,8 @@ import java.util.Map;
 public class CacheConfig {
 
     @Bean
-    public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
+    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+
         StringRedisSerializer keySerializer = new StringRedisSerializer();
 
         RedisCacheConfiguration messagesConfig = RedisCacheConfiguration.defaultCacheConfig()
@@ -46,7 +44,7 @@ public class CacheConfig {
                         new GenericJackson2JsonRedisSerializer(mapper)))
                 .entryTtl(Duration.ofMinutes(30));
 
-        return builder -> builder
+        return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(domainConfig)
                 .withInitialCacheConfigurations(Map.of(
                         "messages", messagesConfig,
@@ -54,6 +52,7 @@ public class CacheConfig {
                         "types",    domainConfig,
                         "sectors",  domainConfig,
                         "families", domainConfig
-                ));
+                ))
+                .build();
     }
 }
