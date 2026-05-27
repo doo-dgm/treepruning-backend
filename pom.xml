@@ -101,11 +101,6 @@
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
 
-        <!-- Caffeine — implementacion de cache en memoria (TTL 5 min) -->
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-        </dependency>
 
         <!-- Redis — cache distribuida, rate limiting, idempotency keys -->
         <dependency>
