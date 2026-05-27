@@ -85,16 +85,83 @@ jobs:
               "actor": "${{ github.actor }}"
             }
 
+  generate-openapi:
+    name: Generar OpenAPI spec
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    permissions:
+      contents: write
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB:       treepruning
+          POSTGRES_USER:     postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+        ports:
+          - 6379:6379
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Java 26
+        uses: actions/setup-java@v4
+        with:
+          java-version: '26'
+          distribution: 'temurin'
+          cache: maven
+      - name: Generar spec (mvn verify -Pgenerate-docs)
+        env:
+          POSTGRES_HOST:     localhost
+          POSTGRES_PORT:     "5432"
+          POSTGRES_DB:       treepruning
+          POSTGRES_USER:     postgres
+          POSTGRES_PASSWORD: postgres
+          REDIS_HOST:        localhost
+          REDIS_PASSWORD:    ""
+          REDIS_DATABASE:    "0"
+          APP_ENVIRONMENT:   openapi-gen
+          SPRING_PROFILES_ACTIVE: openapi-gen
+          SQLSERVER_HOST:     localhost
+          SQLSERVER_PORT:     "1433"
+          SQLSERVER_DB:       dummy
+          SQLSERVER_USER:     sa
+          SQLSERVER_PASSWORD: dummy_password_openapi
+        run: mvn verify -Pgenerate-docs -DskipTests -B -q
+      - name: Commitear docs/openapi.json
+        run: |
+          git config user.email "ci@treepruning.org"
+          git config user.name  "CI Bot"
+          git add docs/openapi.json
+          if git diff --staged --quiet; then
+            echo "[SKIP] openapi.json sin cambios, no hay nada que commitear."
+          else
+            git commit -m "docs: actualizar openapi.json [skip ci]"
+            git push
+            echo "[OK] openapi.json commiteado."
+          fi
+
   zap-scan:
     name: OWASP ZAP Baseline Scan
     needs: deploy-dev
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
-    permissions:
-      contents: read
-      issues: write
     steps:
-      - name: Prepare report file
+      - name: Preparar archivo de reporte
         run: |
           touch ${{ github.workspace }}/zap-report.html
           chmod 777 ${{ github.workspace }}/zap-report.html
@@ -108,11 +175,11 @@ jobs:
             -r zap-report.html \
             -I
         continue-on-error: true
-      - name: Upload ZAP Report
+      - name: Subir reporte ZAP
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: zap-report
+          name: zap-report-${{ github.sha }}
           path: ${{ github.workspace }}/zap-report.html
 
   deploy-prod:

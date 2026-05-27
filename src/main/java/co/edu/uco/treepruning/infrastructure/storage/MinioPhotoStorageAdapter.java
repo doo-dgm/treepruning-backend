@@ -46,11 +46,14 @@ public class MinioPhotoStorageAdapter implements PhotoStoragePort {
             if (!exists) {
                 client.makeBucket(
                         MakeBucketArgs.builder().bucket(props.getBucket()).build());
-                log.info("MinIO bucket '{}' created", props.getBucket());
+                log.info("MinIO bucket '{}' creado", props.getBucket());
             }
         } catch (Exception e) {
-            throw new IllegalStateException(
-                    "MinIO: no se pudo asegurar el bucket '" + props.getBucket() + "'", e);
+            // No se lanza excepcion en el arranque: si MinIO no esta disponible al
+            // iniciar (CI, tests, entorno openapi-gen), el contexto levanta igual.
+            // La primera subida fallara con error claro si el bucket sigue sin existir.
+            log.warn("MinIO: no se pudo verificar/crear el bucket '{}' al iniciar ({}). " +
+                     "Las subidas fallaran si el bucket no existe.", props.getBucket(), e.getMessage());
         }
     }
 
