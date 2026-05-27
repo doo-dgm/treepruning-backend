@@ -1,43 +1,34 @@
 package co.edu.uco.treepruning.crosscutting.cache;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.redis.cache.RedisCacheConfiguration;
-import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
 
-import java.time.Duration;
-import java.util.Map;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableCaching
 public class CacheConfig {
 
+    // Caffeine en lugar de Redis para estos caches de catalogo y dominio.
+    // Redis no es adecuado aqui: la serializacion Jackson 3.x de Spring Data
+    // Redis 4.x tiene un mismatch de formato entre write y read que genera
+    // errores 500. Ademas, estos datos son de una sola instancia y no necesitan
+    // distribucion. Redis queda para rate limiting, idempotency keys y locks.
     @Bean
     @Primary
-    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        // GenericJackson2JsonRedisSerializer usa Jackson 2.x que tiene formato
-        // consistente entre write y read. GenericJacksonJsonRedisSerializer (3.x)
-        // tenia un mismatch interno: write en @class PROPERTY, read en WRAPPER_ARRAY.
-        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer();
-
-        RedisCacheConfiguration defaults = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(30))
-                .serializeValuesWith(
-                    RedisSerializationContext.SerializationPair.fromSerializer(serializer));
-
-        return RedisCacheManager.builder(connectionFactory)
-                .cacheDefaults(defaults)
-                .withInitialCacheConfigurations(Map.of(
-                    "families", defaults,
-                    "types",    defaults,
-                    "statuses", defaults,
-                    "sectors",  defaults
-                ))
-                .build();
+    public CacheManager cacheManager() {
+        CaffeineCacheManager manager = new CaffeineCacheManager();
+        manager.setCaffeine(Caffeine.newBuilder()
+                .maximumSize(500)
+                .expireAfterWrite(30, TimeUnit.MINUTES));
+        manager.setCacheNames(List.of(
+                "messages", "statuses", "types", "sectors", "families"));
+        return manager;
     }
 }
