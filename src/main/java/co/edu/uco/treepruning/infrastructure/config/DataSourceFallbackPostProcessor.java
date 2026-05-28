@@ -92,6 +92,13 @@ public class DataSourceFallbackPostProcessor implements EnvironmentPostProcessor
         // que no existe. Sobreescribir a vacío elimina el prefijo.
         overrides.put("spring.jpa.properties.hibernate.default_schema", "");
 
+        // En fallback usamos "update" en lugar de "validate":
+        // Debezium no replica tablas vacías (sin filas no genera eventos → el
+        // JDBC Sink nunca las crea en MySQL). Con "update" Hibernate crea
+        // automáticamente las tablas faltantes al arrancar en MySQL.
+        // No usamos "create" para no borrar datos que sí replicó el CDC.
+        overrides.put("spring.jpa.hibernate.ddl-auto", "update");
+
         // Highest priority source so it wins over application.properties
         env.getPropertySources().addFirst(
                 new MapPropertySource("datasource-fallback-mysql", overrides));
