@@ -47,49 +47,54 @@ public class DataSourceFallbackPostProcessor implements EnvironmentPostProcessor
             return; // Spring Boot auto-config se encarga del resto
         }
 
-        log.warn("[DataSource] PostgreSQL NO disponible en {}. Activando fallback a SQL Server.", pgUrl);
+        log.warn("[DataSource] PostgreSQL NO disponible en {}. Activando fallback a MySQL.", pgUrl);
 
-        // ── Resolve SQL Server connection details ────────────────────────────
-        String sqlHost   = resolve(env, "SQLSERVER_HOST",     "localhost");
-        String sqlPort   = resolve(env, "SQLSERVER_PORT",     "1433");
-        String sqlDb     = resolve(env, "SQLSERVER_DB",       "treepruning");
-        String sqlUser   = resolve(env, "SQLSERVER_USER",     "sa");
-        String sqlPass   = resolve(env, "SQLSERVER_PASSWORD", "");
-        String sqlSchema = resolve(env, "SQLSERVER_SCHEMA",   "dbo");
+        // ── Resolve MySQL connection details ─────────────────────────────────
+        String sqlHost = resolve(env, "MYSQL_HOST",     "localhost");
+        String sqlPort = resolve(env, "MYSQL_PORT",     "3306");
+        String sqlDb   = resolve(env, "MYSQL_DB",       "treepruning");
+        String sqlUser = resolve(env, "MYSQL_USER",     "");
+        String sqlPass = resolve(env, "MYSQL_PASSWORD", "");
 
-        String sqlUrl = "jdbc:sqlserver://" + sqlHost + ":" + sqlPort
-                + ";databaseName=" + sqlDb
-                + ";encrypt=false;trustServerCertificate=true";
+        // useSSL=false: entorno interno sin TLS entre containers.
+        // allowPublicKeyRetrieval=true: necesario con mysql-connector-j 8+ y autenticación caching_sha2.
+        // serverTimezone=UTC: evita ambigüedades con LocalDate/LocalDateTime en Hibernate.
+        String sqlUrl = "jdbc:mysql://" + sqlHost + ":" + sqlPort + "/" + sqlDb
+                + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
 
-        if (!isReachable(sqlUrl, sqlUser, sqlPass,
-                "com.microsoft.sqlserver.jdbc.SQLServerDriver")) {
-            log.error("[DataSource] SQL Server tampoco está disponible en {}. "
+        if (!isReachable(sqlUrl, sqlUser, sqlPass, "com.mysql.cj.jdbc.Driver")) {
+            log.error("[DataSource] MySQL tampoco está disponible en {}. "
                     + "El arranque continuará pero fallará al primer acceso a BD.", sqlUrl);
             return;
         }
 
-        log.info("[DataSource] SQL Server disponible en {} — sobreescribiendo propiedades.", sqlUrl);
+        log.info("[DataSource] MySQL disponible en {} — sobreescribiendo propiedades.", sqlUrl);
 
         // ── Override Spring Boot datasource + JPA properties ─────────────────
         Map<String, Object> overrides = new LinkedHashMap<>();
 
         // Datasource
-        overrides.put("spring.datasource.url",                 sqlUrl);
-        overrides.put("spring.datasource.username",            sqlUser);
-        overrides.put("spring.datasource.password",            sqlPass);
-        overrides.put("spring.datasource.driver-class-name",
-                "com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        overrides.put("spring.datasource.url",              sqlUrl);
+        overrides.put("spring.datasource.username",         sqlUser);
+        overrides.put("spring.datasource.password",         sqlPass);
+        overrides.put("spring.datasource.driver-class-name", "com.mysql.cj.jdbc.Driver");
 
         // JPA / Hibernate
+        // MySQLDialect mapea UUID → CHAR(36), boolean → BIT(1), compatible con
+        // el schema que genera el JDBC Sink de Debezium en MySQL.
         overrides.put("spring.jpa.database-platform",
-                "org.hibernate.dialect.SQLServerDialect");
+                "org.hibernate.dialect.MySQLDialect");
         overrides.put("spring.jpa.properties.hibernate.dialect",
-                "org.hibernate.dialect.SQLServerDialect");
-        overrides.put("spring.jpa.properties.hibernate.default_schema", sqlSchema);
+                "org.hibernate.dialect.MySQLDialect");
+        // IMPORTANTE: application.properties define default_schema=public (válido
+        // en PostgreSQL). En MySQL "schema" y "database" son sinónimos, y anteponer
+        // "public." a cada tabla haría que Hibernate busque una BD llamada "public"
+        // que no existe. Sobreescribir a vacío elimina el prefijo.
+        overrides.put("spring.jpa.properties.hibernate.default_schema", "");
 
         // Highest priority source so it wins over application.properties
         env.getPropertySources().addFirst(
-                new MapPropertySource("datasource-fallback-sqlserver", overrides));
+                new MapPropertySource("datasource-fallback-mysql", overrides));
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────
