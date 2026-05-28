@@ -113,20 +113,20 @@ public class SendNotificationUseCaseImpl implements SendNotificationUseCase {
     }
 
     /**
-     * Resuelve el titulo en el idioma dado.
-     * El codigo Strapi es: titleCode + "." + lang
-     * Ej: "notifications.pruning-scheduled.title.en"
+     * Resuelve el titulo en el idioma del token.
+     * Usa el sistema de locale de Strapi (?locale=en) en lugar de
+     * embeber el idioma en el codigo.
+     * Codigo Strapi: "notifications.pruning-scheduled.title"
      */
     private String resolveTitle(SendNotificationDomain domain, String lang) {
-        return messageCatalogService.resolve(domain.getTitleCode() + "." + lang);
+        return messageCatalogService.resolve(domain.getTitleCode(), lang);
     }
 
     /**
-     * Resuelve el cuerpo con variables en el idioma dado.
-     * El codigo Strapi es: bodyCode + "." + lang
-     * Ej: "notifications.pruning-scheduled.body.es"
+     * Resuelve el cuerpo con variables en el idioma del token.
+     * Codigo Strapi: "notifications.pruning-scheduled.body"
      */
     private String resolveBody(SendNotificationDomain domain, String lang) {
-        return messageCatalogService.resolve(domain.getBodyCode() + "." + lang, domain.getVars());
+        return messageCatalogService.resolve(domain.getBodyCode(), lang, domain.getVars());
     }
 }
