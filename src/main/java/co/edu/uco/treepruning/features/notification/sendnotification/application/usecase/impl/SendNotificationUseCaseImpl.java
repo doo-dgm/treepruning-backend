@@ -127,6 +127,6 @@ public class SendNotificationUseCaseImpl implements SendNotificationUseCase {
      * Codigo Strapi: "notifications.pruning-scheduled.body"
      */
     private String resolveBody(SendNotificationDomain domain, String lang) {
-        return messageCatalogService.resolve(domain.getBodyCode(), lang, domain.getVars());
+        return messageCatalogService.resolve(domain.getBodyCode(), domain.getVars(), lang);
     }
 }
