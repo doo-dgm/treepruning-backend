@@ -1,5 +1,6 @@
 package co.edu.uco.treepruning.features.notification.sendnotification.application.inputport.dto;
 
+import java.util.Map;
 import java.util.UUID;
 
 import co.edu.uco.treepruning.crosscutting.helper.TextHelper;
@@ -7,22 +8,27 @@ import co.edu.uco.treepruning.crosscutting.helper.UUIDHelper;
 
 public class SendNotificationDTO {
 
-    private UUID   userId;
-    private UUID pruningId;
-    private String title;
-    private String body;
+    private UUID                userId;
+    private UUID                pruningId;
+    private String              titleCode;
+    private String              bodyCode;
+    private Map<String, Object> vars;
 
-    public SendNotificationDTO(UUID userId, UUID pruningId, String title, String body) {
+    public SendNotificationDTO(UUID userId, UUID pruningId,
+                               String titleCode, String bodyCode,
+                               Map<String, Object> vars) {
         setUserId(userId);
         setPruningId(pruningId);
-        setTitle(title);
-        setBody(body);
+        setTitleCode(titleCode);
+        setBodyCode(bodyCode);
+        this.vars = vars != null ? vars : Map.of();
     }
 
-    public UUID   getUserId()   { return userId;   }
-    public UUID getPruningId() { return pruningId; }
-    public String getTitle()    { return title;    }
-    public String getBody()     { return body;     }
+    public UUID                getUserId()    { return userId;     }
+    public UUID                getPruningId() { return pruningId;  }
+    public String              getTitleCode() { return titleCode;  }
+    public String              getBodyCode()  { return bodyCode;   }
+    public Map<String, Object> getVars()      { return vars;       }
 
     private void setUserId(final UUID userId) {
         this.userId = UUIDHelper.getDefault(userId);
@@ -32,11 +38,11 @@ public class SendNotificationDTO {
         this.pruningId = UUIDHelper.getDefault(pruningId);
     }
 
-    private void setTitle(final String title) {
-        this.title = TextHelper.getDefault(title);
+    private void setTitleCode(final String titleCode) {
+        this.titleCode = TextHelper.getDefault(titleCode);
     }
 
-    private void setBody(final String body) {
-        this.body = TextHelper.getDefault(body);
+    private void setBodyCode(final String bodyCode) {
+        this.bodyCode = TextHelper.getDefault(bodyCode);
     }
 }

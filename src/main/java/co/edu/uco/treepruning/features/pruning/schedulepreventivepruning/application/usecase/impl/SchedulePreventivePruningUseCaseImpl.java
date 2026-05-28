@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.uco.treepruning.crosscutting.config.ParameterCatalogService;
 import co.edu.uco.treepruning.crosscutting.event.PruningScheduledEvent;
@@ -69,7 +70,20 @@ public class SchedulePreventivePruningUseCaseImpl
         this.parameterCatalog            = parameterCatalog;
     }
 
+    /**
+     * Programa una o varias podas preventivas como una unidad atomica.
+     * <p>
+     * Si cualquier insert o validacion falla a mitad del lote, Spring revierte
+     * todas las podas creadas previamente y la BD queda como antes de la
+     * llamada (cumple ESC-CAL-CON-0003 — reversion automatica ante fallo).
+     * <p>
+     * Los eventos {@link PruningScheduledEvent} se publican sincronamente,
+     * pero los listeners suscritos con {@code AFTER_COMMIT} (FCM, auditoria)
+     * solo se ejecutan si la transaccion confirma. Asi, un fallo en el envio
+     * de notificacion no revierte la poda ya creada.
+     */
     @Override
+    @Transactional
     public Integer execute(SchedulePreventivePruningDomain domain) {
 
         // 1. Resolver nombre del tipo desde Strapi (con fallback al default)

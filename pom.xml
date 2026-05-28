@@ -37,7 +37,10 @@
 		    <dependency>
 		    <groupId>org.springdoc</groupId>
 		    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-		    <version>2.8.8</version>
+		    <!-- 3.x es la linea oficial para Spring Boot 4 / Spring Framework 7.
+		         La 2.8.x funcionaba, pero la 3.x garantiza compatibilidad a
+		         futuro y servido correcto de los assets webjars de Swagger UI. -->
+		    <version>3.0.3</version>
 		</dependency>
 		<!-- Kafka — listener CDC para invalidación de caché Redis -->
 		<dependency>
@@ -98,11 +101,6 @@
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
 
-        <!-- Caffeine — implementacion de cache en memoria (TTL 5 min) -->
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-        </dependency>
 
         <!-- Redis — cache distribuida, rate limiting, idempotency keys -->
         <dependency>

@@ -11,6 +11,8 @@ import org.springframework.cache.annotation.Cacheable;
 
 @Service
 public class GetFamilyByFilterUseCaseImpl implements GetFamilyByFilterUseCase {
+	
+
 
     private final FamilyRepository familyRepository;
     private final GetFamilyDomainMapper mapper;
@@ -24,6 +26,7 @@ public class GetFamilyByFilterUseCaseImpl implements GetFamilyByFilterUseCase {
     @Override
     @Cacheable(cacheNames = "families", key = "'all'")
     public List<GetFamilyDomain> execute(GetFamilyDTO filter) {
+      
         return familyRepository.findByFilter(filter.getId(), filter.getCommonName(), filter.getScientificName())
                 .stream()
                 .map(mapper::toDomain)

@@ -1,34 +1,58 @@
 package co.edu.uco.treepruning.crosscutting.cache;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.caffeine.CaffeineCacheManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.cfg.ConstructorDetector;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
+import java.util.Map;
 
 @Configuration
-@EnableCaching
 public class CacheConfig {
 
-    // Caffeine en lugar de Redis para estos caches de catalogo y dominio.
-    // Redis no es adecuado aqui: la serializacion Jackson 3.x de Spring Data
-    // Redis 4.x tiene un mismatch de formato entre write y read que genera
-    // errores 500. Ademas, estos datos son de una sola instancia y no necesitan
-    // distribucion. Redis queda para rate limiting, idempotency keys y locks.
-    @Bean
-    @Primary
-    public CacheManager cacheManager() {
-        CaffeineCacheManager manager = new CaffeineCacheManager();
-        manager.setCaffeine(Caffeine.newBuilder()
-                .maximumSize(500)
-                .expireAfterWrite(30, TimeUnit.MINUTES));
-        manager.setCacheNames(List.of(
-                "messages", "statuses", "types", "sectors", "families"));
-        return manager;
+    @Bean("cacheManager")
+    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+
+        StringRedisSerializer keySerializer = new StringRedisSerializer();
+
+        RedisCacheConfiguration messagesConfig = RedisCacheConfiguration.defaultCacheConfig()
+                .serializeKeysWith(SerializationPair.fromSerializer(keySerializer))
+                .serializeValuesWith(SerializationPair.fromSerializer(keySerializer))
+                .entryTtl(Duration.ofMinutes(5));
+
+        ObjectMapper mapper = new ObjectMapper()
+                .setConstructorDetector(ConstructorDetector.USE_PROPERTIES_BASED)
+                .activateDefaultTyping(
+                        BasicPolymorphicTypeValidator.builder()
+                                .allowIfSubType("co.edu.uco.treepruning")
+                                .allowIfSubType("java.util")
+                                .allowIfSubType("java.lang")
+                                .build(),
+                        ObjectMapper.DefaultTyping.EVERYTHING);
+
+        RedisCacheConfiguration domainConfig = RedisCacheConfiguration.defaultCacheConfig()
+                .serializeKeysWith(SerializationPair.fromSerializer(keySerializer))
+                .serializeValuesWith(SerializationPair.fromSerializer(
+                        new GenericJackson2JsonRedisSerializer(mapper)))
+                .entryTtl(Duration.ofMinutes(30));
+
+        return RedisCacheManager.builder(connectionFactory)
+                .cacheDefaults(domainConfig)
+                .withInitialCacheConfigurations(Map.of(
+                        "messages", messagesConfig,
+                        "statuses", domainConfig,
+                        "types",    domainConfig,
+                        "sectors",  domainConfig,
+                        "families", domainConfig
+                ))
+                .build();
     }
 }

@@ -48,8 +48,8 @@ public class GetPruningController {
 
     @Operation(
         summary = "Listar podas con filtros",
-        description = "Retorna una lista paginada de podas. Todos los filtros son opcionales y se combinan con AND. "
-            + "El campo 'page' es base-0 (primera pagina = 0). El maximo de elementos por pagina es 100."
+        description = "Lista paginada. Todos los filtros son opcionales y se combinan con AND. " +
+                "page base-0; size por defecto 20, maximo 100."
     )
     @GetMapping
     public ResponseEntity<ApiResponse<PageResult<GetPruningDTO>>> getByFilter(
@@ -88,8 +88,8 @@ public class GetPruningController {
 
     @Operation(
         summary = "Obtener URL de evidencia fotografica",
-        description = "Genera y retorna una URL prefirmada de corta duracion para descargar la fotografia de evidencia de la poda. "
-            + "Retorna 404 si la poda no existe o no tiene fotografia registrada."
+        description = "Devuelve URLs presigned de MinIO (TTL 15 min) para descargar las fotos de la poda. " +
+                "Retorna 404 si la poda no existe o no tiene fotografia registrada."
     )
     @GetMapping("/{id}/photo-url")
     public ResponseEntity<ApiResponse<PruningPhotoUrlDTO>> getPhotoUrl(

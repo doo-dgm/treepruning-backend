@@ -45,51 +45,51 @@ public class DataSourceFallbackPostProcessor implements EnvironmentPostProcessor
         String pgUser = resolve(env, "POSTGRES_USER", "");
         String pgPass = resolve(env, "POSTGRES_PASSWORD", "");
 
-        // connectTimeout=2 : aborta el TCP handshake si pg1 no responde en 2s.
-        // socketTimeout=2  : aborta la lectura si pg1 acepta la conexión pero no
-        //                    envía el greeting del protocolo (p.ej. proceso frozen/paused).
-        // Ambos parámetros son específicos del driver PostgreSQL JDBC y no se
-        // propagan al datasource real que configura Spring Boot después.
-        String pgProbeUrl = "jdbc:postgresql://" + pgHost + ":" + pgPort + "/" + pgDb
+        // connectTimeout=2: aborta el TCP handshake si pg1 no responde en 2s.
+        // socketTimeout=2:  aborta si pg1 acepta la conexión pero no envía el
+        //                   greeting del protocolo (p.ej. proceso en shutdown o paused).
+        // Solo se usan en el probe; el datasource real lo configura Spring Boot
+        // con su propio pool (HikariCP) sin estos parámetros.
+        String pgUrl  = "jdbc:postgresql://" + pgHost + ":" + pgPort + "/" + pgDb
                 + "?connectTimeout=2&socketTimeout=2";
 
-        if (isReachable(pgProbeUrl, pgUser, pgPass, "org.postgresql.Driver")) {
+        if (isReachable(pgUrl, pgUser, pgPass, "org.postgresql.Driver")) {
             log.info("[DataSource] PostgreSQL disponible en {}:{}/{} — usando como datasource principal.",
                     pgHost, pgPort, pgDb);
             return; // Spring Boot auto-config se encarga del resto
         }
 
-        log.warn("[DataSource] PostgreSQL NO disponible en {}. Activando fallback a MySQL.",
-                pgProbeUrl);
+        log.warn("[DataSource] PostgreSQL NO disponible en {}:{}. Activando fallback a MySQL.",
+                pgHost, pgPort);
 
         // ── Resolve MySQL connection details ─────────────────────────────────
-        String mysqlHost = resolve(env, "MYSQL_HOST",     "localhost");
-        String mysqlPort = resolve(env, "MYSQL_PORT",     "3306");
-        String mysqlDb   = resolve(env, "MYSQL_DB",       "treepruning");
-        String mysqlUser = resolve(env, "MYSQL_USER",     "");
-        String mysqlPass = resolve(env, "MYSQL_PASSWORD", "");
+        String sqlHost = resolve(env, "MYSQL_HOST",     "localhost");
+        String sqlPort = resolve(env, "MYSQL_PORT",     "3306");
+        String sqlDb   = resolve(env, "MYSQL_DB",       "treepruning");
+        String sqlUser = resolve(env, "MYSQL_USER",     "");
+        String sqlPass = resolve(env, "MYSQL_PASSWORD", "");
 
         // useSSL=false: entorno interno sin TLS entre containers.
         // allowPublicKeyRetrieval=true: necesario con mysql-connector-j 8+ y autenticación caching_sha2.
         // serverTimezone=UTC: evita ambigüedades con LocalDate/LocalDateTime en Hibernate.
-        String mysqlUrl = "jdbc:mysql://" + mysqlHost + ":" + mysqlPort + "/" + mysqlDb
+        String sqlUrl = "jdbc:mysql://" + sqlHost + ":" + sqlPort + "/" + sqlDb
                 + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
 
-        if (!isReachable(mysqlUrl, mysqlUser, mysqlPass, "com.mysql.cj.jdbc.Driver")) {
+        if (!isReachable(sqlUrl, sqlUser, sqlPass, "com.mysql.cj.jdbc.Driver")) {
             log.error("[DataSource] MySQL tampoco está disponible en {}. "
-                    + "El arranque continuará pero fallará al primer acceso a BD.", mysqlUrl);
+                    + "El arranque continuará pero fallará al primer acceso a BD.", sqlUrl);
             return;
         }
 
-        log.info("[DataSource] MySQL disponible en {} — sobreescribiendo propiedades.", mysqlUrl);
+        log.info("[DataSource] MySQL disponible en {} — sobreescribiendo propiedades.", sqlUrl);
 
         // ── Override Spring Boot datasource + JPA properties ─────────────────
         Map<String, Object> overrides = new LinkedHashMap<>();
 
         // Datasource
-        overrides.put("spring.datasource.url",               mysqlUrl);
-        overrides.put("spring.datasource.username",          mysqlUser);
-        overrides.put("spring.datasource.password",          mysqlPass);
+        overrides.put("spring.datasource.url",              sqlUrl);
+        overrides.put("spring.datasource.username",         sqlUser);
+        overrides.put("spring.datasource.password",         sqlPass);
         overrides.put("spring.datasource.driver-class-name", "com.mysql.cj.jdbc.Driver");
 
         // JPA / Hibernate
@@ -99,7 +99,6 @@ public class DataSourceFallbackPostProcessor implements EnvironmentPostProcessor
                 "org.hibernate.dialect.MySQLDialect");
         overrides.put("spring.jpa.properties.hibernate.dialect",
                 "org.hibernate.dialect.MySQLDialect");
-
         // IMPORTANTE: application.properties define default_schema=public (válido
         // en PostgreSQL). En MySQL "schema" y "database" son sinónimos, y anteponer
         // "public." a cada tabla haría que Hibernate busque una BD llamada "public"
@@ -113,7 +112,7 @@ public class DataSourceFallbackPostProcessor implements EnvironmentPostProcessor
         // No usamos "create" para no borrar datos que sí replicó el CDC.
         overrides.put("spring.jpa.hibernate.ddl-auto", "update");
 
-        // Highest priority source so it wins over application.properties and env vars
+        // Highest priority source so it wins over application.properties
         env.getPropertySources().addFirst(
                 new MapPropertySource("datasource-fallback-mysql", overrides));
     }

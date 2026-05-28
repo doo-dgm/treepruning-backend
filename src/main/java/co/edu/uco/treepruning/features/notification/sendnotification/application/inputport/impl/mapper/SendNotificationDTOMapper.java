@@ -13,8 +13,9 @@ public interface SendNotificationDTOMapper {
         return new SendNotificationDomain(
             dto.getUserId(),
             dto.getPruningId(),
-            dto.getTitle(),
-            dto.getBody()
+            dto.getTitleCode(),
+            dto.getBodyCode(),
+            dto.getVars()
         );
     }
 }

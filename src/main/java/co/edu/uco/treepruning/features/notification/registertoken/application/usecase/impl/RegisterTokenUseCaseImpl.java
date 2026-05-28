@@ -30,6 +30,7 @@ public class RegisterTokenUseCaseImpl implements RegisterTokenUseCase {
             .ifPresentOrElse(
                 existing -> {
                     existing.activate();
+                    existing.updateLanguage(domain.getLanguage());
                     tokenRepository.save(domainMapper.toEntity(existing));
                 },
                 () -> tokenRepository.save(domainMapper.toEntity(domain))

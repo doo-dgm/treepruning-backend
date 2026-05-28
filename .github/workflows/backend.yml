@@ -42,7 +42,7 @@ jobs:
   sonar-analysis:
     name: SonarQube Analysis
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,12 +57,7 @@ jobs:
       - name: SonarQube Scan
         run: |
           chmod +x mvnw
-          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            SONAR_KEY="TreePruning-Backend"
-          else
-            SONAR_KEY="TreePruning-Backend-Dev"
-          fi
-          ./mvnw verify sonar:sonar -DskipTests -Dsonar.projectKey=$SONAR_KEY
+          ./mvnw verify sonar:sonar -DskipTests -Dsonar.projectKey=TreePruning-Backend-Dev
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
@@ -89,12 +84,8 @@ jobs:
     name: OWASP ZAP Baseline Scan
     needs: deploy-dev
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
-    permissions:
-      contents: read
-      issues: write
     steps:
-      - name: Prepare report file
+      - name: Preparar archivo de reporte
         run: |
           touch ${{ github.workspace }}/zap-report.html
           chmod 777 ${{ github.workspace }}/zap-report.html
@@ -108,11 +99,11 @@ jobs:
             -r zap-report.html \
             -I
         continue-on-error: true
-      - name: Upload ZAP Report
+      - name: Subir reporte ZAP
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: zap-report
+          name: zap-report-${{ github.sha }}
           path: ${{ github.workspace }}/zap-report.html
 
   deploy-prod:

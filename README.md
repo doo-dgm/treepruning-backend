@@ -4,10 +4,10 @@ API REST que sostiene el sistema de gestion de arbolado urbano de Rionegro.
 Implementa los casos de uso de inventario, podas preventivas, PQR ciudadanas,
 notificaciones y autenticacion.
 
-Stack: Spring Boot 4.0.6 sobre Java 26 + PostgreSQL 16 (con PostGIS para los
-puntos georreferenciados) + Redis (cache distribuida) + MinIO (object storage
-de fotos) + Keycloak (IAM) + Strapi (catalogo de mensajes y parametros) +
-Debezium/Kafka (invalidacion de cache por CDC).
+Stack: Spring Boot 4.0.6 sobre Java 26 + PostgreSQL 16 (con PostGIS planeado
+para fase 2 cuando se active el mapa interactivo) + Redis (cache distribuida) +
+MinIO (object storage de fotos) + Keycloak (IAM) + Strapi (catalogo de mensajes
+y parametros) + Debezium/Kafka (invalidacion de cache por CDC).
 
 El diseno detallado (arquetipo, vistas, drivers arquitectonicos) esta en
 [DESIGN.md](DESIGN.md). Este README es operativo.
@@ -51,7 +51,7 @@ co.edu.uco.treepruning/
 |   +-- quadrille/...                               Cuadrillas
 |   +-- sector/...                                  Sectores del municipio
 |   +-- status/...                                  Estados de poda
-|   +-- tree/...                                    Inventario de arboles (con PostGIS)
+|   +-- tree/...                                    Inventario de arboles (coordenadas DECIMAL; PostGIS fase 2)
 |   +-- type/...                                    Tipos de poda
 +-- infrastructure/                                 Adaptadores
     +-- controller/                                 REST controllers + Swagger annotations
@@ -86,7 +86,7 @@ validator + interactor + mapper) + `usecase` (contrato de negocio + domain
 | `spring-kafka` | Consumer de los eventos CDC publicados por Debezium |
 | `io.minio:minio:8.5.17` | Cliente MinIO (S3 API) |
 | `firebase-admin:9.9.0` | Envio de notificaciones push (FCM) |
-| `springdoc-openapi-starter-webmvc-ui:2.8.8` | Swagger UI en `/swagger-ui/index.html` |
+| `springdoc-openapi-starter-webmvc-ui:3.0.3` | Swagger UI en `/swagger-ui/index.html` (linea oficial para Spring Boot 4 / Spring Framework 7) |
 | `owasp-java-html-sanitizer` | Sanitizar texto libre (observaciones, descripciones) |
 | `mapstruct:1.6.3` | Mappers generados en compile time |
 | `lombok` | Reducir boilerplate en entidades |
@@ -117,6 +117,14 @@ Las inyecta Infisical. Para correr local, exportar manualmente o usar
 | `STORAGE_MINIO_SECRET_KEY` | `MINIO_ROOT_PASSWORD` | |
 | `STORAGE_MINIO_PRESIGNED_EXPIRY` | `900` | segundos (15 min) |
 | `APP_ENVIRONMENT` | `local` | `dev` o `prod` |
+| `SERVER_PUBLIC_URL` | _(vacio)_ | URL publica para el OpenAPI spec. Solo set en `backend-dev`. |
+| `APP_SWAGGER_PUBLIC` | `false` | `true` solo en `backend-dev` -> Swagger sin token |
+| `KEYCLOAK_ISSUER_URI` | - | obligatoria; ej: `https://auth.treepruning.org/realms/tree-pruning-dev` |
+| `STRAPI_URL` | `http://tp-strapi:1337` | endpoint interno del CMS |
+| `STRAPI_API_TOKEN` | - | token de lectura (Strapi -> Settings -> API Tokens) |
+| `REDIS_HOST` | `tp-redis` | host del cache distribuido |
+| `REDIS_PASSWORD` | - | obligatoria |
+| `KAFKA_BOOTSTRAP_SERVERS` | `tp-redpanda:29092` | broker Kafka para CDC |
 
 ---
 
@@ -135,7 +143,7 @@ Swagger UI: `https://api-dev.treepruning.org/swagger-ui/index.html`.
 | GET | `/prunings` | Listar podas con filtros + paginacion | bearer |
 | GET | `/prunings/{id}` | Detalle de una poda | bearer |
 | POST | `/prunings` | Programar poda preventiva (JSON) | bearer |
-| GET | `/prunings/{id}/photo-urls` | Generar presigned URLs de las fotos | bearer |
+| GET | `/prunings/{id}/photo-url` | Generar presigned URLs de las fotos (lista, TTL 15 min) | bearer |
 | POST | `/photos` | Subir foto a MinIO (multipart, devuelve `path`) | bearer |
 | POST | `/pqrs` | Registrar PQR ciudadana | publico (con reCAPTCHA) |
 | GET | `/notifications/history` | Historial de notificaciones del usuario | bearer |
@@ -144,6 +152,30 @@ Swagger UI: `https://api-dev.treepruning.org/swagger-ui/index.html`.
 | GET | `/trees`, `/quadrilles`, `/types`, `/statuses`, `/sectors`, `/families`, `/programmings`, `/persons`, `/managers` | Catalogos (paginados, con filtros) | bearer |
 
 El swagger documenta cada uno con sus campos y ejemplos.
+
+---
+
+## Swagger UI
+
+URL: `https://api-dev.treepruning.org/swagger-ui/index.html` (solo `dev`).
+
+**Defensa en profundidad — Swagger NO se expone en prod:**
+
+| Capa | Mecanismo | Estado en dev | Estado en prod |
+|---|---|---|---|
+| **Kong (gateway)** | Ruta `/swagger-ui` y `/api/v1/openapi*` | enrutado | NO enrutado |
+| **Spring Security** | `app.swagger.public` flag → permitAll vs `hasRole(ADMIN)` | `true` → permitAll | unset → exige ADMIN |
+| **OpenAPI spec** | `server.public.url` env var → URL del server en el spec | apunta a `api-dev.treepruning.org` | unset → spec sin server URL |
+
+**Particularidades técnicas:**
+
+- El path canonico `/v3/api-docs` esta **bloqueado por Cloudflare WAF** (reconnaissance pattern).
+  Por eso se movio a `/api/v1/openapi` via `springdoc.api-docs.path=/api/v1/openapi`.
+- `server.forward-headers-strategy=framework` para que Spring respete
+  `X-Forwarded-Proto/Host` enviados por Kong/Traefik al generar URLs del spec.
+- `OpenApiConfig.java` declara explicitamente el server URL (via `SERVER_PUBLIC_URL`)
+  para evitar que springdoc autodetecte `http://api-dev.treepruning.org:8000`
+  (mezcla protocolo HTTP interno + puerto de Kong) en lugar del HTTPS publico.
 
 ---
 
@@ -170,24 +202,26 @@ devueltas:
 ```
 1. Por cada foto:
    POST /api/v1/photos (multipart, file)
-   -> { data: { path: "2026/05/uuid.jpg" }, message: ... }
+   -> { data: { path: "2026/05/{userId}/uuid.jpg" }, message: ... }
 
-2. Unir las keys con coma (max ~5 keys, validacion por longitud):
-   "2026/05/abc.jpg,2026/05/def.jpg"
+2. Unir las keys con coma sin espacios (1 o varias):
+   "2026/05/userId/abc.jpg,2026/05/userId/def.jpg"
 
 3. POST /api/v1/prunings con JSON:
    {
-     status: "uuid",
-     plannedDate: "2026-06-15",
-     executedDate: null,
-     tree: "uuid",
-     quadrille: "uuid",
-     type: "uuid",
-     photographicRecordPath: "2026/05/abc.jpg,2026/05/def.jpg",
-     observations: "..."
+     "trees": ["uuid-arbol-1", "uuid-arbol-2"],          // array, 1 a 50 arboles
+     "plannedDate": "2026-06-15",                         // hoy o futura
+     "quadrille": "uuid-cuadrilla",
+     "photographicRecordPath": "2026/05/.../a.jpg,2026/05/.../b.jpg",
+     "observations": "Texto libre opcional"
    }
-   -> 201 Created
+   -> 201 Created  { data: { count: 2 }, message: ... }
 ```
+
+> El backend resuelve automaticamente tipo (`Preventiva`) y estado (`Planeada`)
+> desde Strapi (coleccion `parametros`) — el cliente NO los envia. El metodo
+> esta anotado `@Transactional`: el lote completo es atomico (commit o rollback
+> de las N podas).
 
 ### Ver foto de una poda
 
@@ -244,42 +278,49 @@ invalida en milisegundos y el siguiente `GET /types` lee de la DB.
 Dos servicios crosscutting leen contenido del CMS al arrancar (con refresh
 periodico opcional):
 
-- `MessageCatalogService.resolve("USER.SUCCESS.PRUNING.SCHEDULED")` ->
+- `MessageCatalogService.resolve("SUCCESS.PRUNING.SCHEDULED")` ->
   texto traducido desde Strapi (`/api/mensajes`).
-- `ParameterCatalogService.getIntValue("podas.horizonte-meses", 12)` ->
-  valor numerico desde Strapi (`/api/parametros`).
+- `ParameterCatalogService.getValue("podas.horizonte-meses", "12")` ->
+  valor desde Strapi (`/api/parametros`). El segundo argumento es default
+  si la clave no existe (el backend funciona sin Strapi en bootstrap inicial).
 
 Las excepciones (`TreePruningException`) usan el mismo sistema: lanzan un
-codigo (`USER.VALIDATION.PRUNING.TREES_REQUIRED`) que el `GlobalException
-Handler` resuelve contra Strapi al construir la respuesta. Esto permite
-cambiar el texto de error desde el CMS sin redeployar.
+codigo (`VALIDATION.PRUNING.TREES_REQUIRED`) que el `GlobalExceptionHandler`
+resuelve contra Strapi al construir la respuesta. Esto permite cambiar el
+texto de error desde el CMS sin redeployar.
+
+Convencion de codigos: `<CATEGORIA>.<DOMINIO>.<DETALLE>` (ej:
+`ERROR.PRUNING.TREE_NOT_FOUND`, `SUCCESS.SECTOR.LIST`, `VALIDATION.PRUNING.TREES_MAX`).
 
 ---
 
 ## Sistema de excepciones
 
-`TreePruningException.fromCode(userCode, technicalCode, variables, httpStatus)`
-es el mecanismo unico para errores controlados. Ejemplo:
+`TreePruningException.fromCode(code, technicalCode, variables)` es el
+mecanismo unico para errores controlados. Ejemplo:
 
 ```java
 throw TreePruningException.fromCode(
-    "USER.VALIDATION.PRUNING.PHOTO_MAX_SIZE",
+    "VALIDATION.PRUNING.PHOTO_MAX_SIZE",
     "TECHNICAL.VALIDATION.PRUNING.PHOTO_MAX_SIZE",
     Map.of("size", bytes.length));
 ```
 
-El `GlobalExceptionHandler` captura, resuelve el `userCode` contra Strapi
-con las `variables` interpoladas (ej: "La foto supera el tamano maximo
-permitido ({size} bytes)") y devuelve:
+El `GlobalExceptionHandler` captura, loguea el `technicalCode` con su mensaje
+resuelto + stacktrace, resuelve el `code` contra Strapi con las `variables`
+interpoladas (ej: "La foto supera el tamano maximo permitido ({size} bytes)")
+y devuelve:
 
 ```json
 {
   "status": 400,
   "message": "La foto supera el tamano maximo permitido (6291456 bytes)",
-  "data": null,
-  "errorCode": "USER.VALIDATION.PRUNING.PHOTO_MAX_SIZE"
+  "data": null
 }
 ```
+
+> Nota: la respuesta NO expone el code del catalogo al cliente. Eso se queda
+> en logs para diagnostico. El cliente solo recibe el mensaje localizado.
 
 ---
 

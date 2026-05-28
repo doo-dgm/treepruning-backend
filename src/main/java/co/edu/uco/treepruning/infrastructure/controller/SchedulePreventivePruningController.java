@@ -17,7 +17,13 @@ import co.edu.uco.treepruning.features.pruning.schedulepreventivepruning.applica
 import co.edu.uco.treepruning.infrastructure.controller.request.SchedulePreventivePruningRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+// Nota: io.swagger.v3.oas.annotations.responses.ApiResponse comparte nombre
+// con nuestra clase ApiResponse del paquete crosscutting.response, por eso
+// se usa fully-qualified mas abajo. No es ruido evitable.
 
 @Tag(name = "Podas", description = "Gestion y consulta de podas preventivas del arbolado urbano")
 @RestController
@@ -36,21 +42,30 @@ public class SchedulePreventivePruningController {
 
     @Operation(
         summary = "Programar podas preventivas",
-        description = """
-            Registra una poda preventiva por cada arbol de la lista. \
-            El tipo ('Preventiva') y el estado ('Planeada') se resuelven automaticamente desde la BD; \
-            el cliente NO los envia.
-
-            **Flujo para adjuntar fotos:**
-            1. Subir cada imagen a `POST /api/v1/photos` (multipart). Cada llamada retorna una key.
-            2. Para una foto: usar la key directamente en `photographicRecordPath`.
-            3. Para varias fotos: concatenar las keys separadas por coma sin espacios: \
-            `2026/05/userId/a.jpg,2026/05/userId/b.jpg`.
-            4. Sin fotos: omitir el campo o enviarlo como `null`."""
+        description = "Crea una poda preventiva por cada arbol del lote (1 a 50). " +
+                "Tipo y estado se resuelven en el backend, no se envian. " +
+                "Para fotos: subir primero a POST /photos y usar la key (o keys separadas por coma) en photographicRecordPath."
     )
+    @ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "201",
+                description  = "Podas creadas. data.count = numero de podas registradas."),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "400",
+                description  = "Validacion fallida (arboles vacios, fecha pasada, foto > 5MB, etc.).",
+                content      = @Content),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "401",
+                description  = "JWT ausente o invalido.",
+                content      = @Content),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "403",
+                description  = "Rol sin permiso (requiere MANAGER o ADMIN).",
+                content      = @Content)
+    })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<Map<String, Object>>> schedule(
-            @Parameter(description = "Datos de las podas en formato JSON")
+            @Parameter(description = "Datos del lote de podas a programar")
             @RequestBody SchedulePreventivePruningRequest request) {
 
         int created = schedulePreventivePruningInputPort.execute(new SchedulePreventivePruningDTO(

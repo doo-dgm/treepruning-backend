@@ -1,6 +1,10 @@
 package co.edu.uco.treepruning.features.family.getfamilybyfilter.application.usecase.domain;
 
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import co.edu.uco.treepruning.crosscutting.helper.TextHelper;
 import co.edu.uco.treepruning.crosscutting.helper.UUIDHelper;
 
@@ -9,7 +13,11 @@ public final class GetFamilyDomain {
     private String commonName;
     private String scientificName;
 
-    public GetFamilyDomain(UUID id, String commonName, String scientificName) {
+    @JsonCreator
+    public GetFamilyDomain(
+            @JsonProperty("id") UUID id,
+            @JsonProperty("commonName") String commonName,
+            @JsonProperty("scientificName") String scientificName) {
         setId(id);
         setCommonName(commonName);
         setScientificName(scientificName);

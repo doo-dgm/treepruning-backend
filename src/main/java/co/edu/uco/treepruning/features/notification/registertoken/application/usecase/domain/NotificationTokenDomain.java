@@ -55,6 +55,12 @@ public class NotificationTokenDomain {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public void updateLanguage(final String language) {
+        String trimmed = TextHelper.getDefaultWithTrim(language);
+        this.language  = TextHelper.isEmpty(trimmed) ? "es" : trimmed;
+        this.updatedAt = LocalDateTime.now();
+    }
+
     private void setId(final UUID id) {
         this.id = UUIDHelper.getDefault(id);
     }
