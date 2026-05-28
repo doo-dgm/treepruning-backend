@@ -66,10 +66,10 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- SQL Server (fallback datasource) -->
+        <!-- MySQL (fallback datasource — activado por DataSourceFallbackPostProcessor si pg1 no responde) -->
         <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc</artifactId>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
 
