@@ -40,14 +40,22 @@ public class DataSourceFallbackPostProcessor implements EnvironmentPostProcessor
         String pgUser = resolve(env, "POSTGRES_USER", "");
         String pgPass = resolve(env, "POSTGRES_PASSWORD", "");
 
-        String pgUrl  = "jdbc:postgresql://" + pgHost + ":" + pgPort + "/" + pgDb;
+        // connectTimeout=2: aborta el TCP handshake si pg1 no responde en 2s.
+        // socketTimeout=2:  aborta si pg1 acepta la conexión pero no envía el
+        //                   greeting del protocolo (p.ej. proceso en shutdown o paused).
+        // Solo se usan en el probe; el datasource real lo configura Spring Boot
+        // con su propio pool (HikariCP) sin estos parámetros.
+        String pgUrl  = "jdbc:postgresql://" + pgHost + ":" + pgPort + "/" + pgDb
+                + "?connectTimeout=2&socketTimeout=2";
 
         if (isReachable(pgUrl, pgUser, pgPass, "org.postgresql.Driver")) {
-            log.info("[DataSource] PostgreSQL disponible en {} — usando como datasource principal.", pgUrl);
+            log.info("[DataSource] PostgreSQL disponible en {}:{}/{} — usando como datasource principal.",
+                    pgHost, pgPort, pgDb);
             return; // Spring Boot auto-config se encarga del resto
         }
 
-        log.warn("[DataSource] PostgreSQL NO disponible en {}. Activando fallback a MySQL.", pgUrl);
+        log.warn("[DataSource] PostgreSQL NO disponible en {}:{}. Activando fallback a MySQL.",
+                pgHost, pgPort);
 
         // ── Resolve MySQL connection details ─────────────────────────────────
         String sqlHost = resolve(env, "MYSQL_HOST",     "localhost");
