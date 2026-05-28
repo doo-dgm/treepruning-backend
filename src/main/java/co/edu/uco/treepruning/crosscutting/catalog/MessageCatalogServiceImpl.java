@@ -9,16 +9,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Service
 public class MessageCatalogServiceImpl implements MessageCatalogService {
 
     private static final Logger log = LoggerFactory.getLogger(MessageCatalogServiceImpl.class);
-
-    /** Locales soportados por Strapi. Cualquier otro cae a "es". */
-    private static final Set<String> SUPPORTED_LOCALES = Set.of("es", "en");
-    private static final String DEFAULT_LOCALE = "es";
 
     private final WebClient strapiWebClient;
 
@@ -33,12 +28,13 @@ public class MessageCatalogServiceImpl implements MessageCatalogService {
         this.self = self;
     }
 
-    // ── Sin locale (backward-compat) ─────────────────────────────────────────
+    // ── Sin locale (default = es-CO, el locale base de Strapi) ──────────────
 
     @Override
     @Cacheable(value = "messages", key = "#codigo")
     public String resolve(String codigo) {
-        return fetchFromStrapi(codigo, DEFAULT_LOCALE);
+        // Sin ?locale= → Strapi devuelve su locale por defecto (es-CO = español)
+        return fetchFromStrapi(codigo, null);
     }
 
     @Override
@@ -51,10 +47,9 @@ public class MessageCatalogServiceImpl implements MessageCatalogService {
     @Override
     @Cacheable(value = "messages", key = "#codigo + ':' + #locale")
     public String resolve(String codigo, String locale) {
-        // Strapi tiene el contenido en español bajo el locale regional es-CO (default),
-        // no bajo "es". Para no depender de ese detalle de configuracion, cualquier
-        // locale distinto de "en" usa la consulta sin ?locale= para que Strapi
-        // devuelva su locale por defecto (que contiene el texto en español).
+        // Para cualquier locale distinto de "en" reutilizamos la consulta sin
+        // ?locale= porque el contenido español vive bajo es-CO (locale default
+        // de Strapi), no bajo "es". Pasar ?locale=es devolveria vacio.
         if (!"en".equals(locale)) {
             return self.resolve(codigo);
         }
@@ -69,18 +64,28 @@ public class MessageCatalogServiceImpl implements MessageCatalogService {
     // ── Helpers ──────────────────────────────────────────────────────────────
 
     /**
-     * Consulta Strapi filtrando por codigo y locale.
-     * Si Strapi no encuentra traduccion en el locale pedido, devuelve el codigo
-     * como fallback (el frontend lo mostrara tal cual, que es mejor que silencio).
+     * Consulta Strapi por codigo.
+     * Si locale es null → no agrega ?locale= (Strapi devuelve el default es-CO).
+     * Si locale es "en" → agrega &locale=en para obtener la traduccion en ingles.
+     * Fallback: devuelve el codigo literal si Strapi no responde o no encuentra.
      */
     private String fetchFromStrapi(String codigo, String locale) {
         try {
-            MensajeStrapiResponse response = strapiWebClient.get()
-                    .uri("/api/mensajes?filters[codigo][$eq]={codigo}&filters[activo][$eq]=true&locale={locale}",
-                            codigo, locale)
-                    .retrieve()
-                    .bodyToMono(MensajeStrapiResponse.class)
-                    .block();
+            String uri = (locale != null)
+                    ? "/api/mensajes?filters[codigo][$eq]={codigo}&filters[activo][$eq]=true&locale={locale}"
+                    : "/api/mensajes?filters[codigo][$eq]={codigo}&filters[activo][$eq]=true";
+
+            MensajeStrapiResponse response = (locale != null)
+                    ? strapiWebClient.get()
+                            .uri(uri, codigo, locale)
+                            .retrieve()
+                            .bodyToMono(MensajeStrapiResponse.class)
+                            .block()
+                    : strapiWebClient.get()
+                            .uri(uri, codigo)
+                            .retrieve()
+                            .bodyToMono(MensajeStrapiResponse.class)
+                            .block();
 
             if (response != null) {
                 List<MensajeStrapiResponse.MensajeData> data = response.getData();
