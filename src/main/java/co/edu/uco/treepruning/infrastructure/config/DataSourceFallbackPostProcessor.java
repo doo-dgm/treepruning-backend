@@ -16,7 +16,12 @@ import java.util.Map;
 /**
  * Probes PostgreSQL before Spring's auto-configuration runs.
  * If PostgreSQL is unreachable, overrides all datasource and JPA dialect
- * properties so Spring Boot wires SQL Server instead — no code changes needed.
+ * properties so Spring Boot wires MySQL instead — no code changes needed.
+ *
+ * El probe usa connectTimeout=2&socketTimeout=2 para evitar un race condition
+ * en el que pg1 está en proceso de shutdown: el kernel todavía acepta el TCP
+ * handshake pero el proceso PostgreSQL no responde — sin timeout explícito el
+ * probe puede bloquearse indefinidamente y considerar pg1 como "disponible".
  *
  * Registration: META-INF/spring/org.springframework.boot.env.EnvironmentPostProcessor.imports
  */
@@ -130,7 +135,7 @@ public class DataSourceFallbackPostProcessor implements EnvironmentPostProcessor
         try {
             Class.forName(driverClass);
             try (Connection conn = DriverManager.getConnection(url, user, password)) {
-                return conn.isValid(3);
+                return conn.isValid(2);
             }
         } catch (Exception e) {
             log.debug("[DataSource] Prueba de conexión fallida para {}: {}", url, e.getMessage());
