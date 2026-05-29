@@ -33,6 +33,13 @@ public class DataSourceFallbackPostProcessor implements EnvironmentPostProcessor
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment env, SpringApplication app) {
 
+        // ── Allow disabling the fallback entirely (e.g. dev environment without MySQL) ──
+        String enabled = env.getProperty("DATASOURCE_FALLBACK_ENABLED");
+        if ("false".equalsIgnoreCase(enabled)) {
+            log.info("[DataSource] Fallback MySQL deshabilitado por DATASOURCE_FALLBACK_ENABLED=false.");
+            return;
+        }
+
         // ── Resolve PostgreSQL connection details ────────────────────────────
         String pgHost = resolve(env, "POSTGRES_HOST", "localhost");
         String pgPort = resolve(env, "POSTGRES_PORT", "5432");
