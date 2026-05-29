@@ -89,7 +89,7 @@ public class DataSourceFallbackPostProcessor implements EnvironmentPostProcessor
         overrides.put("spring.jpa.database-platform",              "org.hibernate.dialect.MySQLDialect");
         overrides.put("spring.jpa.properties.hibernate.dialect",   "org.hibernate.dialect.MySQLDialect");
         overrides.put("spring.jpa.properties.hibernate.default_schema", "");
-        overrides.put("spring.jpa.hibernate.ddl-auto", "create");
+        overrides.put("spring.jpa.hibernate.ddl-auto", "update");
         // Hibernate 6 usa BINARY(16) para UUID en MySQL por defecto.
         // CHAR hace que los UUIDs se almacenen como cadenas legibles (ej. '928a61fa-c790-...')
         // igual que en PostgreSQL y que el formato que genera pg_dump --inserts.
