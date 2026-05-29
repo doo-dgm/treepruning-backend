@@ -19,7 +19,14 @@ RUN mvn dependency:go-offline -q -B
 
 # Codigo fuente y build
 COPY src ./src
-RUN mvn package -DskipTests -B
+RUN mvn package -DskipTests -B \
+ && echo "=== JAR META-INF/spring contents ===" \
+ && jar tf target/*.jar | grep -E "META-INF/spring" | sort \
+ && echo "=== spring.factories contents ===" \
+ && (jar xf target/*.jar META-INF/spring.factories 2>/dev/null && cat META-INF/spring.factories || echo "(not found)") \
+ && echo "=== .imports contents ===" \
+ && (jar xf target/*.jar "META-INF/spring/org.springframework.boot.env.EnvironmentPostProcessor.imports" 2>/dev/null \
+      && cat "META-INF/spring/org.springframework.boot.env.EnvironmentPostProcessor.imports" || echo "(not found)")
 
 # ----- Runtime stage -----
 FROM eclipse-temurin:26-jre AS runtime
@@ -29,4 +36,4 @@ COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
-# cache-bust: 2026-05-25
+# cache-bust: 2026-05-28
