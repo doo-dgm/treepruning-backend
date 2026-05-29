@@ -75,7 +75,7 @@ public class DataSourceFallbackPostProcessor implements EnvironmentPostProcessor
         // allowPublicKeyRetrieval=true: necesario con mysql-connector-j 8+ y autenticación caching_sha2.
         // serverTimezone=UTC: evita ambigüedades con LocalDate/LocalDateTime en Hibernate.
         String sqlUrl = "jdbc:mysql://" + sqlHost + ":" + sqlPort + "/" + sqlDb
-                + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+                + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&connectTimeout=2000&socketTimeout=2000";
 
         if (!isReachable(sqlUrl, sqlUser, sqlPass, "com.mysql.cj.jdbc.Driver")) {
             log.error("[DataSource] MySQL tampoco está disponible en {}. "
