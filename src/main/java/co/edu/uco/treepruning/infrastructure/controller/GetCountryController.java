@@ -5,11 +5,13 @@ import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.uco.treepruning.crosscutting.catalog.MessageCatalogService;
+import co.edu.uco.treepruning.crosscutting.exception.ResourceNotFoundException;
 import co.edu.uco.treepruning.crosscutting.response.ApiResponse;
 import co.edu.uco.treepruning.features.country.exploreregisteredcountries.application.inputport.ExploreRegisteredCountriesInputPort;
 import co.edu.uco.treepruning.features.country.exploreregisteredcountries.application.inputport.dto.ExploreCountriesDTO;
@@ -43,5 +45,16 @@ public class GetCountryController {
 		
 		return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.COUNTRY.LIST"), results));
 }
+
+	@Operation(summary = "Obtener pais por ID", description = "Retorna el detalle de un pais dado su identificador. Responde 404 si no existe.")
+	@GetMapping("/{id}")
+	public ResponseEntity<ApiResponse<ExploreCountriesDTO>> getById(
+		@Parameter(description = "Identificador unico del pais") @PathVariable UUID id) {
+		List<ExploreCountriesDTO> results = inputPort.execute(new ExploreCountriesDTO(id));
+		if (results.isEmpty()) {
+			throw ResourceNotFoundException.create("Country", id);
+		}
+		return ResponseEntity.ok(ApiResponse.ok(catalog.resolve("SUCCESS.COUNTRY.GET"), results.get(0)));
+	}
 
 }
