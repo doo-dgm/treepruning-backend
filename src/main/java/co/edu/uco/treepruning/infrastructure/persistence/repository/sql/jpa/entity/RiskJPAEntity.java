@@ -14,7 +14,7 @@ public class RiskJPAEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 30)
     private String name;
 
     public RiskJPAEntity() {}

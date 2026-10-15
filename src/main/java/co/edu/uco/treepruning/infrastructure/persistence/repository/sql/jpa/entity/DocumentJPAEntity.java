@@ -14,10 +14,10 @@ public class DocumentJPAEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 60)
     private String name;
 
-    @Column(name = "code")
+    @Column(name = "code", length = 10)
     private String code;
 
     public DocumentJPAEntity() {}

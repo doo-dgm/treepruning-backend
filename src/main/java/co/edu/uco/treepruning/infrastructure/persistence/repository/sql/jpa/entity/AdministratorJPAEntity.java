@@ -14,16 +14,16 @@ public class AdministratorJPAEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "username")
+    @Column(name = "username", length = 60)
     private String username;
 
-    @Column(name = "email")
+    @Column(name = "email", length = 60)
     private String email;
 
     @Column(name = "email_confirmed")
     private boolean emailConfirmed;
 
-    @Column(name = "phone")
+    @Column(name = "phone", length = 16)
     private String phone;
 
     @Column(name = "phone_confirmed")

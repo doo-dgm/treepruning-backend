@@ -14,10 +14,10 @@ public class FamilyJPAEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "scientific_name")
+    @Column(name = "scientific_name", length = 100)
     private String scientificName;
 
-    @Column(name = "common_name")
+    @Column(name = "common_name", length = 100)
     private String commonName;
 
     public FamilyJPAEntity() {}

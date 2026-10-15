@@ -17,7 +17,7 @@ public class SectorJPAEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 80)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -18,38 +18,38 @@ public class PersonJPAEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "first_name")
+    @Column(name = "first_name", length = 60)
     private String firstName;
 
-    @Column(name = "middle_name")
+    @Column(name = "middle_name", length = 60)
     private String secondName;
 
-    @Column(name = "surname")
+    @Column(name = "surname", length = 60)
     private String firstLastName;
 
-    @Column(name = "second_surname")
+    @Column(name = "second_surname", length = 60)
     private String secondLastName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "document_id")
     private DocumentJPAEntity document;
 
-    @Column(name = "document_number")
+    @Column(name = "document_number", length = 15)
     private String documentNumber;
 
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    @Column(name = "address")
+    @Column(name = "address", length = 120)
     private String address;
 
-    @Column(name = "email")
+    @Column(name = "email", length = 100)
     private String email;
 
     @Column(name = "email_confirmed")
     private boolean emailConfirmed;
 
-    @Column(name = "phone")
+    @Column(name = "phone", length = 15)
     private String phone;
 
     @Column(name = "phone_confirmed")

@@ -14,10 +14,10 @@ public class ToolJPAEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 50)
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 200)
     private String description;
 
     public ToolJPAEntity() {}

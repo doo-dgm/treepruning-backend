@@ -14,7 +14,7 @@ public class TypeJPAEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 30)
     private String name;
 
     public TypeJPAEntity() {

@@ -51,7 +51,7 @@ public class PruningJPAEntity {
     @Column(name = "photographic_report_path")
     private String photographicRecordPath;
 
-    @Column(name = "observations")
+    @Column(name = "observations", length = 500)
     private String observations;
 
     public PruningJPAEntity() {}

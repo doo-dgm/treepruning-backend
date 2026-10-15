@@ -37,7 +37,7 @@ public class PQRJPAEntity {
     @JoinColumn(name = "person_id")
     private PersonJPAEntity person;
 
-    @Column(name = "photographic_record_path")
+    @Column(name = "photographic_record_path", length = 2048)
     private String photographicRecordPath;
 
     public PQRJPAEntity() {}

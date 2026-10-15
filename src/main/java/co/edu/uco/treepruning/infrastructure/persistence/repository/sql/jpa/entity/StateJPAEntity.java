@@ -17,7 +17,7 @@ public class StateJPAEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 60)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
