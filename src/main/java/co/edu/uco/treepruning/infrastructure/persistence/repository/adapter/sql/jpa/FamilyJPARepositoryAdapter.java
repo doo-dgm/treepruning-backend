@@ -11,6 +11,7 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.FamilyReposi
 import co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa.mapper.FamilyEntityMapper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.FamilyEntity;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.FamilyJPARepository;
+import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.entity.FamilyJPAEntity;
 
 @Repository
 public class FamilyJPARepositoryAdapter implements FamilyRepository {
@@ -22,6 +23,26 @@ public class FamilyJPARepositoryAdapter implements FamilyRepository {
             FamilyEntityMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
+    }
+
+    @Override
+    public void create(FamilyEntity entity) {
+        repository.save(mapper.toJPA(entity));
+    }
+
+    @Override
+    public void update(UUID id, FamilyEntity entity) {
+        repository.findById(id).ifPresent(existing -> {
+            FamilyJPAEntity changes = mapper.toJPA(entity);
+            existing.setScientificName(changes.getScientificName());
+            existing.setCommonName(changes.getCommonName());
+            repository.save(existing);
+        });
+    }
+
+    @Override
+    public void delete(UUID id) {
+        repository.deleteById(id);
     }
 
     @Override

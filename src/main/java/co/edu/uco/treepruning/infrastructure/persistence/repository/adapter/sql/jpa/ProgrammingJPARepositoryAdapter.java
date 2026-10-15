@@ -10,6 +10,7 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.ProgrammingR
 import co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa.mapper.ProgrammingEntityMapper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.ProgrammingEntity;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.ProgrammingJPARepository;
+import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.entity.ProgrammingJPAEntity;
 
 @Repository
 public class ProgrammingJPARepositoryAdapter implements ProgrammingRepository {
@@ -21,6 +22,27 @@ public class ProgrammingJPARepositoryAdapter implements ProgrammingRepository {
             ProgrammingEntityMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
+    }
+
+    @Override
+    public void create(ProgrammingEntity entity) {
+        repository.save(mapper.toJPA(entity));
+    }
+
+    @Override
+    public void update(UUID id, ProgrammingEntity entity) {
+        repository.findById(id).ifPresent(existing -> {
+            ProgrammingJPAEntity changes = mapper.toJPA(entity);
+            existing.setInitialDate(changes.getInitialDate());
+            existing.setFrequencyMonths(changes.getFrequencyMonths());
+            existing.setAmount(changes.getAmount());
+            repository.save(existing);
+        });
+    }
+
+    @Override
+    public void delete(UUID id) {
+        repository.deleteById(id);
     }
 
     @Override

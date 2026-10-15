@@ -32,8 +32,19 @@ public class PruningJPARepositoryAdapter implements PruningRepository {
 
     @Override
     public void update(final UUID id, final PruningEntity entity) {
-        // TODO: implement update logic when the update use case is defined
-        throw new UnsupportedOperationException("Pruning update is not yet implemented");
+        repository.findById(id).ifPresent(existing -> {
+            PruningJPAEntity changes = mapper.toJPA(entity);
+            existing.setStatus(changes.getStatus());
+            existing.setPlannedDate(changes.getPlannedDate());
+            existing.setExecutedDate(changes.getExecutedDate());
+            existing.setTree(changes.getTree());
+            existing.setQuadrille(changes.getQuadrille());
+            existing.setType(changes.getType());
+            existing.setPqr(changes.getPqr());
+            existing.setPhotographicRecordPath(changes.getPhotographicRecordPath());
+            existing.setObservations(changes.getObservations());
+            repository.save(existing);
+        });
     }
 
     @Override

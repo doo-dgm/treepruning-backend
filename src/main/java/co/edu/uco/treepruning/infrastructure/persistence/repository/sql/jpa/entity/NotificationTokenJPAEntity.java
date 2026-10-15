@@ -77,31 +77,31 @@ public class NotificationTokenJPAEntity {
 		return active;
 	}
 
-	private void setId(final UUID id) {
+	public void setId(final UUID id) {
 		this.id = UUIDHelper.getDefault(id);
 	}
 
-	private void setUserId(final UUID userId) {
+	public void setUserId(final UUID userId) {
 		this.userId = UUIDHelper.getDefault(userId);
 	}
 
-	private void setFcmToken(final String fcmToken) {
+	public void setFcmToken(final String fcmToken) {
 		this.fcmToken = TextHelper.getDefault(fcmToken);
 	}
 
-	private void setLanguage(final String language) {
+	public void setLanguage(final String language) {
 		this.language = TextHelper.getDefault(language);
 	}
 
-	private void setCreatedAt(final LocalDateTime createdAt) {
+	public void setCreatedAt(final LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	private void setUpdatedAt(final LocalDateTime updatedAt) {
+	public void setUpdatedAt(final LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 
-	private void setActive(final boolean active) {
+	public void setActive(final boolean active) {
 		this.active = active;
 	}
 	

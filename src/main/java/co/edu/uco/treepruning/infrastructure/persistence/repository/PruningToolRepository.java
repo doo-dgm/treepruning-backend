@@ -12,4 +12,8 @@ public interface PruningToolRepository {
     List<PruningToolEntity> findAll();
     PruningToolEntity findById(UUID id);
     List<PruningToolEntity> findByFilter(UUID id, UUID pruningId, UUID toolId);
+<<<<<<< Updated upstream
+=======
+    boolean existsByPruningAndTool(UUID pruningId, UUID toolId);
+>>>>>>> Stashed changes
 }

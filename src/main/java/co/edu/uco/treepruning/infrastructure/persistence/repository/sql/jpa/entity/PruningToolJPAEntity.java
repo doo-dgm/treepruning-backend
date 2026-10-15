@@ -27,7 +27,12 @@ public class PruningToolJPAEntity {
 
     public PruningToolJPAEntity() {}
 
+<<<<<<< Updated upstream
     public PruningToolJPAEntity(UUID id, PruningJPAEntity pruning, ToolJPAEntity tool) {
+=======
+    public PruningToolJPAEntity(UUID id, PruningJPAEntity pruning,
+            ToolJPAEntity tool) {
+>>>>>>> Stashed changes
         setId(id);
         setPruning(pruning);
         setTool(tool);

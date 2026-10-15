@@ -73,28 +73,28 @@ public class TreeEntity {
     	return programming; 
     	}
 
-    private void setId(final UUID id) {
+    public void setId(final UUID id) {
         this.id = UUIDHelper.getDefault(id);
     }
-    private void setLongitude(final BigDecimal longitude) {
+    public void setLongitude(final BigDecimal longitude) {
         this.longitude = longitude != null ? longitude : BigDecimal.ZERO;
     }
-    private void setLatitude(final BigDecimal latitude) {
+    public void setLatitude(final BigDecimal latitude) {
         this.latitude = latitude != null ? latitude : BigDecimal.ZERO;
     }
-    private void setFamily(final FamilyEntity family) {
+    public void setFamily(final FamilyEntity family) {
         this.family = ObjectHelper.getDefault(family, new FamilyEntity());
     }
-    private void setSector(final SectorEntity sector) {
+    public void setSector(final SectorEntity sector) {
         this.sector = ObjectHelper.getDefault(sector, new SectorEntity());
     }
-    private void setProgramming(final ProgrammingEntity programming) {
+    public void setProgramming(final ProgrammingEntity programming) {
         this.programming = ObjectHelper.getDefault(programming, new ProgrammingEntity());
     }
-    private void setCreatedAt(final ZonedDateTime createdAt) {
+    public void setCreatedAt(final ZonedDateTime createdAt) {
 		this.createdAt = DateHelper.getDefaultZonedDateTime(createdAt);
 	}
-    private void setUpdatedAt(final ZonedDateTime updatedAt) {
+    public void setUpdatedAt(final ZonedDateTime updatedAt) {
 		this.updatedAt = DateHelper.getDefaultZonedDateTime(updatedAt);
 	}
 }

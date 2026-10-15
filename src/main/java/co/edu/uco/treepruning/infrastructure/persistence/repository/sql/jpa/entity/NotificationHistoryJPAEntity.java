@@ -85,35 +85,35 @@ public class NotificationHistoryJPAEntity {
 		return success;
 	}
 	
-	private void setId(final UUID id) {
+	public void setId(final UUID id) {
 		this.id = UUIDHelper.getDefault(id);
 	}
 	
-	private void setUserId(final UUID userId) {
+	public void setUserId(final UUID userId) {
 		this.userId = UUIDHelper.getDefault(userId);
 	}
 	
-	private void setTitle(final String title) {
+	public void setTitle(final String title) {
 		this.title = TextHelper.getDefaultWithTrim(title);
 	}
 	
-	private void setBody(final String body) {
+	public void setBody(final String body) {
 		this.body = TextHelper.getDefaultWithTrim(body);
 	}
 	
-	private void setPruningId(final UUID pruningId) {
+	public void setPruningId(final UUID pruningId) {
 		this.pruningId = UUIDHelper.getDefault(pruningId);
 	}
 	
-	private void setType(final String type) {
+	public void setType(final String type) {
 		this.type = TextHelper.getDefaultWithTrim(type);
 	}
 	
-	private void setSentAt(final LocalDateTime sentAt) {
+	public void setSentAt(final LocalDateTime sentAt) {
 		this.sentAt = sentAt;
 	}
 	
-	private void setSuccess(final boolean success) {
+	public void setSuccess(final boolean success) {
 		this.success = success;
 	}
 	

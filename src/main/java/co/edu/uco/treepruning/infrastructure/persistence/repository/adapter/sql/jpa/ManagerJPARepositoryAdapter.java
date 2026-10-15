@@ -10,6 +10,7 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.ManagerRepos
 import co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa.mapper.ManagerEntityMapper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.ManagerEntity;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.ManagerJPARepository;
+import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.entity.ManagerJPAEntity;
 
 @Repository
 public class ManagerJPARepositoryAdapter implements ManagerRepository {
@@ -21,6 +22,25 @@ public class ManagerJPARepositoryAdapter implements ManagerRepository {
             ManagerEntityMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
+    }
+
+    @Override
+    public void create(ManagerEntity entity) {
+        repository.save(mapper.toJPA(entity));
+    }
+
+    @Override
+    public void update(UUID id, ManagerEntity entity) {
+        repository.findById(id).ifPresent(existing -> {
+            ManagerJPAEntity changes = mapper.toJPA(entity);
+            existing.setPerson(changes.getPerson());
+            repository.save(existing);
+        });
+    }
+
+    @Override
+    public void delete(UUID id) {
+        repository.deleteById(id);
     }
 
     @Override

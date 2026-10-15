@@ -9,6 +9,11 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.enti
 
 public interface PruningToolJPARepository extends JpaRepository<PruningToolJPAEntity, UUID> {
 
+<<<<<<< Updated upstream
+=======
+    boolean existsByPruning_IdAndTool_Id(UUID pruningId, UUID toolId);
+
+>>>>>>> Stashed changes
     @Query("SELECT pt FROM PruningToolJPAEntity pt WHERE " +
            "(:id IS NULL OR pt.id = :id) AND " +
            "(:pruningId IS NULL OR pt.pruning.id = :pruningId) AND " +

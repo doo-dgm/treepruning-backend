@@ -11,6 +11,7 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.SectorReposi
 import co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa.mapper.SectorEntityMapper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.SectorEntity;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.SectorJPARepository;
+import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.entity.SectorJPAEntity;
 
 @Repository
 public class SectorJPARepositoryAdapter implements SectorRepository {
@@ -31,7 +32,12 @@ public class SectorJPARepositoryAdapter implements SectorRepository {
 
     @Override
     public void update(UUID id, SectorEntity entity) {
-        // TODO
+        repository.findById(id).ifPresent(existing -> {
+            SectorJPAEntity changes = mapper.toJPA(entity);
+            existing.setName(changes.getName());
+            existing.setMunicipality(changes.getMunicipality());
+            repository.save(existing);
+        });
     }
 
     @Override

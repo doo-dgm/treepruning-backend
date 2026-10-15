@@ -10,6 +10,10 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.OperatorRepo
 import co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa.mapper.OperatorEntityMapper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.OperatorEntity;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.OperatorJPARepository;
+<<<<<<< Updated upstream
+=======
+import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.entity.OperatorJPAEntity;
+>>>>>>> Stashed changes
 
 @Repository
 public class OperatorJPARepositoryAdapter implements OperatorRepository {
@@ -30,7 +34,16 @@ public class OperatorJPARepositoryAdapter implements OperatorRepository {
 
     @Override
     public void update(UUID id, OperatorEntity entity) {
+<<<<<<< Updated upstream
         // TODO
+=======
+        repository.findById(id).ifPresent(existing -> {
+            OperatorJPAEntity changes = mapper.toJPA(entity);
+            existing.setPerson(changes.getPerson());
+            existing.setQuadrille(changes.getQuadrille());
+            repository.save(existing);
+        });
+>>>>>>> Stashed changes
     }
 
     @Override

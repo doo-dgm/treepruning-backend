@@ -23,6 +23,18 @@ public class TypeJPARepositoryAdapter implements TypeRepository {
     }
 
     @Override
+    public List<TypeEntity> findAll() {
+        return mapper.toEntityList(repository.findAll());
+    }
+
+    @Override
+    public TypeEntity findById(UUID id) {
+        return repository.findById(id)
+                .map(mapper::toEntity)
+                .orElse(new TypeEntity());
+    }
+
+    @Override
     public List<TypeEntity> findByFilter(UUID id, String name) {
         UUID effectiveId = UUIDHelper.isDefaultUUID(id) ? null : id;
         String effectiveName = TextHelper.isEmptyWithTrim(name) ? null : name.trim();

@@ -11,6 +11,7 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.PersonReposi
 import co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa.mapper.PersonEntityMapper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.PersonEntity;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.PersonJPARepository;
+import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.entity.PersonJPAEntity;
 
 @Repository
 public class PersonJPARepositoryAdapter implements PersonRepository {
@@ -31,7 +32,23 @@ public class PersonJPARepositoryAdapter implements PersonRepository {
 
     @Override
     public void update(UUID id, PersonEntity entity) {
-        // TODO
+        repository.findById(id).ifPresent(existing -> {
+            PersonJPAEntity changes = mapper.toJPA(entity);
+            existing.setFirstName(changes.getFirstName());
+            existing.setSecondName(changes.getSecondName());
+            existing.setFirstLastName(changes.getFirstLastName());
+            existing.setSecondLastName(changes.getSecondLastName());
+            existing.setDocument(changes.getDocument());
+            existing.setDocumentNumber(changes.getDocumentNumber());
+            existing.setBirthDate(changes.getBirthDate());
+            existing.setAddress(changes.getAddress());
+            existing.setEmail(changes.getEmail());
+            existing.setEmailConfirmed(changes.isEmailConfirmed());
+            existing.setPhone(changes.getPhone());
+            existing.setPhoneConfirmed(changes.isPhoneConfirmed());
+            existing.setAge(changes.getAge());
+            repository.save(existing);
+        });
     }
 
     @Override

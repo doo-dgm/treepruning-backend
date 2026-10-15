@@ -9,6 +9,7 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.DocumentRepo
 import co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa.mapper.DocumentEntityMapper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.DocumentEntity;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.DocumentJPARepository;
+import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.entity.DocumentJPAEntity;
 
 @Repository
 public class DocumentJPARepositoryAdapter implements DocumentRepository {
@@ -36,6 +37,11 @@ public class DocumentJPARepositoryAdapter implements DocumentRepository {
 
     @Override
     public void update(UUID id, DocumentEntity entity) {
-        // TODO
+        repository.findById(id).ifPresent(existing -> {
+            DocumentJPAEntity changes = mapper.toJPA(entity);
+            existing.setName(changes.getName());
+            existing.setCode(changes.getCode());
+            repository.save(existing);
+        });
     }
 }
