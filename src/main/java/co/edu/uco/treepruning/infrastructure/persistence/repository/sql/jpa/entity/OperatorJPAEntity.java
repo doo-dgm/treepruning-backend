@@ -10,13 +10,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-<<<<<<< Updated upstream
-@Table(name = "operator")
-=======
 // OPERATOR es palabra clave en SQL, por eso el nombre de la tabla va entre
 // comillas (backticks de Hibernate) para que el dialecto lo escape.
 @Table(name = "`operator`")
->>>>>>> Stashed changes
 public class OperatorJPAEntity {
 
     @Id
@@ -33,12 +29,8 @@ public class OperatorJPAEntity {
 
     public OperatorJPAEntity() {}
 
-<<<<<<< Updated upstream
-    public OperatorJPAEntity(UUID id, PersonJPAEntity person, QuadrilleJPAEntity quadrille) {
-=======
     public OperatorJPAEntity(UUID id, PersonJPAEntity person,
             QuadrilleJPAEntity quadrille) {
->>>>>>> Stashed changes
         setId(id);
         setPerson(person);
         setQuadrille(quadrille);

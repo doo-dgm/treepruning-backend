@@ -11,10 +11,7 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.ToolReposito
 import co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa.mapper.ToolEntityMapper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.ToolEntity;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.ToolJPARepository;
-<<<<<<< Updated upstream
-=======
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.entity.ToolJPAEntity;
->>>>>>> Stashed changes
 
 @Repository
 public class ToolJPARepositoryAdapter implements ToolRepository {
@@ -35,16 +32,12 @@ public class ToolJPARepositoryAdapter implements ToolRepository {
 
     @Override
     public void update(UUID id, ToolEntity entity) {
-<<<<<<< Updated upstream
-        // TODO
-=======
         repository.findById(id).ifPresent(existing -> {
             ToolJPAEntity changes = mapper.toJPA(entity);
             existing.setName(changes.getName());
             existing.setDescription(changes.getDescription());
             repository.save(existing);
         });
->>>>>>> Stashed changes
     }
 
     @Override

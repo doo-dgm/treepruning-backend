@@ -38,10 +38,6 @@ public class PruningToolEntity {
 	public PruningEntity getPruning() {
 		return pruning;
 	}
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 	public ToolEntity getTool() {
 		return tool;
 	}
@@ -49,17 +45,9 @@ public class PruningToolEntity {
 	public void setId(final UUID id) {
 		this.id = UUIDHelper.getDefault(id);
 	}
-<<<<<<< Updated upstream
-
 	public void setPruning(final PruningEntity pruning) {
 		this.pruning = ObjectHelper.getDefault(pruning, new PruningEntity());
 	}
-
-=======
-	public void setPruning(final PruningEntity pruning) {
-		this.pruning = ObjectHelper.getDefault(pruning, new PruningEntity());
-	}
->>>>>>> Stashed changes
 	public void setTool(final ToolEntity tool) {
 		this.tool = ObjectHelper.getDefault(tool, new ToolEntity());
 	}

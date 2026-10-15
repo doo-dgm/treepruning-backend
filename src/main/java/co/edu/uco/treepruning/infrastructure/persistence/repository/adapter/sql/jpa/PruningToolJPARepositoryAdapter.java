@@ -10,10 +10,7 @@ import co.edu.uco.treepruning.infrastructure.persistence.repository.PruningToolR
 import co.edu.uco.treepruning.infrastructure.persistence.repository.adapter.sql.jpa.mapper.PruningToolEntityMapper;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.entity.PruningToolEntity;
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.PruningToolJPARepository;
-<<<<<<< Updated upstream
-=======
 import co.edu.uco.treepruning.infrastructure.persistence.repository.sql.jpa.entity.PruningToolJPAEntity;
->>>>>>> Stashed changes
 
 @Repository
 public class PruningToolJPARepositoryAdapter implements PruningToolRepository {
@@ -34,16 +31,12 @@ public class PruningToolJPARepositoryAdapter implements PruningToolRepository {
 
     @Override
     public void update(UUID id, PruningToolEntity entity) {
-<<<<<<< Updated upstream
-        // TODO
-=======
         repository.findById(id).ifPresent(existing -> {
             PruningToolJPAEntity changes = mapper.toJPA(entity);
             existing.setPruning(changes.getPruning());
             existing.setTool(changes.getTool());
             repository.save(existing);
         });
->>>>>>> Stashed changes
     }
 
     @Override
@@ -71,12 +64,9 @@ public class PruningToolJPARepositoryAdapter implements PruningToolRepository {
         return mapper.toEntityList(repository.findByFilter(
                 effectiveId, effectivePruningId, effectiveToolId));
     }
-<<<<<<< Updated upstream
-=======
 
     @Override
     public boolean existsByPruningAndTool(UUID pruningId, UUID toolId) {
         return repository.existsByPruning_IdAndTool_Id(pruningId, toolId);
     }
->>>>>>> Stashed changes
 }
